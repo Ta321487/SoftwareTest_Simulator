@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getLevelById, simTypeLabels, isDailyQuestId, isSideQuestId, levels } from '../utils/levelRegistry'
+import { getLevelById, isDailyQuestId, isSideQuestId, levels } from '../utils/levelRegistry'
 import { getProjectForLevel, getProjectDay, getDockShortLabel } from '../data/projects'
 import { getPhaseForLevel, getPhaseStep } from '../data/phases'
 import { getRankForXp } from '../data/ranks'
@@ -765,7 +765,6 @@ function goBack() {
 
       <div class="sim-workspace__header">
         <span class="sim-workspace__tag">{{ simGuide.label }}</span>
-        <span class="level-detail__tool">{{ simTypeLabels[level.simType] }}</span>
         <span
           v-if="levelStatus === 'completed'"
           class="level-detail__badge level-detail__badge--completed"

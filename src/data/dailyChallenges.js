@@ -1,5 +1,5 @@
 /** 每日特训题库 — 按日期轮换 */
-const DAILY_POOL = [
+export const DAILY_POOL = [
   {
     key: 'regression-mini',
     title: '今日：小版本回归',

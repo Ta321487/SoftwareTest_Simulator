@@ -50,9 +50,9 @@ export function getFailureHint(level, data, result) {
           level.correctChecks || [],
           level.checklistItems || []
         )
-        return detail || pitfall || result.message
+        return detail || pitfall || ''
       }
-      return pitfall ? `${result.message} 提示：${pitfall}` : result.message
+      return pitfall || ''
     }
     case 'report': {
       const detail = diffReport(
@@ -69,17 +69,15 @@ export function getFailureHint(level, data, result) {
         : pitfall || result.message
     }
     case 'jira':
-      return pitfall
-        ? `${result.message} 常见坑：${pitfall}`
-        : result.message
+      return pitfall ? `常见坑：${pitfall}` : ''
     case 'template':
     case 'chat':
     case 'terminal':
     case 'config':
     case 'calculator':
-      return pitfall ? `${result.message} 提示：${pitfall}` : result.message
+      return pitfall || ''
     default:
-      return result.message
+      return ''
   }
 }
 
