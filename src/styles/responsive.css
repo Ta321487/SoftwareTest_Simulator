@@ -79,8 +79,10 @@ body {
   .home-map__main > .player-dashboard,
   .home-map__main > .home-map__hero,
   .home-map__main > .home-map__actions,
+  .home-map__main > .career-map,
   .home-map__main > .phase-timeline,
   .home-map__main > .home-map__projects,
+  .home-map__main > .home-fold,
   .home-map__main > .side-hub,
   .home-map__main > .home-map__extra-note,
   .home-map__main > .home-map__achievements {
@@ -120,8 +122,10 @@ body {
   .home-map__main > .player-dashboard,
   .home-map__main > .home-map__hero,
   .home-map__main > .home-map__actions,
+  .home-map__main > .career-map,
   .home-map__main > .phase-timeline,
   .home-map__main > .home-map__projects,
+  .home-map__main > .home-fold,
   .home-map__main > .side-hub,
   .home-map__main > .home-map__extra-note,
   .home-map__main > .home-map__achievements {

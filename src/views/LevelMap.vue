@@ -3,25 +3,19 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProgressStore } from '../stores/progressStore'
 import { useProjectStore } from '../stores/projectStore'
-import { phaseOrder } from '../data/phases'
-import PhaseTimeline from '../components/workbench/PhaseTimeline.vue'
-import RankBadge from '../components/RankBadge.vue'
-import AchievementPanel from '../components/AchievementPanel.vue'
+import CareerMap from '../components/CareerMap.vue'
+import PlayerDashboard from '../components/PlayerDashboard.vue'
 import SideQuestHub from '../components/SideQuestHub.vue'
 import ProjectTimeline from '../components/workbench/ProjectTimeline.vue'
-import PlayerDashboard from '../components/PlayerDashboard.vue'
+import AchievementPanel from '../components/AchievementPanel.vue'
 import OnboardingTour from '../components/OnboardingTour.vue'
 import ProgressSettings from '../components/ProgressSettings.vue'
 import { HOME_PROJECT_IDS } from '../utils/projectImmersion'
-import { sideLevels } from '../data/sideQuests'
-import { DAILY_POOL_SIZE } from '../data/dailyChallenges'
 import ThemeToggle from '../components/ThemeToggle.vue'
 
 const router = useRouter()
 const progressStore = useProgressStore()
 const onboardingRef = ref(null)
-
-const sideTotal = sideLevels.length
 
 const allCompleted = computed(
   () => progressStore.completedLevelIds.length >= progressStore.totalLevelCount
@@ -53,7 +47,7 @@ function showOnboarding() {
       <div class="workbench__topbar-left">
         <div class="workbench__title-block">
           <h1 class="workbench__title workbench__title--app">测试人一生</h1>
-          <p class="workbench__subtitle">主线 27 关 + 番外支线 + 每日特训</p>
+          <p class="workbench__subtitle">主线 27 关 · 番外支线 · 每日特训</p>
         </div>
       </div>
       <div class="workbench__topbar-right">
@@ -79,18 +73,7 @@ function showOnboarding() {
       </aside>
 
       <main class="workbench__main home-map__main">
-        <RankBadge :xp="progressStore.totalXp" class="home-map__rank" />
-
         <PlayerDashboard />
-
-        <section class="home-map__hero">
-          <p class="home-map__hero-tag">软件测试 · 闯关游戏</p>
-          <h2 class="home-map__hero-title">想学测试的人能玩懂，已经在测的人会心一笑</h2>
-          <p class="home-map__hero-desc">
-            主线走完测试人上路；番外练安全、性能、流水线；每日特训保持手感。
-            攒 XP 升职级——这不只是 demo，是可持续玩的模拟器。
-          </p>
-        </section>
 
         <div class="home-map__actions">
           <button
@@ -106,33 +89,31 @@ function showOnboarding() {
           </button>
         </div>
 
-        <PhaseTimeline
-          v-for="phaseId in phaseOrder"
-          :key="phaseId"
-          :phase-id="phaseId"
-        />
-
-        <section class="home-map__projects">
-          <h2 class="home-map__projects-title">项目剧本 · 沉浸进度</h2>
-          <p class="home-map__projects-desc">
-            四大项目线含可选 App / 监控 / 值班体验。通关不依赖这些，但做完更像真实上班。
-          </p>
-          <ProjectTimeline
-            v-for="projectId in HOME_PROJECT_IDS"
-            :key="projectId"
-            :project-id="projectId"
-          />
-        </section>
+        <CareerMap />
 
         <SideQuestHub />
 
-        <p class="home-map__extra-note">
-          主线 27 关 + 番外 {{ sideTotal }} 关 + 每日特训（{{ DAILY_POOL_SIZE }} 题轮换）
-        </p>
+        <details class="home-fold">
+          <summary class="home-fold__summary">项目剧本 · 沉浸进度（可选）</summary>
+          <div class="home-fold__body">
+            <p class="home-map__projects-desc">
+              四大项目线含 App / 监控 / 值班体验。通关不依赖这些，但做完更像真实上班。
+            </p>
+            <ProjectTimeline
+              v-for="projectId in HOME_PROJECT_IDS"
+              :key="projectId"
+              :project-id="projectId"
+            />
+          </div>
+        </details>
 
-        <AchievementPanel class="home-map__achievements" />
-
-        <ProgressSettings @show-onboarding="showOnboarding" />
+        <details class="home-fold">
+          <summary class="home-fold__summary">成就与存档</summary>
+          <div class="home-fold__body">
+            <AchievementPanel class="home-map__achievements" />
+            <ProgressSettings @show-onboarding="showOnboarding" />
+          </div>
+        </details>
       </main>
     </div>
   </div>

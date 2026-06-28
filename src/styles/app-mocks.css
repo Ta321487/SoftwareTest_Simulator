@@ -1,0 +1,710 @@
+/* ===== In-level app mocks (login, pay, order, on-call) ===== */
+/* Login App mock (阶段 3) */
+.login-sut-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.login-sut-panel__lead {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  padding: 10px 12px;
+  background: var(--tag-low-bg);
+  border-radius: 8px;
+  border-left: 3px solid var(--accent-cyan);
+}
+
+.login-app-mock__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.login-app-mock__brand {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.login-app-mock__version {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}
+
+.login-app-mock__env {
+  font-size: 0.72rem;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--tag-low-bg);
+  color: var(--accent-cyan);
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+
+.login-app-mock__device {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.login-app-mock__screen {
+  width: min(100%, 320px);
+  padding: 20px 16px;
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(0, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--sim-card-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-app-mock--compact .login-app-mock__screen {
+  width: 100%;
+}
+
+.login-app-mock__title {
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.login-app-mock__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.login-app-mock__input {
+  background: var(--tag-low-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--text-primary);
+  font-size: 0.88rem;
+}
+
+.login-app-mock__sms-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.login-app-mock__sms-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--accent-cyan);
+  background: transparent;
+  color: var(--accent-cyan);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.login-app-mock__sms-btn:hover {
+  background: rgba(0, 255, 255, 0.08);
+}
+
+.login-app-mock__countdown {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.login-app-mock__countdown--idle {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+}
+
+.login-app-mock__countdown--bug {
+  color: var(--error);
+  font-weight: 700;
+  animation: login-countdown-pulse 1s ease-in-out infinite;
+}
+
+@keyframes login-countdown-pulse {
+  50% { opacity: 0.65; }
+}
+
+.login-app-mock__submit {
+  margin-top: 4px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  cursor: not-allowed;
+}
+
+.login-app-mock__guide {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.login-app-mock__status {
+  font-size: 0.85rem;
+  padding: 8px 10px;
+  border-radius: 8px;
+  line-height: 1.45;
+}
+
+.login-app-mock__status--bug {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--error);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.login-app-mock__status--ok {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--success, #22c55e);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+/* Payment App mock (阶段 4) */
+.payment-app-mock__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.payment-app-mock__brand {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.payment-app-mock__version {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}
+
+.payment-app-mock__env {
+  font-size: 0.72rem;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--tag-low-bg);
+  color: var(--accent-cyan);
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+
+.payment-app-mock__env--warn {
+  color: var(--error);
+}
+
+.payment-app-mock__device {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.payment-app-mock__screen {
+  width: min(100%, 320px);
+  padding: 20px 16px;
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(0, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--sim-card-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+}
+
+.payment-app-mock__order-id {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.payment-app-mock__amount {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.payment-app-mock__goods {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.payment-app-mock__pay-btn {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: none;
+  background: #07c160;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+
+.payment-app-mock__pay-btn:disabled {
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+.payment-app-mock__status-line {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.payment-app-mock__notify {
+  font-size: 0.82rem;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--tag-low-bg);
+  text-align: left;
+}
+
+.payment-app-mock__notify--miss {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.payment-app-mock__notify--ok {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--success, #22c55e);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.payment-app-mock__notify--error {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--error);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.payment-app-mock__guide {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.payment-app-mock__status {
+  font-size: 0.85rem;
+  padding: 8px 10px;
+  border-radius: 8px;
+  line-height: 1.45;
+}
+
+.payment-app-mock__status--warn {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.payment-app-mock__status--bug {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--error);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.payment-app-mock__status--ok {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--success, #22c55e);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+/* Order 可观测面板 (阶段 5) */
+.order-obs__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.order-obs__brand {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.order-obs__version {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}
+
+.order-obs__env {
+  font-size: 0.72rem;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--tag-low-bg);
+  color: var(--accent-cyan);
+  font-family: var(--font-mono);
+}
+
+.order-obs__apm-title {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.order-obs__trace {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.order-obs__trace-node {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--sim-card-border);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--transition);
+}
+
+.order-obs__trace-node--hot {
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.order-obs__trace-node--active {
+  border-color: var(--accent-cyan);
+  background: rgba(0, 255, 255, 0.06);
+}
+
+.order-obs__trace-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.order-obs__trace-bar {
+  height: 8px;
+  background: var(--surface-muted);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.order-obs__trace-fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--error));
+  border-radius: 4px;
+}
+
+.order-obs__trace-ms {
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.order-obs__metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.order-obs__metric {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--sim-card-border);
+  background: var(--tag-low-bg);
+}
+
+.order-obs__metric--error {
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.order-obs__metric--warn {
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.order-obs__metric-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.order-obs__metric-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 4px 0;
+}
+
+.order-obs__metric-hint {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.order-obs__incident-grade {
+  font-weight: 600;
+  color: var(--error);
+  margin-bottom: 10px;
+}
+
+.order-obs__timeline {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.order-obs__time {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  margin-right: 6px;
+}
+
+.order-obs__dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 16px;
+  font-size: 0.85rem;
+}
+
+.order-obs__dl dt {
+  color: var(--text-secondary);
+}
+
+.order-obs__guide {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin-top: 8px;
+}
+
+.order-obs__status {
+  font-size: 0.85rem;
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.order-obs__status--ok {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--success, #22c55e);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+/* Terminal 命令预览 */
+.terminal__preview {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--sim-card-border);
+  background: var(--tag-low-bg);
+  margin-top: 8px;
+}
+
+.terminal__preview--weak {
+  border-left: 3px solid var(--error);
+}
+
+.terminal__preview--ok {
+  border-left: 3px solid #f59e0b;
+}
+
+.terminal__preview--good {
+  border-left: 3px solid var(--success, #22c55e);
+}
+
+.terminal__preview-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.terminal__preview-tips {
+  margin: 6px 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.terminal__preview-ok {
+  margin: 6px 0 0;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+/* 线上值班面板 (阶段 6) */
+.oncall-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.oncall-panel__brand {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.oncall-panel__version {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}
+
+.oncall-panel__env {
+  font-size: 0.72rem;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--tag-low-bg);
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+
+.oncall-panel__env--prod {
+  color: var(--error);
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.oncall-panel__network {
+  font-size: 0.88rem;
+  margin-bottom: 10px;
+}
+
+.oncall-panel__device {
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--sim-card-border);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.oncall-panel__title {
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.oncall-panel__login-btn {
+  padding: 10px 24px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent-cyan);
+  color: #0a0a0f;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.oncall-panel__login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.oncall-panel__wait,
+.oncall-panel__elapsed {
+  font-size: 0.85rem;
+  margin-top: 10px;
+  color: var(--text-secondary);
+}
+
+.oncall-panel__elapsed strong {
+  color: var(--error);
+}
+
+.oncall-panel__log-path {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.oncall-panel__log-body {
+  margin: 0 0 10px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #0d1117;
+  overflow-x: auto;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.oncall-panel__log-line {
+  display: block;
+  color: #8b949e;
+}
+
+.oncall-panel__log-line--error {
+  color: #f85149;
+}
+
+.oncall-panel__board-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.oncall-panel__board-item {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--sim-card-border);
+  text-align: center;
+}
+
+.oncall-panel__board-item--error {
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.oncall-panel__board-item--warn {
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.oncall-panel__board-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.oncall-panel__board-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.oncall-panel__milestones {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.oncall-panel__guide {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin-top: 8px;
+}
+
+.oncall-panel__status {
+  font-size: 0.85rem;
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin-top: 8px;
+  line-height: 1.45;
+}
+
+.oncall-panel__status--warn {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.oncall-panel__status--ok {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--success, #22c55e);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}

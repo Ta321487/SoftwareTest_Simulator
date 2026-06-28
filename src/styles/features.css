@@ -1,13 +1,6 @@
 
 /* 640px 以下规则已合并至 responsive.css */
 
-[data-theme='light'] .workbench__topbar,
-[data-theme='light'] .workbench__sim-area,
-[data-theme='light'] .context-panel,
-[data-theme='light'] .project-timeline {
-  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06);
-}
-
 /* ===== 新手引导 ===== */
 .onboarding {
   position: fixed;
@@ -359,10 +352,8 @@
 /* ===== 玩家仪表盘 ===== */
 .player-dashboard {
   margin-bottom: 20px;
-  padding: 18px 20px;
-  border-radius: 12px;
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-soft, rgba(255, 255, 255, 0.03));
+  padding: 0 0 18px;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .player-dashboard__header {
@@ -377,6 +368,14 @@
 .player-dashboard__title {
   font-size: 1rem;
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.player-dashboard__rank-icon {
+  font-size: 1.15rem;
+  line-height: 1;
 }
 
 .player-dashboard__actions {

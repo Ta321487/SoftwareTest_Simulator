@@ -9,6 +9,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  compact: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const router = useRouter()
@@ -46,8 +50,11 @@ function starDisplay(n) {
 </script>
 
 <template>
-  <section class="phase-timeline" :class="`phase-timeline--${phase.id}`">
-    <div class="phase-timeline__header">
+  <section
+    class="phase-timeline"
+    :class="[`phase-timeline--${phase.id}`, { 'phase-timeline--compact': compact }]"
+  >
+    <div v-if="!compact" class="phase-timeline__header">
       <div>
         <h2 class="phase-timeline__title">
           <span class="phase-timeline__icon">{{ phase.icon }}</span>
@@ -58,6 +65,15 @@ function starDisplay(n) {
         <p class="phase-timeline__veteran">{{ phase.veteranLine }}</p>
       </div>
       <span class="phase-timeline__progress">{{ progress.done }}/{{ progress.total }} 关</span>
+    </div>
+
+    <div v-else class="phase-timeline__intro">
+      <p class="phase-timeline__subtitle">{{ phase.subtitle }}</p>
+      <details class="phase-timeline__meta">
+        <summary>阶段说明</summary>
+        <p class="phase-timeline__audience">{{ phase.audience }}</p>
+        <p class="phase-timeline__veteran">{{ phase.veteranLine }}</p>
+      </details>
     </div>
 
     <div class="phase-timeline__track">

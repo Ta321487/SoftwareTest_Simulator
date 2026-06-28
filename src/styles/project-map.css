@@ -1,0 +1,247 @@
+/* ===== Project timelines & home projects ===== */
+/* Project Timeline */
+.project-timeline {
+  margin-bottom: 28px;
+  padding: 0 0 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  width: 100%;
+}
+
+.project-timeline__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.project-timeline__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.project-timeline__subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.project-timeline__progress {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  padding: 4px 10px;
+  background: var(--surface-muted);
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+}
+
+.project-timeline__track {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.project-timeline__day {
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: var(--surface-muted);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--transition), transform var(--transition);
+  position: relative;
+}
+
+.project-timeline__day:not(:last-child)::after {
+  content: '→';
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  z-index: 1;
+}
+
+.project-timeline__day--available {
+  border-color: var(--cyan-border);
+}
+
+.project-timeline__day--available:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-cyan);
+}
+
+.project-timeline__day--completed {
+  border-color: var(--green-border);
+  background: var(--green-bg-soft);
+}
+
+.project-timeline__day--locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.project-timeline__day-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--accent-cyan);
+}
+
+.project-timeline__day-title {
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.project-timeline__day-status {
+  font-size: 0.85rem;
+}
+
+.project-timeline__immersion {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--tag-low-bg);
+  border: 1px dashed var(--sim-card-border);
+}
+
+.project-timeline__immersion-label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.project-timeline__immersion-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.project-timeline__immersion-tag {
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+}
+
+.project-timeline__immersion-tag--done {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--success, #22c55e);
+}
+
+.home-map__projects {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.home-map__projects-title {
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.home-map__projects-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin: -8px 0 8px;
+  line-height: 1.5;
+}
+
+.template-filler__preview {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--sim-card-border);
+  background: var(--tag-low-bg);
+}
+
+.template-filler__preview--weak,
+.template-filler__preview--empty {
+  border-left: 3px solid var(--error);
+}
+
+.template-filler__preview--ok {
+  border-left: 3px solid #f59e0b;
+}
+
+.template-filler__preview--good {
+  border-left: 3px solid var(--success, #22c55e);
+}
+
+.template-filler__preview-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.template-filler__preview-progress {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.template-filler__preview-tips {
+  margin: 8px 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.template-filler__preview-ok {
+  margin: 6px 0 0;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.project-timeline--payment {
+  margin-top: 8px;
+}
+
+.project-timeline--payment .project-timeline__title {
+  color: var(--text-primary);
+}
+
+.project-timeline--payment .project-timeline__day-label {
+  color: var(--accent-purple);
+}
+
+.project-timeline--payment .project-timeline__day--available {
+  border-color: var(--purple-border);
+}
+
+.project-timeline--payment .project-timeline__day--available:hover {
+  border-color: var(--accent-purple);
+}
+
+.project-timeline--payment .project-timeline__day--available:hover {
+  border-color: var(--accent-purple);
+}
+
+.project-timeline--order {
+  margin-top: 8px;
+}
+
+.project-timeline--order .project-timeline__title {
+  color: var(--text-primary);
+}
+
+.project-timeline--order .project-timeline__day-label {
+  color: var(--accent-amber);
+}
