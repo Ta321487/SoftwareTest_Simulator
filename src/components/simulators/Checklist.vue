@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 defineProps({
   checklistItems: {
@@ -15,6 +15,22 @@ defineProps({
 const emit = defineEmits(['submit'])
 
 const selected = ref([])
+const prdExpanded = ref(true)
+let prdMedia = null
+
+function syncPrdExpanded() {
+  prdExpanded.value = !prdMedia?.matches
+}
+
+onMounted(() => {
+  prdMedia = window.matchMedia('(max-width: 768px)')
+  syncPrdExpanded()
+  prdMedia.addEventListener('change', syncPrdExpanded)
+})
+
+onUnmounted(() => {
+  prdMedia?.removeEventListener('change', syncPrdExpanded)
+})
 
 function handleSubmit() {
   emit('submit', { selected: [...selected.value] })
@@ -24,11 +40,17 @@ function handleSubmit() {
 <template>
   <div class="sim-card checklist" :class="{ 'checklist--split': prdContent }">
     <aside v-if="prdContent" class="checklist__prd">
-      <header class="checklist__prd-header">
-        <span>📄 飞书文档</span>
-        <span class="checklist__prd-badge">只读</span>
-      </header>
-      <pre class="checklist__prd-body">{{ prdContent }}</pre>
+      <details
+        class="checklist__prd-fold"
+        :open="prdExpanded"
+        @toggle="prdExpanded = $event.target.open"
+      >
+        <summary class="checklist__prd-header">
+          <span>📄 飞书文档 · PRD</span>
+          <span class="checklist__prd-badge">只读</span>
+        </summary>
+        <pre class="checklist__prd-body">{{ prdContent }}</pre>
+      </details>
     </aside>
 
     <div class="checklist__main">

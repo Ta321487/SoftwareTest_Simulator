@@ -319,6 +319,20 @@
   border-bottom: 1px solid var(--border-subtle);
   font-size: 0.8rem;
   font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.checklist__prd-header::-webkit-details-marker {
+  display: none;
+}
+
+.checklist__prd-fold[open] .checklist__prd-header {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.checklist__prd-fold:not([open]) .checklist__prd-header {
+  border-bottom: none;
 }
 
 .checklist__prd-badge {

@@ -322,7 +322,7 @@ body {
   .workbench:not(.home-map) .workbench__main {
     order: 1;
     padding: 12px 14px 16px;
-    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
   }
 
   /* 首页内容 */
@@ -559,6 +559,11 @@ body {
   .workbench__sim-area {
     padding: 16px;
     margin-top: 12px;
+    padding-bottom: 8px;
+  }
+
+  .workbench__sim-area .sim-card {
+    overflow: visible;
   }
 
   .workbench__mobile-hint {
@@ -634,11 +639,39 @@ body {
 
   .checklist--split {
     grid-template-columns: 1fr;
+    overflow: visible;
   }
 
   .checklist__prd {
     border-right: none;
     border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .checklist__prd-body {
+    max-height: min(180px, 32vh);
+  }
+
+  .checklist__main {
+    padding-bottom: 8px;
+  }
+
+  .checklist__prd-fold:not([open]) .checklist__prd-body {
+    display: none;
+  }
+
+  .checklist__prd-header::after {
+    content: ' · 点击展开';
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+
+  .checklist__main .sim-btn--primary {
+    position: sticky;
+    bottom: calc(88px + env(safe-area-inset-bottom));
+    z-index: 15;
+    margin-top: 16px;
+    width: 100%;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
   }
 
   .report-checker__stats {
@@ -735,6 +768,17 @@ body {
 
   .project-timeline__day:not(:last-child)::after {
     display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .checklist__prd-fold .checklist__prd-header {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .checklist__prd-fold .checklist__prd-badge {
+    font-size: 0.65rem;
   }
 }
 
