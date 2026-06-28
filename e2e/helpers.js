@@ -47,9 +47,14 @@ export async function seedAppStorage(
 }
 
 export async function openSavePanel(page) {
-  const panel = page.locator('details.home-fold').filter({ hasText: '成就与存档' })
-  await panel.locator('summary').click()
-  await page.getByRole('button', { name: '导出存档' }).waitFor({ state: 'visible' })
+  const exportBtn = page.getByRole('button', { name: '导出存档' })
+  if (await exportBtn.isVisible()) return
+
+  const panel = page.locator('details.home-fold--achievements')
+  await panel.evaluate((el) => {
+    el.open = true
+  })
+  await exportBtn.waitFor({ state: 'visible' })
 }
 
 export function buildSampleBackup(completedLevelIds = [1, 2, 3]) {

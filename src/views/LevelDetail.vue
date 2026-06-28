@@ -17,6 +17,7 @@ import { getSimGuide } from '../utils/simGuides'
 import { getFailureHint, getLevelHint } from '../utils/failureHints'
 import { getLevelDeliverable } from '../data/levelDeliverables'
 import { getPhaseMilestoneForLevel } from '../data/phaseMilestones'
+import { useMobileLayout } from '../composables/useMobileLayout'
 import {
   buildSutRoute,
   buildMainLevelRoute,
@@ -84,6 +85,7 @@ const route = useRoute()
 const router = useRouter()
 const progressStore = useProgressStore()
 const projectStore = useProjectStore()
+const { isMobile } = useMobileLayout()
 
 const showFeedback = ref(false)
 const feedbackMessage = ref('')
@@ -969,7 +971,11 @@ function goBack() {
       </div>
     </section>
 
-    <details v-if="!showDebrief && isTaskView" class="task-panel-fold">
+    <details
+      v-if="!showDebrief && isTaskView"
+      class="task-panel-fold"
+      :open="isMobile ? undefined : true"
+    >
       <summary class="task-panel-fold__summary">
         <span class="task-panel-fold__icon">📋</span>
         <span class="task-panel-fold__text">{{ level.content }}</span>

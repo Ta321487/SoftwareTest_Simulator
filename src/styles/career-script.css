@@ -275,6 +275,140 @@
   line-height: 1.55;
 }
 
+.career-script__chapter-summary {
+  display: none;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+}
+
+.career-script__chapter-summary::-webkit-details-marker {
+  display: none;
+}
+
+.career-script__summary-num {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent-cyan);
+}
+
+.career-script__summary-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.career-script__summary-meta {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.career-script__lore-summary {
+  display: none;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 0;
+  margin: 0 0 8px;
+}
+
+.career-script__lore-summary::-webkit-details-marker {
+  display: none;
+}
+
+.career-script__lore-summary::before {
+  content: '▸ ';
+  font-size: 0.7rem;
+}
+
+.career-script__lore[open] .career-script__lore-summary::before {
+  content: '▾ ';
+}
+
+@media (max-width: 768px) {
+  .career-script__desc {
+    display: none;
+  }
+
+  .career-script__chapter {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+
+  .career-script__chapter-fold > .career-script__chapter-summary {
+    display: flex;
+  }
+
+  .career-script__chapter-fold > .career-script__chapter-summary::before {
+    content: '▸ ';
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .career-script__chapter-fold[open] > .career-script__chapter-summary::before {
+    content: '▾ ';
+  }
+
+  .career-script__chapter-head {
+    display: none;
+  }
+
+  .career-script__lore-summary {
+    display: block;
+  }
+
+  .career-script__chapter-body {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-subtle);
+  }
+
+  .career-script .project-timeline__module-desc {
+    display: none;
+  }
+
+  .career-script .script-task-list__hook,
+  .career-script .script-task-list__deliverable {
+    display: none;
+  }
+
+  .career-script .script-task-list__item {
+    padding: 10px 12px;
+  }
+
+  .career-script .script-task-list__title {
+    font-size: 0.85rem;
+    margin-bottom: 0;
+  }
+
+  .career-script .project-timeline__immersion {
+    margin-bottom: 8px;
+  }
+}
+
+@media (min-width: 769px) {
+  .career-script__chapter-fold > .career-script__chapter-summary {
+    display: none;
+  }
+
+  .career-script__lore > .career-script__lore-summary {
+    display: none;
+  }
+}
+
 /* Rich task list (chapters) */
 .script-task-list {
   list-style: none;

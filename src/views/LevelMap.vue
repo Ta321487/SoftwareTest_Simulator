@@ -15,10 +15,12 @@ import { sideLevels } from '../data/sideQuests'
 import { getRankForXp } from '../data/ranks'
 import { getWeakAreas } from '../utils/weakAreas'
 import ThemeToggle from '../components/ThemeToggle.vue'
+import { useMobileLayout } from '../composables/useMobileLayout'
 
 const router = useRouter()
 const progressStore = useProgressStore()
 const onboardingRef = ref(null)
+const { isMobile } = useMobileLayout()
 
 const allCompleted = computed(
   () => progressStore.completedLevelIds.length >= progressStore.totalLevelCount
@@ -145,28 +147,40 @@ function showOnboarding() {
           </button>
         </div>
 
-        <details class="home-fold home-fold--mobile-collapsible home-fold--progress">
+        <details
+          class="home-fold home-fold--mobile-collapsible home-fold--progress"
+          :open="isMobile ? undefined : true"
+        >
           <summary class="home-fold__summary">我的进度 · 分享成绩</summary>
           <div class="home-fold__body">
             <PlayerDashboard compact />
           </div>
         </details>
 
-        <details class="home-fold home-fold--mobile-collapsible home-fold--career">
+        <details
+          class="home-fold home-fold--mobile-collapsible home-fold--career"
+          :open="isMobile ? undefined : true"
+        >
           <summary class="home-fold__summary">职场剧本</summary>
           <div class="home-fold__body">
             <CareerScript />
           </div>
         </details>
 
-        <details class="home-fold home-fold--mobile-collapsible home-fold--side">
+        <details
+          class="home-fold home-fold--mobile-collapsible home-fold--side"
+          :open="isMobile ? undefined : true"
+        >
           <summary class="home-fold__summary">番外 & 每日特训（{{ progressStore.sideCompletedCount }}/{{ sideLevels.length }}）</summary>
           <div class="home-fold__body">
             <SideQuestHub />
           </div>
         </details>
 
-        <details class="home-fold home-fold--mobile-collapsible home-fold--phases">
+        <details
+          class="home-fold home-fold--mobile-collapsible home-fold--phases"
+          :open="isMobile ? undefined : true"
+        >
           <summary class="home-fold__summary">按阶段查全部关卡</summary>
           <div class="home-fold__body">
             <p class="home-map__projects-desc">
@@ -176,7 +190,10 @@ function showOnboarding() {
           </div>
         </details>
 
-        <details class="home-fold home-fold--mobile-collapsible home-fold--achievements">
+        <details
+          class="home-fold home-fold--mobile-collapsible home-fold--achievements"
+          :open="isMobile ? undefined : true"
+        >
           <summary class="home-fold__summary">成就与存档</summary>
           <div class="home-fold__body">
             <AchievementPanel class="home-map__achievements" />
