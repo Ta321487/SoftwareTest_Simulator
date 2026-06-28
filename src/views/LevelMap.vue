@@ -11,6 +11,7 @@ import AchievementPanel from '../components/AchievementPanel.vue'
 import OnboardingTour from '../components/OnboardingTour.vue'
 import ProgressSettings from '../components/ProgressSettings.vue'
 import { getWorkBrief } from '../data/careerScript'
+import { sideLevels } from '../data/sideQuests'
 import { getWeakAreas } from '../utils/weakAreas'
 import ThemeToggle from '../components/ThemeToggle.vue'
 
@@ -138,7 +139,12 @@ function showOnboarding() {
 
         <CareerScript />
 
-        <SideQuestHub />
+        <details class="home-fold home-fold--mobile-only">
+          <summary class="home-fold__summary">番外 & 每日特训（{{ progressStore.sideCompletedCount }}/{{ sideLevels.length }}）</summary>
+          <div class="home-fold__body">
+            <SideQuestHub />
+          </div>
+        </details>
 
         <details class="home-fold">
           <summary class="home-fold__summary">按阶段查全部关卡</summary>

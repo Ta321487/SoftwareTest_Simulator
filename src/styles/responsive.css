@@ -45,6 +45,20 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }
 
+  .home-fold--mobile-only {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 24px;
+  }
+
+  .home-fold--mobile-only .home-fold__summary {
+    display: none;
+  }
+
+  .home-fold--mobile-only .home-fold__body {
+    padding: 0;
+  }
+
   /* 关卡页：模拟区居中，避免超宽屏拉伸 */
   .workbench:not(.home-map):not(.handbook) .workbench__main {
     align-items: center;
@@ -443,6 +457,29 @@ body {
   }
 
   /* 手札 */
+  .home-map.handbook .workbench__topbar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    padding-top: max(10px, env(safe-area-inset-top));
+    gap: 8px;
+  }
+
+  .home-map.handbook .workbench__subtitle {
+    display: none;
+  }
+
+  .handbook__toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    margin: 0 -14px 12px;
+    padding: 0 14px 10px;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
   .handbook__main {
     padding: 16px 14px 32px;
     padding-bottom: max(32px, env(safe-area-inset-bottom));
@@ -450,6 +487,28 @@ body {
 
   .home-map.handbook .handbook__main {
     padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+
+  .handbook__card {
+    padding: 10px 12px;
+    gap: 2px;
+  }
+
+  .handbook__card-phase,
+  .handbook__card-id {
+    display: inline-block;
+    margin: 0 8px 0 0;
+  }
+
+  .handbook__card-title {
+    font-size: 0.8125rem;
+    line-height: 1.3;
+  }
+
+  .handbook__card-summary,
+  .handbook__card-more,
+  .handbook__card-aliases {
+    display: none;
   }
 
   .handbook__tabs {
