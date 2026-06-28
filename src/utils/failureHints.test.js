@@ -15,5 +15,21 @@ describe('getFailureHint', () => {
     const level = levels.find((lv) => lv.id === 1)
     const hint = getFailureHint(level, { selected: ['a', 'd'] }, { message: '勾选不正确' })
     expect(hint).toMatch(/漏选|多选/)
+    expect(hint).not.toBe('勾选不正确')
+  })
+
+  it('checklist failure without diff returns pitfall or empty, not result.message', () => {
+    const level = levels.find((lv) => lv.id === 1)
+    const msg = '勾选不正确。请重新审视…'
+    const hint = getFailureHint(level, { selected: [] }, { message: msg })
+    expect(hint).not.toBe(msg)
+  })
+
+  it('report failure returns diff detail, not duplicated result.message', () => {
+    const level = levels.find((lv) => lv.id === 4)
+    const msg = '回归范围不正确'
+    const hint = getFailureHint(level, { selected: [] }, { message: msg })
+    expect(hint).not.toBe(msg)
+    expect(hint.length).toBeGreaterThan(0)
   })
 })

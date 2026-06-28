@@ -41,7 +41,7 @@ export function getFailureHint(level, data, result) {
         level.correctChecks || [],
         level.checklistItems || []
       )
-      return detail || pitfall || result.message
+      return detail || pitfall || ''
     }
     case 'apiclient': {
       if (level.checklistItems?.length) {
@@ -60,13 +60,13 @@ export function getFailureHint(level, data, result) {
         level.correctSelections || [],
         level.reportItems || []
       )
-      return detail || pitfall || result.message
+      return detail || pitfall || ''
     }
     case 'clickcard': {
       const picked = level.clickOptions?.find((o) => o.id === data.selected)
       return picked
         ? `你选了「${picked.label}」。${pitfall || '请结合场景中的数据与环境背景重新分析。'}`
-        : pitfall || result.message
+        : pitfall || ''
     }
     case 'jira':
       return pitfall ? `常见坑：${pitfall}` : ''
