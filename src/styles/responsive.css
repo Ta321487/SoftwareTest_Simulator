@@ -53,6 +53,7 @@ body {
   .workbench:not(.home-map):not(.handbook) .workbench__main > * {
     width: 100%;
     max-width: var(--level-content-max);
+    margin-inline: auto;
   }
 }
 

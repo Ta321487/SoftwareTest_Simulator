@@ -185,6 +185,8 @@
   min-width: 0;
   padding: 20px 24px 48px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .workbench__context-banner {

@@ -138,6 +138,15 @@ const submissionInitialValues = computed(() => {
   return null
 })
 
+const submissionInitialSelected = computed(() => {
+  const sub = previousSubmission.value
+  if (!sub?.data?.selected) return null
+  if (sub.simType === 'checklist' || sub.simType === 'apiclient') {
+    return sub.data.selected
+  }
+  return null
+})
+
 const existingStars = computed(() => progressStore.getLevelMeta(levelId.value)?.stars || 0)
 
 const levelStatus = computed(() =>
@@ -436,11 +445,13 @@ const simProps = computed(() => {
         apiMethod: lv.apiMethod || 'POST',
         apiUrl: lv.apiUrl || '/api/login',
         apiRequestBody: lv.apiRequestBody || '{}',
-        templateFields: lv.templateFields,
+        templateFields: lv.templateFields || [],
+        checklistItems: lv.checklistItems || [],
         requirement: lv.requirement,
         fillHint: lv.fillHint,
         templateMinLength: lv.templateMinLength || 0,
         initialValues: submissionInitialValues.value,
+        initialSelected: submissionInitialSelected.value,
       }
     case 'calculator':
       return {

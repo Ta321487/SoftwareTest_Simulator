@@ -394,8 +394,11 @@ export const levels = [
     projectDay: null,
     description:
       '【备考 · 第5关】培训班进阶题：登录接口 POST /api/login。除了「能登录」，还要想清楚测试要覆盖哪些维度。',
-    simType: 'checklist',
-    content: '勾选登录接口测试中【必须覆盖】的验证项：',
+    simType: 'apiclient',
+    apiMethod: 'POST',
+    apiUrl: '/api/login',
+    apiRequestBody: '{\n  "username": "demo",\n  "password": "Pass123"\n}',
+    content: '在 API 调试工具中查看登录接口，勾选测试中【必须覆盖】的验证项：',
     checklistItems: [
       { id: 'a', label: 'HTTP 状态码（如 200 / 401 / 400）' },
       { id: 'b', label: '响应体字段（token、错误码、提示信息）' },
@@ -405,6 +408,7 @@ export const levels = [
       { id: 'f', label: '必填参数缺失时的响应' },
     ],
     correctChecks: ['a', 'b', 'c', 'e', 'f'],
+    hint: '接口测试关注 HTTP 层：状态码、响应体/头、异常场景；UI 圆角属于前端，不是接口必测项。',
     xpReward: 15,
   },
   {

@@ -43,6 +43,17 @@ export function getFailureHint(level, data, result) {
       )
       return detail || pitfall || result.message
     }
+    case 'apiclient': {
+      if (level.checklistItems?.length) {
+        const detail = diffChecklist(
+          data.selected || [],
+          level.correctChecks || [],
+          level.checklistItems || []
+        )
+        return detail || pitfall || result.message
+      }
+      return pitfall ? `${result.message} 提示：${pitfall}` : result.message
+    }
     case 'report': {
       const detail = diffReport(
         data.selected || [],
@@ -87,6 +98,11 @@ export function getLevelHint(level) {
       return '优先选 FAIL + 高风险的用例；低风险 PASS 项可暂缓。'
     case 'checklist':
       return '优先选功能性、边界、异常、安全相关项；UI 审美类通常是干扰项。'
+    case 'apiclient':
+      if (level.checklistItems?.length) {
+        return level.hint || '优先选 HTTP 层验证项：状态码、响应体、响应头、异常场景；UI 细节是干扰项。'
+      }
+      return level.templateFields?.[0]?.validationHint || level.fillHint || ''
     default:
       return ''
   }

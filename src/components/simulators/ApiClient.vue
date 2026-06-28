@@ -17,7 +17,15 @@ const props = defineProps({
   },
   templateFields: {
     type: Array,
-    required: true,
+    default: () => [],
+  },
+  checklistItems: {
+    type: Array,
+    default: () => [],
+  },
+  initialSelected: {
+    type: Array,
+    default: null,
   },
   requirement: {
     type: String,
@@ -40,9 +48,12 @@ const props = defineProps({
 const emit = defineEmits(['submit'])
 
 const values = reactive({})
+const selected = ref([])
 const activeTab = ref(0)
 const sending = ref(false)
 const lastStatus = ref(null)
+
+const isChecklistMode = computed(() => props.checklistItems.length > 0)
 
 const levelConfig = computed(() => ({
   templateFields: props.templateFields,
@@ -50,9 +61,10 @@ const levelConfig = computed(() => ({
   requirement: props.requirement,
 }))
 
-const composePreview = computed(() =>
-  getTemplateComposePreview(levelConfig.value, values)
-)
+const composePreview = computed(() => {
+  if (isChecklistMode.value) return { hasPreview: false }
+  return getTemplateComposePreview(levelConfig.value, values)
+})
 
 const scenarios = computed(() =>
   props.templateFields.map((field, index) => {
@@ -85,6 +97,14 @@ watch(
 )
 
 watch(
+  () => props.initialSelected,
+  (init) => {
+    selected.value = init ? [...init] : []
+  },
+  { immediate: true }
+)
+
+watch(
   () => props.initialValues,
   (init) => {
     if (!init) return
@@ -96,16 +116,21 @@ watch(
 )
 
 function mockSend() {
-  if (sending.value || !activeScenario.value) return
+  if (sending.value) return
+  if (!isChecklistMode.value && !activeScenario.value) return
   sending.value = true
   lastStatus.value = null
   setTimeout(() => {
     sending.value = false
-    lastStatus.value = activeScenario.value.status
+    lastStatus.value = isChecklistMode.value ? '200' : activeScenario.value.status
   }, 600)
 }
 
 function handleSubmit() {
+  if (isChecklistMode.value) {
+    emit('submit', { selected: [...selected.value] })
+    return
+  }
   emit('submit', { values: { ...values } })
 }
 
@@ -113,6 +138,7 @@ function reset() {
   props.templateFields.forEach((field) => {
     values[field.field] = props.initialValues?.[field.field] || ''
   })
+  selected.value = props.initialSelected ? [...props.initialSelected] : []
   activeTab.value = 0
   lastStatus.value = null
 }
@@ -147,16 +173,30 @@ defineExpose({ reset })
         <pre class="api-client__body">{{ apiRequestBody }}</pre>
       </div>
       <p v-if="lastStatus" class="api-client__send-result">
-        响应状态码：<strong>{{ lastStatus }}</strong>（样本 {{ activeTab + 1 }}）
+        响应状态码：<strong>{{ lastStatus }}</strong><template v-if="!isChecklistMode">（样本 {{ activeTab + 1 }}）</template>
       </p>
     </div>
 
     <div v-if="requirement" class="template-filler__requirement">
-      <span class="template-filler__requirement-label">断言规则</span>
+      <span class="template-filler__requirement-label">{{ isChecklistMode ? '接口说明' : '断言规则' }}</span>
       <p>{{ requirement }}</p>
     </div>
     <p v-if="fillHint" class="template-filler__hint">{{ fillHint }}</p>
 
+    <div v-if="isChecklistMode" class="api-client__checklist">
+      <header class="api-client__checklist-header">接口测试覆盖项 · 请勾选</header>
+      <label
+        v-for="item in checklistItems"
+        :key="item.id"
+        class="checklist-item"
+        :class="{ 'checklist-item--selected': selected.includes(item.id) }"
+      >
+        <input v-model="selected" type="checkbox" :value="item.id" />
+        <span>{{ item.label }}</span>
+      </label>
+    </div>
+
+    <template v-else>
     <div class="api-client__scenarios">
       <div class="api-client__tabs" role="tablist">
         <button
@@ -207,9 +247,10 @@ defineExpose({ reset })
       </ul>
       <p v-else class="template-filler__preview-ok">各样本断言达标，可以提交。</p>
     </div>
+    </template>
 
     <button type="button" class="sim-btn sim-btn--primary" @click="handleSubmit">
-      ✓ 提交断言
+      ✓ {{ isChecklistMode ? '确认勾选' : '提交断言' }}
     </button>
   </div>
 </template>

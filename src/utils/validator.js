@@ -61,6 +61,16 @@ export function validateSimulation(level, data) {
     }
 
     case 'apiclient': {
+      if (level.checklistItems?.length) {
+        const selected = data.selected || []
+        const isPass = arraysEqual(selected, level.correctChecks)
+        return {
+          isPass,
+          message: isPass
+            ? '勾选正确！'
+            : '勾选不正确。请重新审视哪些是接口层必须验证的项，哪些是可忽略的干扰项。',
+        }
+      }
       const values = data.values || {}
       const result = validateTemplateSubmission(level, values)
       if (!result.ok) {

@@ -272,6 +272,18 @@
   color: var(--text-muted);
 }
 
+.api-client__checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.api-client__checklist-header {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
 /* ===== 上次提交 ===== */
 .prev-submission {
   margin-bottom: 12px;
@@ -444,6 +456,50 @@
 
 .player-dashboard__phase-fill--onboard {
   background: #059669;
+}
+
+.player-dashboard__weak {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border-subtle);
+}
+
+.player-dashboard__weak-title {
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  margin: 0 0 10px;
+}
+
+.player-dashboard__weak-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.player-dashboard__weak-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.85rem;
+}
+
+.player-dashboard__weak-link {
+  color: var(--accent-cyan);
+  text-decoration: none;
+}
+
+.player-dashboard__weak-link:hover {
+  text-decoration: underline;
+}
+
+.player-dashboard__weak-reason {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent-amber);
 }
 
 .player-dashboard__msg {

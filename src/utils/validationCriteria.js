@@ -7,6 +7,9 @@ export function getValidationCriteria(level) {
     case 'template':
       return '每一项均需完整描述；对照需求或场景规则判断，写清系统反应，不要只写一个字。'
     case 'apiclient':
+      if (level.checklistItems?.length) {
+        return '勾选所有符合任务要求的项（不多不少），然后确认提交。'
+      }
       return '每个响应样本都要写清 HTTP 状态码与 body 关键字段（code、message、token 等），不要只写「失败」。'
     case 'jira':
       return '所有带 * 的字段必填；标题要点明现象，步骤分步写，预期/实际分开且能让他人独立复现。'

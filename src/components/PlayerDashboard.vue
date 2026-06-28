@@ -6,6 +6,7 @@ import { achievements } from '../data/achievements'
 import { getRankForXp } from '../data/ranks'
 import { sideLevels } from '../data/sideQuests'
 import { buildShareText, copyShareText, PLAY_URL } from '../utils/shareProgress'
+import { getWeakAreas } from '../utils/weakAreas'
 
 const progressStore = useProgressStore()
 const shareMsg = ref('')
@@ -41,6 +42,15 @@ const shareText = computed(() =>
     streak: progressStore.dailyStreak || 0,
     achievementDone: progressStore.achievements.length,
     achievementTotal: achievements.length,
+  })
+)
+
+const weakAreas = computed(() =>
+  getWeakAreas({
+    levelMistakes: progressStore.levelMistakes,
+    levelMeta: progressStore.levelMeta,
+    hintsUsed: progressStore.hintsUsed,
+    completedLevelIds: progressStore.completedLevelIds,
   })
 )
 
@@ -114,6 +124,18 @@ async function handleShare() {
           />
         </div>
       </div>
+    </div>
+
+    <div v-if="weakAreas.length" class="player-dashboard__weak">
+      <h3 class="player-dashboard__weak-title">薄弱关卡</h3>
+      <ul class="player-dashboard__weak-list">
+        <li v-for="item in weakAreas" :key="item.levelId" class="player-dashboard__weak-item">
+          <router-link :to="`/level/${item.levelId}`" class="player-dashboard__weak-link">
+            #{{ item.levelId }} {{ item.title }}
+          </router-link>
+          <span class="player-dashboard__weak-reason">{{ item.reason }}</span>
+        </li>
+      </ul>
     </div>
 
     <p
