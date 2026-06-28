@@ -35,21 +35,13 @@ import DebriefPanel from '../components/DebriefPanel.vue'
 import PreviousSubmission from '../components/PreviousSubmission.vue'
 import WorkbenchShell from '../components/workbench/WorkbenchShell.vue'
 import ProjectContextPanel from '../components/workbench/ProjectContextPanel.vue'
-import JiraForm from '../components/simulators/JiraForm.vue'
-import Terminal from '../components/simulators/Terminal.vue'
-import ChatBox from '../components/simulators/ChatBox.vue'
-import ConfigEditor from '../components/simulators/ConfigEditor.vue'
-import ReportChecker from '../components/simulators/ReportChecker.vue'
-import Checklist from '../components/simulators/Checklist.vue'
-import ClickCard from '../components/simulators/ClickCard.vue'
-import TemplateFiller from '../components/simulators/TemplateFiller.vue'
-import Calculator from '../components/simulators/Calculator.vue'
-import ApiClient from '../components/simulators/ApiClient.vue'
-import PacketCapture from '../components/simulators/PacketCapture.vue'
-import LoginAppMock from '../components/simulators/LoginAppMock.vue'
-import PaymentAppMock from '../components/simulators/PaymentAppMock.vue'
-import OrderObsPanel from '../components/simulators/OrderObsPanel.vue'
-import OnCallPanel from '../components/simulators/OnCallPanel.vue'
+import {
+  simComponentMap,
+  LoginAppMock,
+  PaymentAppMock,
+  OrderObsPanel,
+  OnCallPanel,
+} from '../components/simulators/loadSimulators.js'
 import {
   LOGIN_SUT_DOCK_ID,
   LOGIN_MODULE_ID,
@@ -193,20 +185,6 @@ const validationCriteria = computed(() =>
 const debrief = computed(() =>
   level.value ? getDebrief(level.value.id, level.value.dailyKey) : null
 )
-
-const simComponentMap = {
-  jira: JiraForm,
-  terminal: Terminal,
-  chat: ChatBox,
-  config: ConfigEditor,
-  report: ReportChecker,
-  checklist: Checklist,
-  clickcard: ClickCard,
-  template: TemplateFiller,
-  calculator: Calculator,
-  apiclient: ApiClient,
-  packet: PacketCapture,
-}
 
 const simComponent = computed(() =>
   level.value ? simComponentMap[level.value.simType] : null
