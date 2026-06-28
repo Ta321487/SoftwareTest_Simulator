@@ -632,8 +632,19 @@ body {
     max-width: 100%;
     max-height: 92vh;
     border-radius: 16px 16px 0 0;
-    padding: 20px 18px;
-    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  }
+
+  .debrief-panel__header,
+  .debrief-panel__alerts,
+  .debrief-panel__highlights,
+  .debrief-panel__body,
+  .debrief-panel__footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .debrief-panel__footer {
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
   }
 
   .debrief-panel__btn {
@@ -681,9 +692,15 @@ body {
   }
 
   .debrief-panel__rewards {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .debrief-panel__header {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
+    align-items: stretch;
   }
 
   .chat-box__bubble-wrap {
