@@ -45,6 +45,35 @@
   border-color: var(--cyan-border);
 }
 
+.handbook__recent {
+  margin-bottom: 16px;
+}
+
+.handbook__recent-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.handbook__recent-chip {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--purple-border);
+  background: var(--purple-bg-soft);
+  color: var(--accent-purple);
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    border-color var(--transition);
+}
+
+.handbook__recent-chip:hover {
+  border-color: var(--accent-purple);
+  background: var(--surface-hover);
+}
+
 .handbook__view-tabs {
   display: flex;
   flex-wrap: wrap;

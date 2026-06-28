@@ -1,13 +1,16 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { dockApps } from '../../data/projects'
 import ThemeToggle from '../ThemeToggle.vue'
 import WorkInbox from './WorkInbox.vue'
 import WorkStatusBar from './WorkStatusBar.vue'
 import RankBadge from '../RankBadge.vue'
 import { useProgressStore } from '../../stores/progressStore'
+import { useMobileLayout } from '../../composables/useMobileLayout'
 
 const progressStore = useProgressStore()
+const { isMobile } = useMobileLayout()
+const dockExpanded = ref(false)
 
 const props = defineProps({
   project: {
@@ -54,11 +57,39 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  levelPage: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 defineEmits(['dock-change', 'back'])
 
 const isTaskDock = computed(() => props.activeDockLevelId === props.level.id)
+
+const sortedDockItems = computed(() => {
+  const current = props.dockItems.find((d) => d.levelId === props.level.id)
+  const rest = props.dockItems.filter((d) => d.levelId !== props.level.id)
+  return current ? [current, ...rest] : [...props.dockItems]
+})
+
+const MOBILE_DOCK_VISIBLE = 4
+
+const visibleDockItems = computed(() => {
+  if (!isMobile.value || dockExpanded.value || sortedDockItems.value.length <= MOBILE_DOCK_VISIBLE) {
+    return sortedDockItems.value
+  }
+  return sortedDockItems.value.slice(0, MOBILE_DOCK_VISIBLE - 1)
+})
+
+const hiddenDockCount = computed(() => {
+  if (!isMobile.value || dockExpanded.value) return 0
+  return Math.max(0, sortedDockItems.value.length - visibleDockItems.value.length)
+})
+
+function toggleDockExpanded() {
+  dockExpanded.value = !dockExpanded.value
+}
 
 const headerTitle = computed(() => {
   if (props.viewMode === 'sut') {
@@ -83,7 +114,7 @@ const headerSubtitle = computed(() => {
 </script>
 
 <template>
-  <div class="workbench">
+  <div class="workbench" :class="{ 'workbench--level': levelPage }">
     <header class="workbench__topbar">
       <div class="workbench__topbar-left">
         <button type="button" class="workbench__back" @click="$emit('back')">← 地图</button>
@@ -102,13 +133,13 @@ const headerSubtitle = computed(() => {
       </div>
     </header>
 
-    <WorkStatusBar :items="envStatus" />
+    <WorkStatusBar :items="envStatus" class="workbench__status-bar" />
 
     <div class="workbench__body" :class="{ 'workbench__body--sut': viewMode === 'sut' }">
       <aside v-if="viewMode === 'main'" class="workbench__dock">
         <p class="workbench__dock-label">工作台</p>
         <button
-          v-for="item in dockItems"
+          v-for="item in visibleDockItems"
           :key="item.levelId"
           type="button"
           class="workbench__dock-item"
@@ -128,6 +159,24 @@ const headerSubtitle = computed(() => {
           <span v-if="item.hasArtifact && item.levelId !== level.id" class="workbench__dock-check"
             >✓</span
           >
+        </button>
+        <button
+          v-if="hiddenDockCount > 0"
+          type="button"
+          class="workbench__dock-item workbench__dock-item--more"
+          @click="toggleDockExpanded"
+        >
+          <span class="workbench__dock-icon">⋯</span>
+          <span class="workbench__dock-text">更多 +{{ hiddenDockCount }}</span>
+        </button>
+        <button
+          v-else-if="dockExpanded && sortedDockItems.length > MOBILE_DOCK_VISIBLE"
+          type="button"
+          class="workbench__dock-item workbench__dock-item--more"
+          @click="toggleDockExpanded"
+        >
+          <span class="workbench__dock-icon">↑</span>
+          <span class="workbench__dock-text">收起</span>
         </button>
       </aside>
 

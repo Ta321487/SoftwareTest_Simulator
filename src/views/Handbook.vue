@@ -18,6 +18,7 @@ import {
   matchesHandbookSearch,
   filterGlossaryTerms,
 } from '../utils/handbook'
+import { getRecentTermIds, recordRecentTerm } from '../utils/handbookRecent'
 
 const router = useRouter()
 const route = useRoute()
@@ -165,6 +166,12 @@ const showLoadMoreNotes = computed(() => remainingCount(filteredEntries.value) >
 const showLoadMoreSearchTerms = computed(() => remainingCount(searchResultTerms.value) > 0)
 const showLoadMoreSearchNotes = computed(() => remainingCount(searchResultNotes.value) > 0)
 
+const recentTerms = computed(() =>
+  getRecentTermIds()
+    .map((id) => getGlossaryTerm(id))
+    .filter(Boolean)
+)
+
 function openEntry(entry) {
   selectedTerm.value = null
   selectedEntry.value = entry
@@ -173,6 +180,7 @@ function openEntry(entry) {
 function openTerm(term) {
   selectedEntry.value = null
   selectedTerm.value = term
+  recordRecentTerm(term.id)
 }
 
 function closeModal() {
@@ -332,6 +340,21 @@ watch(
             </button>
           </nav>
         </div>
+
+        <section v-if="!isSearching && recentTerms.length" class="handbook__recent">
+          <h2 class="handbook__section-title">最近查阅</h2>
+          <div class="handbook__recent-chips">
+            <button
+              v-for="term in recentTerms"
+              :key="term.id"
+              type="button"
+              class="handbook__recent-chip"
+              @click="openTerm(term)"
+            >
+              {{ term.term }}
+            </button>
+          </div>
+        </section>
 
         <template v-if="isSearching">
           <section v-if="searchResultTerms.length" class="handbook__section">

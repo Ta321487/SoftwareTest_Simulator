@@ -873,6 +873,7 @@ function goBack() {
     :env-status="storyContext.envStatus"
     :view-mode="isSutMode ? 'sut' : 'main'"
     :sut-label="sutEntry?.label || ''"
+    level-page
     @dock-change="handleDockChange"
     @back="goBack"
   >
@@ -968,7 +969,12 @@ function goBack() {
       </div>
     </section>
 
-    <section v-if="!showDebrief && isTaskView" class="task-panel task-panel--compact">
+    <details v-if="!showDebrief && isTaskView" class="task-panel-fold">
+      <summary class="task-panel-fold__summary">
+        <span class="task-panel-fold__icon">📋</span>
+        <span class="task-panel-fold__text">{{ level.content }}</span>
+      </summary>
+      <section class="task-panel task-panel--compact">
       <p v-if="isExtraLevel" class="task-panel__extra-tag">
         {{ isDailyQuestId(levelId) ? '📅 每日特训' : '🎬 番外关卡' }}
       </p>
@@ -976,7 +982,7 @@ function goBack() {
         <span class="task-panel__deliverable-label">今日交付物</span>
         {{ deliverable }}
       </p>
-      <div class="task-panel__action">
+      <div class="task-panel__action task-panel__action--full">
         <span class="task-panel__action-icon">📋</span>
         <p>{{ level.content }}</p>
       </div>
@@ -997,7 +1003,8 @@ function goBack() {
         <p class="task-panel__text">{{ level.description }}</p>
         <p class="task-panel__criteria-inline">{{ validationCriteria }}</p>
       </details>
-    </section>
+      </section>
+    </details>
 
     <section v-if="!showDebrief && isTaskView" class="workbench__sim-area">
       <p v-if="showMobileSimHint" class="workbench__mobile-hint">

@@ -12,6 +12,7 @@ import OnboardingTour from '../components/OnboardingTour.vue'
 import ProgressSettings from '../components/ProgressSettings.vue'
 import { getWorkBrief } from '../data/careerScript'
 import { sideLevels } from '../data/sideQuests'
+import { getRankForXp } from '../data/ranks'
 import { getWeakAreas } from '../utils/weakAreas'
 import ThemeToggle from '../components/ThemeToggle.vue'
 
@@ -41,6 +42,8 @@ const reinforcementHint = computed(() => {
   }).find((item) => item.levelId !== nextId)
   return top || null
 })
+
+const rank = computed(() => getRankForXp(progressStore.totalXp))
 
 function continueChallenge() {
   const nextId = progressStore.firstAvailableLevelId
@@ -94,9 +97,14 @@ function showOnboarding() {
       </aside>
 
       <main class="workbench__main home-map__main">
-        <PlayerDashboard compact />
-
         <section class="home-map__hero">
+          <p class="home-map__hero-rank">
+            <span>{{ rank.icon }} {{ rank.title }}</span>
+            <span class="home-map__hero-rank-meta">
+              XP {{ progressStore.totalXp }} · ★ {{ progressStore.totalStars }} · 主线
+              {{ progressStore.mainCompletedCount }}/{{ progressStore.totalLevelCount }}
+            </span>
+          </p>
           <p v-if="workBrief.chapterTitle" class="home-map__hero-tag">
             {{ workBrief.chapterTitle }}
           </p>
@@ -137,16 +145,28 @@ function showOnboarding() {
           </button>
         </div>
 
-        <CareerScript />
+        <details class="home-fold home-fold--mobile-collapsible home-fold--progress">
+          <summary class="home-fold__summary">我的进度 · 分享成绩</summary>
+          <div class="home-fold__body">
+            <PlayerDashboard compact />
+          </div>
+        </details>
 
-        <details class="home-fold home-fold--mobile-only">
+        <details class="home-fold home-fold--mobile-collapsible home-fold--career">
+          <summary class="home-fold__summary">职场剧本</summary>
+          <div class="home-fold__body">
+            <CareerScript />
+          </div>
+        </details>
+
+        <details class="home-fold home-fold--mobile-collapsible home-fold--side">
           <summary class="home-fold__summary">番外 & 每日特训（{{ progressStore.sideCompletedCount }}/{{ sideLevels.length }}）</summary>
           <div class="home-fold__body">
             <SideQuestHub />
           </div>
         </details>
 
-        <details class="home-fold">
+        <details class="home-fold home-fold--mobile-collapsible home-fold--phases">
           <summary class="home-fold__summary">按阶段查全部关卡</summary>
           <div class="home-fold__body">
             <p class="home-map__projects-desc">
@@ -156,7 +176,7 @@ function showOnboarding() {
           </div>
         </details>
 
-        <details class="home-fold">
+        <details class="home-fold home-fold--mobile-collapsible home-fold--achievements">
           <summary class="home-fold__summary">成就与存档</summary>
           <div class="home-fold__body">
             <AchievementPanel class="home-map__achievements" />

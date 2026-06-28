@@ -1,0 +1,101 @@
+/* ===== 首页：移动端任务优先 / 桌面完整展示 ===== */
+.home-map__main {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-map__hero-rank {
+  display: none;
+  margin: 0 0 10px;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.home-map__hero-rank-meta {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+@media (min-width: 769px) {
+  .home-map__main {
+    display: block;
+  }
+
+  .home-fold--mobile-collapsible {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 24px;
+  }
+
+  .home-fold--mobile-collapsible > summary {
+    display: none;
+  }
+
+  .home-fold--mobile-collapsible > .home-fold__body {
+    padding: 0;
+  }
+
+  .home-fold--progress {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-map__hero {
+    order: 1;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+
+  .home-map__hero-rank {
+    display: block;
+  }
+
+  .home-map__actions {
+    order: 2;
+    margin-bottom: 12px;
+  }
+
+  .home-fold--progress {
+    order: 3;
+  }
+
+  .home-fold--career {
+    order: 4;
+  }
+
+  .home-fold--side {
+    order: 5;
+  }
+
+  .home-fold--phases {
+    order: 6;
+  }
+
+  .home-fold--achievements {
+    order: 7;
+  }
+
+  .home-map .workbench__topbar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    gap: 8px;
+  }
+
+  .home-map .workbench__subtitle {
+    display: none;
+  }
+
+  .home-map .workbench__topbar-right {
+    width: auto;
+  }
+
+  .home-map .workbench__level-tag {
+    display: none;
+  }
+}

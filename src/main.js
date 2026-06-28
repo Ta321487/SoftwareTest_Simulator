@@ -4,6 +4,8 @@ import App from './App.vue'
 import router from './router'
 import './styles/global.css'
 import './styles/responsive.css'
+import './styles/home-mobile.css'
+import './styles/level-mobile.css'
 import { useThemeStore } from './stores/themeStore'
 
 const app = createApp(App)
