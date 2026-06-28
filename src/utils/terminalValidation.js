@@ -39,6 +39,15 @@ function hasTailLineCount(norm) {
   return /(?:-n\s+\d+|-\d+\b|\btail\b[^\n]*\s+\d+\s)/.test(norm)
 }
 
+export function parseTailLineCount(command) {
+  const norm = normalize(command)
+  let match = norm.match(/tail\s+-n\s+(\d+)/)
+  if (match) return parseInt(match[1], 10)
+  match = norm.match(/tail\s+-(\d+)/)
+  if (match) return parseInt(match[1], 10)
+  return null
+}
+
 export function validateTerminalCommand(command, level) {
   const norm = normalize(command)
   const expected = normalize(level.correctCommand || '')
@@ -65,6 +74,14 @@ export function validateTerminalCommand(command, level) {
     }
     if (!hasTailLineCount(norm)) {
       return { isPass: false, message: '查看末尾日志需指定行数，如 tail -n 100 或 tail -100。' }
+    }
+    const expectedCount = parseTailLineCount(level.correctCommand)
+    const userCount = parseTailLineCount(command)
+    if (expectedCount && userCount !== expectedCount) {
+      return {
+        isPass: false,
+        message: `题目要求查看最近 ${expectedCount} 行，当前为 ${userCount} 行，请调整 tail 的行数参数。`,
+      }
     }
     return { isPass: true, message: '命令执行成功！' }
   }

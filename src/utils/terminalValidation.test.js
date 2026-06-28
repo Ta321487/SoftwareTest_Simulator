@@ -27,6 +27,13 @@ describe('validateTerminalCommand', () => {
     expect(result.message).toContain('行数')
   })
 
+  it('rejects tail with wrong line count', () => {
+    const result = validateTerminalCommand('tail -n 5 /var/log/app/error.log', tailLevel)
+    expect(result.isPass).toBe(false)
+    expect(result.message).toContain('100')
+    expect(result.message).toContain('5')
+  })
+
   it('rejects tail with wrong path', () => {
     const result = validateTerminalCommand('tail -n 100 /var/log/wrong.log', tailLevel)
     expect(result.isPass).toBe(false)

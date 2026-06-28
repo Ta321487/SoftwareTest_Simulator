@@ -1,3 +1,5 @@
+import { parseTailLineCount } from './terminalValidation.js'
+
 function normalize(command) {
   return command.trim().replace(/\s+/g, ' ').toLowerCase()
 }
@@ -35,8 +37,12 @@ export function getTerminalCommandPreview(command, level) {
       tips.push('确认日志路径：/var/log/app/error.log')
     }
   } else if (cmd.includes('tail')) {
-    if (!/\d+/.test(cmd)) {
+    const expectedCount = parseTailLineCount(level.correctCommand)
+    const userCount = parseTailLineCount(raw)
+    if (!userCount) {
       tips.push('tail 需要指定行数，如 tail -n 100')
+    } else if (expectedCount && userCount !== expectedCount) {
+      tips.push(`题目要求最近 ${expectedCount} 行，当前 -n 为 ${userCount}`)
     }
     if (!cmd.includes('error.log')) {
       tips.push('路径是否指向 error.log？')

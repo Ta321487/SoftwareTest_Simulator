@@ -1,4 +1,6 @@
-import { validateTerminalCommand } from './terminalValidation'
+import { validateTerminalCommand, parseTailLineCount } from './terminalValidation'
+
+export { parseTailLineCount }
 
 const DEFAULT_LOGS = [
   '[2026-06-28 14:30:01] INFO  Gateway - health check ok',
@@ -19,15 +21,6 @@ function extractPath(level) {
   const fromExpected = level.correctCommand?.match(/(\/[\w./-]+)/)
   if (fromExpected) return fromExpected[1]
   return level.logPath || '/var/log/app/error.log'
-}
-
-export function parseTailLineCount(command) {
-  const norm = normalize(command)
-  let match = norm.match(/tail\s+-n\s+(\d+)/)
-  if (match) return parseInt(match[1], 10)
-  match = norm.match(/tail\s+-(\d+)/)
-  if (match) return parseInt(match[1], 10)
-  return null
 }
 
 export function parseGrepKeyword(command) {
