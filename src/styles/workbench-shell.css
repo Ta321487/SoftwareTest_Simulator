@@ -280,6 +280,26 @@
   color: var(--success, #22c55e);
 }
 
+.sut-mode__step--active {
+  color: var(--accent-cyan, #06b6d4);
+  font-weight: 600;
+}
+
+.sut-mode__main-link,
+.sut-mode__config-hint {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  background: var(--surface-muted);
+  border: 1px dashed var(--sim-card-border);
+  color: var(--text-secondary);
+}
+
+.sut-mode__main-link p {
+  margin: 0 0 8px;
+}
+
 .sut-mode__toast {
   margin: 0 0 12px;
   padding: 10px 14px;

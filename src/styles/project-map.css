@@ -180,6 +180,17 @@
 .project-timeline__immersion-btn--locked {
   opacity: 0.45;
   cursor: not-allowed;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.project-timeline__immersion-btn--locked::after {
+  content: attr(data-lock-hint);
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 1.2;
 }
 
 .home-map__projects {
@@ -285,4 +296,15 @@
 
 .project-timeline--order .project-timeline__day-label {
   color: var(--accent-amber);
+}
+
+.project-timeline--embedded {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.project-timeline--embedded .project-timeline__header,
+.project-timeline--embedded .project-timeline__hint {
+  display: none;
 }

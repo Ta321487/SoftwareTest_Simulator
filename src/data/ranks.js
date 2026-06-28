@@ -7,7 +7,7 @@ export const ranks = [
   { minXp: 290, title: 'Junior 测试', icon: '🔰', tagline: '工牌到手，正式跟项目' },
   { minXp: 425, title: 'Mid 测试', icon: '⚡', tagline: '能独立扛模块，线上也会救火' },
   { minXp: 510, title: 'Senior 测试', icon: '🏅', tagline: '链路、灰度、复盘都见过世面' },
-  { minXp: 605, title: '测试老兵', icon: '👨‍💻', tagline: '27 关全通——这行你算入门了' },
+  { minXp: 605, title: '测试老兵', icon: '👨‍💻', tagline: '第一季 27 关全通——这行你算入门了' },
   { minXp: 720, title: '测试 Lead', icon: '🎯', tagline: '带人、排期、抓包——开始扛项目' },
   { minXp: 850, title: '质量 Owner', icon: '🛡️', tagline: '进阶线全通，质量决策扛得住' },
 ]

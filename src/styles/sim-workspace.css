@@ -171,6 +171,11 @@
   text-align: center;
 }
 
+.work-inbox__toggle--unread {
+  border-color: var(--amber-border);
+  color: var(--accent-amber);
+}
+
 .work-inbox__panel {
   position: absolute;
   top: calc(100% + 8px);

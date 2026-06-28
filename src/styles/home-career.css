@@ -224,6 +224,7 @@
 
 .career-map__tab {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   padding: 8px 14px;
@@ -251,6 +252,14 @@
   font-family: var(--font-mono);
   font-size: 0.72rem;
   color: var(--text-muted);
+}
+
+.career-map__tab-lock {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  width: 100%;
 }
 
 .career-map .phase-timeline {

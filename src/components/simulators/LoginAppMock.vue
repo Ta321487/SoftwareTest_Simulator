@@ -21,7 +21,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['bug-reproduced', 'fix-verified'])
+const emit = defineEmits(['bug-reproduced', 'fix-verified', 'sms-requested'])
 
 const phone = ref('13800138000')
 const password = ref('')
@@ -54,6 +54,7 @@ function startFixedCountdown() {
 function requestSms() {
   smsRequested.value = true
   clearTick()
+  emit('sms-requested')
 
   if (props.build === 'buggy') {
     countdown.value = -1

@@ -30,6 +30,7 @@ export const HOME_PROJECT_IDS = [
   'payment-module',
   'order-module',
   'onboard-week2',
+  'season2-lead',
 ]
 
 export { getImmersionEntries, buildSutRoute, IMMERSION_BY_PROJECT } from './sutImmersion.js'

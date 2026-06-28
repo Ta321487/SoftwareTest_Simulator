@@ -1,10 +1,5 @@
-import { levelOrder } from './levels'
 import { sideLevels } from './sideQuests'
-
-function mainCompletedCount(completedLevelIds) {
-  if (!Array.isArray(completedLevelIds)) return 0
-  return completedLevelIds.filter((id) => id >= 1 && id <= 99 && levelOrder.includes(id)).length
-}
+import { isSeason1Complete } from './mainlineMeta'
 
 function sideCompletedCount(completedLevelIds) {
   if (!Array.isArray(completedLevelIds)) return 0
@@ -52,8 +47,8 @@ export const achievements = [
     id: 'veteran',
     icon: '🏅',
     title: '测试老兵',
-    desc: '主线 27 关全部通关',
-    check: (s) => mainCompletedCount(s.completedLevelIds) >= 27,
+    desc: '完成第一季 27 关（进阶线解锁前）',
+    check: (s) => isSeason1Complete(s.completedLevelIds),
   },
   {
     id: 'jira_tracker',

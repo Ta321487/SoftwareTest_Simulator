@@ -80,8 +80,6 @@ const headerSubtitle = computed(() => {
   if (props.phase) return props.level.title
   return props.project?.subtitle || ''
 })
-
-const unreadCount = computed(() => props.inboxMessages.filter((m) => !m.read).length)
 </script>
 
 <template>
@@ -96,9 +94,8 @@ const unreadCount = computed(() => props.inboxMessages.filter((m) => !m.read).le
       </div>
       <div class="workbench__topbar-right">
         <WorkInbox :messages="inboxMessages" />
-        <span v-if="unreadCount" class="workbench__badge">{{ unreadCount }} 未读</span>
         <RankBadge :xp="progressStore.totalXp" compact class="workbench__rank-compact" />
-      <span class="workbench__level-tag">{{ viewMode === 'sut' ? '上机' : '主线' }} · #{{ level.id }}</span>
+        <span class="workbench__level-tag">{{ viewMode === 'sut' ? '上机' : '主线' }} · #{{ level.id }}</span>
         <ThemeToggle />
       </div>
     </header>

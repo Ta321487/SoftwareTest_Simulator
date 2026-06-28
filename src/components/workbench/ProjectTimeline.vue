@@ -6,11 +6,20 @@ import { useProgressStore } from '../../stores/progressStore'
 import { useProjectStore } from '../../stores/projectStore'
 import { getProjectImmersion } from '../../utils/projectImmersion'
 import { buildSutRoute } from '../../utils/sutImmersion'
+import ScriptTaskList from './ScriptTaskList.vue'
 
 const props = defineProps({
   projectId: {
     type: String,
     default: 'login-module',
+  },
+  levelIds: {
+    type: Array,
+    default: null,
+  },
+  embedded: {
+    type: Boolean,
+    default: false,
   },
 })
 
@@ -22,12 +31,17 @@ const project = computed(() => projects[props.projectId])
 
 const immersion = computed(() => getProjectImmersion(props.projectId, projectStore))
 
-const days = computed(() =>
-  project.value.days.map((day) => ({
-    ...day,
-    status: progressStore.getStatus(day.levelId),
-  }))
-)
+const days = computed(() => {
+  const filter = props.levelIds?.length
+    ? new Set(props.levelIds)
+    : null
+  return project.value.days
+    .filter((day) => !filter || filter.has(day.levelId))
+    .map((day) => ({
+      ...day,
+      status: progressStore.getStatus(day.levelId),
+    }))
+})
 
 const completedCount = computed(
   () => days.value.filter((d) => d.status === 'completed').length
@@ -50,8 +64,11 @@ function immersionLocked(item) {
 </script>
 
 <template>
-  <section class="project-timeline">
-    <div class="project-timeline__header">
+  <section
+    class="project-timeline"
+    :class="[`project-timeline--${projectId}`, { 'project-timeline--embedded': embedded }]"
+  >
+    <div v-if="!embedded" class="project-timeline__header">
       <div>
         <h2 class="project-timeline__title">{{ project.name }}</h2>
         <p class="project-timeline__subtitle">{{ project.subtitle }}</p>
@@ -59,9 +76,14 @@ function immersionLocked(item) {
       <span class="project-timeline__progress">{{ completedCount }}/{{ days.length }} 天</span>
     </div>
 
-    <p class="project-timeline__hint">
-      <strong>Day</strong> 卡片 → 主线关卡；上方 <strong>▶</strong> → 上机实操（可选，不影响通关）。
+    <p v-if="!embedded" class="project-timeline__hint">
+      点击任务卡片进入当日工作台；上方 <strong>▶</strong> 为上机实操（可选，不影响通关）。
     </p>
+
+    <div v-if="embedded" class="project-timeline__module">
+      <h4 class="project-timeline__module-name">{{ project.name }}</h4>
+      <p class="project-timeline__module-desc">{{ project.subtitle }}</p>
+    </div>
 
     <div v-if="immersion.total" class="project-timeline__immersion">
       <span class="project-timeline__immersion-label">{{ immersion.label }}</span>
@@ -77,6 +99,7 @@ function immersionLocked(item) {
           }"
           :disabled="immersionLocked(item)"
           :title="immersionLocked(item) ? `先解锁主线第 ${item.levelId} 关` : `进入上机实操：${item.label}`"
+          :data-lock-hint="immersionLocked(item) ? `需先通主线 #${item.levelId}` : ''"
           @click="openImmersion(item)"
         >
           {{ item.done ? '✓' : '▶' }} {{ item.label }}
@@ -84,7 +107,12 @@ function immersionLocked(item) {
       </div>
     </div>
 
-    <div class="project-timeline__track">
+    <ScriptTaskList
+      v-if="embedded"
+      :items="days.map((d) => ({ levelId: d.levelId, label: d.label }))"
+    />
+
+    <div v-else class="project-timeline__track">
       <button
         v-for="(day, index) in days"
         :key="day.levelId"

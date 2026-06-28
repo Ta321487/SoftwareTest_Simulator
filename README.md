@@ -1,6 +1,6 @@
 # 测试人一生 · 软件测试闯关
 
-备考 → 面试 → 笔试 → 入职。在 Jira、终端、企微、API 调试等模拟工具里完成 27 关主线，攒 XP 升职级。
+备考 → 面试 → 笔试 → 入职 → 进阶 Lead。在 Jira、终端、企微、API 调试等模拟工具里完成 33 关主线（第一季 27 + 进阶 6），攒 XP 升职级。
 
 **在线玩：** https://ta321487.github.io/SoftwareTest_Simulator/
 
@@ -47,6 +47,41 @@ npm run preview
 ```bash
 npm test
 ```
+
+端到端冒烟（**本地默认用本机 Chrome，无需下载浏览器**）：
+
+```bash
+npm run test:e2e
+```
+
+本机需已安装 [Google Chrome](https://www.google.com/chrome/)。若只有 Edge：
+
+```powershell
+$env:PLAYWRIGHT_CHANNEL="msedge"
+npm run test:e2e
+```
+
+CI（GitHub Actions）会自动 `playwright install` 下载自带 Chromium。
+
+### 国内网络 · npm
+
+```bash
+copy .npmrc.example .npmrc
+npm install
+```
+
+### 可选：下载 Playwright 自带 Chromium
+
+一般只有 CI 或没有 Chrome 时才需要。国内镜像对 Chromium 经常 404/卡住，脚本已支持失败回退官方 CDN：
+
+```bash
+npm run playwright:install:cn
+# 或强制官方 CDN（可能较慢）
+npm run playwright:install
+npm run test:e2e:bundled
+```
+
+若 `playwright install` 始终装不上，**直接用 `npm run test:e2e` 即可**，走本机 Chrome。
 
 ## 技术栈
 

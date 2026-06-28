@@ -9,7 +9,7 @@ describe('shareProgress', () => {
       xp: 10,
       stars: 3,
       mainDone: 1,
-      mainTotal: 27,
+      mainTotal: 33,
       sideDone: 0,
       sideTotal: 9,
       streak: 2,
@@ -18,6 +18,6 @@ describe('shareProgress', () => {
     })
     expect(text).toContain('备考萌新')
     expect(text).toContain(PLAY_URL)
-    expect(text).toContain('主线 1/27')
+    expect(text).toContain('主线 1/33')
   })
 })

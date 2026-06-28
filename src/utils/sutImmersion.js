@@ -140,7 +140,7 @@ export function isImmersionDone(entry, projectStore, projectId) {
   return Boolean(sut[entry.key])
 }
 
-function getSutState(projectStore, projectId) {
+export function getSutState(projectStore, projectId) {
   switch (projectId) {
     case LOGIN_MODULE_ID:
       return projectStore.getLoginSut(projectId)
@@ -155,10 +155,84 @@ function getSutState(projectStore, projectId) {
   }
 }
 
+function patchSutState(projectStore, projectId, patch) {
+  switch (projectId) {
+    case LOGIN_MODULE_ID:
+      projectStore.patchLoginSut(projectId, patch)
+      break
+    case PAYMENT_MODULE_ID:
+      projectStore.patchPaymentSut(projectId, patch)
+      break
+    case ORDER_MODULE_ID:
+      projectStore.patchOrderSut(projectId, patch)
+      break
+    case ONBOARD_WEEK2_ID:
+      projectStore.patchOnboardSut(projectId, patch)
+      break
+    default:
+      break
+  }
+}
+
+/** 已完成步数（0..steps.length）；旧存档仅有 key 布尔时视为全部完成 */
+export function getCompletedStepCount(entry, projectStore, projectId) {
+  if (!entry?.steps?.length) return 0
+  const sut = getSutState(projectStore, projectId)
+  const stored = sut._stepProgress?.[entry.key]
+  if (typeof stored === 'number') return Math.min(stored, entry.steps.length)
+  if (sut[entry.key]) return entry.steps.length
+  return 0
+}
+
+export function setImmersionStepProgress(entry, projectStore, projectId, completedSteps) {
+  if (!entry?.steps?.length) return
+  const count = Math.min(Math.max(0, completedSteps), entry.steps.length)
+  const sut = getSutState(projectStore, projectId)
+  const stepProgress = { ...(sut._stepProgress || {}), [entry.key]: count }
+  const patch = { _stepProgress: stepProgress }
+  if (count >= entry.steps.length) {
+    patch[entry.key] = true
+  }
+  patchSutState(projectStore, projectId, patch)
+}
+
 export function getImmersionStepsProgress(entry, projectStore, projectId) {
-  const done = isImmersionDone(entry, projectStore, projectId)
-  return (entry?.steps || []).map((text, index) => ({
+  if (!entry?.steps?.length) return []
+  const completedCount = getCompletedStepCount(entry, projectStore, projectId)
+  return entry.steps.map((text, index) => ({
     text,
-    done: done || index === 0 && done,
+    done: index < completedCount,
+    active: index === completedCount && completedCount < entry.steps.length,
   }))
+}
+
+/** SUT 页 mount 时：被动首步（打开页面 / 查看面板）自动勾选 */
+export function initPassiveSutStep(entry, projectStore, projectId) {
+  if (!entry) return
+  const count = getCompletedStepCount(entry, projectStore, projectId)
+  if (count > 0) return
+  const passiveFirst = [
+    'reproducedBug',
+    'bottleneckIdentified',
+    'prodSlowReproduced',
+    'logReviewed',
+  ]
+  if (passiveFirst.includes(entry.key)) {
+    setImmersionStepProgress(entry, projectStore, projectId, 1)
+  }
+}
+
+/** 沙箱连通：主线配置完成后同步第 1 步 */
+export function syncDbConnectedStep(entry, projectStore, projectId, progressStore) {
+  if (!entry || entry.key !== 'dbConnected') return
+  const sut = getSutState(projectStore, projectId)
+  const level6Done =
+    progressStore?.completedLevelIds?.includes(6) ||
+    projectStore?.hasArtifact?.(projectId, 6)
+  const configReady = Boolean(sut.dbConnected || level6Done)
+  if (!configReady) return
+  const current = getCompletedStepCount(entry, projectStore, projectId)
+  if (current < 1) {
+    setImmersionStepProgress(entry, projectStore, projectId, 1)
+  }
 }

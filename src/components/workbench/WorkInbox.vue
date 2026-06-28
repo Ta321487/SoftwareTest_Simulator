@@ -1,7 +1,7 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
-defineProps({
+const props = defineProps({
   messages: {
     type: Array,
     default: () => [],
@@ -10,16 +10,20 @@ defineProps({
 
 const open = ref(false)
 
+const unreadCount = computed(() => props.messages.filter((m) => !m.read).length)
+
 defineEmits(['close-all'])
 </script>
 
 <template>
   <div class="work-inbox">
-    <button type="button" class="work-inbox__toggle" @click="open = !open">
-      📬 消息
-      <span v-if="messages.filter((m) => !m.read).length" class="work-inbox__dot">
-        {{ messages.filter((m) => !m.read).length }}
-      </span>
+    <button
+      type="button"
+      class="work-inbox__toggle"
+      :class="{ 'work-inbox__toggle--unread': unreadCount }"
+      @click="open = !open"
+    >
+      📬 {{ unreadCount ? `${unreadCount} 未读` : '消息' }}
     </button>
 
     <div v-if="open" class="work-inbox__panel">

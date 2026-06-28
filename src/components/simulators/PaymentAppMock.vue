@@ -25,7 +25,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['callback-miss', 'pay-error-reproduced', 'pay-verified'])
+const emit = defineEmits(['callback-miss', 'pay-error-reproduced', 'pay-verified', 'pay-success', 'pay-attempt'])
 
 const paying = ref(false)
 const orderStatus = ref('待支付')
@@ -39,6 +39,7 @@ async function handlePay() {
 
   paying.value = true
   lastPayResult.value = null
+  emit('pay-attempt')
   await new Promise((r) => setTimeout(r, 900))
   paying.value = false
 
@@ -54,6 +55,7 @@ async function handlePay() {
 
   orderStatus.value = '已支付'
   lastPayResult.value = 'success'
+  emit('pay-success', { scenario: props.scenario })
 
   if (props.scenario === 'callback-bug') {
     if (!callbackMiss.value) {

@@ -1,6 +1,6 @@
 import { getItem, setItem, removeItem } from './storage'
 
-export const BACKUP_VERSION = 1
+export const BACKUP_VERSION = 2
 
 const STORAGE_KEYS = {
   progress: 'user_progress',

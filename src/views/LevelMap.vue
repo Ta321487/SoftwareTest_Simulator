@@ -3,14 +3,15 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProgressStore } from '../stores/progressStore'
 import { useProjectStore } from '../stores/projectStore'
+import CareerScript from '../components/CareerScript.vue'
 import CareerMap from '../components/CareerMap.vue'
 import PlayerDashboard from '../components/PlayerDashboard.vue'
 import SideQuestHub from '../components/SideQuestHub.vue'
-import ProjectTimeline from '../components/workbench/ProjectTimeline.vue'
 import AchievementPanel from '../components/AchievementPanel.vue'
 import OnboardingTour from '../components/OnboardingTour.vue'
 import ProgressSettings from '../components/ProgressSettings.vue'
-import { HOME_PROJECT_IDS } from '../utils/projectImmersion'
+import { getWorkBrief } from '../data/careerScript'
+import { getWeakAreas } from '../utils/weakAreas'
 import ThemeToggle from '../components/ThemeToggle.vue'
 
 const router = useRouter()
@@ -20,6 +21,25 @@ const onboardingRef = ref(null)
 const allCompleted = computed(
   () => progressStore.completedLevelIds.length >= progressStore.totalLevelCount
 )
+
+const workBrief = computed(() =>
+  getWorkBrief({
+    firstAvailableLevelId: progressStore.firstAvailableLevelId,
+    completedLevelIds: progressStore.completedLevelIds,
+    getStatus: (id) => progressStore.getStatus(id),
+  })
+)
+
+const reinforcementHint = computed(() => {
+  const nextId = progressStore.firstAvailableLevelId
+  const top = getWeakAreas({
+    levelMistakes: progressStore.levelMistakes,
+    levelMeta: progressStore.levelMeta,
+    hintsUsed: progressStore.hintsUsed,
+    completedLevelIds: progressStore.completedLevelIds,
+  }).find((item) => item.levelId !== nextId)
+  return top || null
+})
 
 function continueChallenge() {
   const nextId = progressStore.firstAvailableLevelId
@@ -47,7 +67,7 @@ function showOnboarding() {
       <div class="workbench__topbar-left">
         <div class="workbench__title-block">
           <h1 class="workbench__title workbench__title--app">测试人一生</h1>
-          <p class="workbench__subtitle">主线 33 关 · 番外 · 每日 · 上机实操</p>
+          <p class="workbench__subtitle">星云科技 · 测试部职场模拟</p>
         </div>
       </div>
       <div class="workbench__topbar-right">
@@ -73,7 +93,27 @@ function showOnboarding() {
       </aside>
 
       <main class="workbench__main home-map__main">
-        <PlayerDashboard />
+        <PlayerDashboard compact />
+
+        <section class="home-map__hero">
+          <p v-if="workBrief.chapterTitle" class="home-map__hero-tag">{{ workBrief.chapterTitle }}</p>
+          <h2 class="home-map__hero-title">
+            <template v-if="workBrief.complete">🎉 {{ workBrief.title }}</template>
+            <template v-else>
+              今日任务
+              <span v-if="workBrief.beatLabel" class="home-map__hero-beat">· {{ workBrief.beatLabel }}</span>
+              ：{{ workBrief.title }}
+            </template>
+          </h2>
+          <p class="home-map__hero-desc">{{ workBrief.desc }}</p>
+          <p v-if="reinforcementHint" class="home-map__hero-reinforce">
+            有空可重温
+            <router-link :to="`/level/${reinforcementHint.levelId}`" class="home-map__hero-reinforce-link">
+              #{{ reinforcementHint.levelId }} {{ reinforcementHint.title }}
+            </router-link>
+            <span class="home-map__hero-reinforce-reason">（{{ reinforcementHint.reason }}）</span>
+          </p>
+        </section>
 
         <div class="home-map__actions">
           <button
@@ -82,28 +122,24 @@ function showOnboarding() {
             class="level-map__btn level-map__btn--primary"
             @click="continueChallenge"
           >
-            继续挑战 →
+            开始今日任务 →
           </button>
           <button type="button" class="level-map__btn level-map__btn--ghost" @click="resetProgress">
             重置进度
           </button>
         </div>
 
-        <CareerMap />
+        <CareerScript />
 
         <SideQuestHub />
 
         <details class="home-fold">
-          <summary class="home-fold__summary">项目剧本 · 上机实操（可选）</summary>
+          <summary class="home-fold__summary">按阶段查全部关卡</summary>
           <div class="home-fold__body">
             <p class="home-map__projects-desc">
-              <strong>Day 卡片</strong>进入对应主线关；<strong>▶ 按钮</strong>进入独立上机实操页（App / 监控 / 值班，可选）。
+              与上方剧本顺序一致，此处按备考 / 面试 / 笔试 / 入职 / 进阶分类浏览，方便查漏补缺。
             </p>
-            <ProjectTimeline
-              v-for="projectId in HOME_PROJECT_IDS"
-              :key="projectId"
-              :project-id="projectId"
-            />
+            <CareerMap />
           </div>
         </details>
 

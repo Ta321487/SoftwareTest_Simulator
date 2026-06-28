@@ -134,6 +134,84 @@ export const referenceAnswers = {
       },
     ],
   },
+  28: {
+    label: '用例评审参考',
+    items: [
+      {
+        title: '缺失维度',
+        text: '未覆盖密码长度 6–12、特殊字符、空用户名、超长密码、第 5 次错误锁定等边界。',
+      },
+      {
+        title: '建议补充场景',
+        text: '如：密码 5 位拒绝、13 位拒绝、含 @ 拒绝、连续 5 次错误后锁定提示等。',
+      },
+    ],
+  },
+  29: {
+    label: 'Bug 批改参考',
+    items: [
+      {
+        title: '标题示例',
+        text: '【4G】登录页点击登录后 8 秒无响应 / 订单列表页点击支付按钮无反应',
+      },
+      {
+        title: '步骤需补充',
+        text: '分步操作路径、测试/生产环境、账号与网络、预期结果 vs 实际现象。',
+      },
+    ],
+  },
+  30: {
+    label: '排期计算参考',
+    items: [
+      {
+        title: '公式',
+        text: '人日 = 6 × 50 ÷ 12 ÷ 8 ≈ 3.13 人日',
+      },
+      {
+        title: 'Lead 备注',
+        text: '若窗口不足 3.13 天，需申请加人或砍 scope，并写清风险。',
+      },
+    ],
+  },
+  31: {
+    label: '抓包排查参考',
+    items: [
+      {
+        title: '可疑请求',
+        text: '回调 POST 指向 notify.prod.example.com 返回 404——测试环境不应调生产 notify 域名。',
+      },
+      {
+        title: '排查顺序',
+        text: '先看回调 Host/status → 对配置中心 PAY_CALLBACK_URL → 查网关日志。',
+      },
+    ],
+  },
+  32: {
+    label: '安全审计参考',
+    items: [
+      {
+        title: '应覆盖',
+        text: '敏感字段脱敏、导出权限审计、验证码/短信限流、越权访问接口。',
+      },
+      {
+        title: '非审计范围',
+        text: '按钮圆角、主题色等 UI 规范通常不在安全联合审计范围。',
+      },
+    ],
+  },
+  33: {
+    label: 'Go/No-Go 参考',
+    items: [
+      {
+        title: '建议决策',
+        text: '库存链路错误率 2% 超标 → No-Go，需复测达标后再上线。',
+      },
+      {
+        title: '复测标准',
+        text: '写清哪项指标、目标阈值、负责人与复测时间窗口。',
+      },
+    ],
+  },
 }
 
 export function getReferenceAnswer(levelId) {

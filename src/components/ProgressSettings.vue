@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useProgressStore } from '../stores/progressStore'
 import { useProjectStore } from '../stores/projectStore'
 import { useThemeStore } from '../stores/themeStore'
-import { buildBackup, applyBackup, downloadBackup, readBackupFile } from '../utils/progressBackup'
+import { buildBackup, applyBackup, downloadBackup, readBackupFile, BACKUP_VERSION } from '../utils/progressBackup'
 
 const emit = defineEmits(['show-onboarding'])
 
@@ -61,6 +61,7 @@ function triggerImport() {
     <h2 class="save-panel__title">存档管理</h2>
     <p class="save-panel__desc">
       进度保存在浏览器本地。换设备或清缓存前请先导出；支持 JSON 存档导入恢复。
+      当前存档格式 v{{ BACKUP_VERSION }} · 含上机分步进度。
     </p>
     <div class="save-panel__actions">
       <button type="button" class="level-map__btn level-map__btn--primary" @click="exportSave">

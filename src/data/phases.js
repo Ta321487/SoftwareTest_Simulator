@@ -46,7 +46,7 @@ export const phases = {
     name: '进阶',
     icon: '🚀',
     subtitle: '带新人、排期、抓包、跨团队——Senior 后的下一程',
-    audience: '27 关全通后解锁。开始带人、做决策、扛跨团队质量。',
+    audience: '27 关全通后解锁（主线地图 · 进阶 Tab）。开始带人、做决策、扛跨团队质量。',
     veteranLine: '带人不只是改文档，是在别人踩坑之前把坑标出来。',
     levelIds: [28, 29, 30, 31, 32, 33],
     debriefTipLabel: 'Lead 笔记',

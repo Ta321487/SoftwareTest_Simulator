@@ -21,7 +21,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['prod-slow-reproduced', 'log-reviewed'])
+const emit = defineEmits(['prod-slow-reproduced', 'log-reviewed', 'prod-login-started'])
 
 const loggingIn = ref(false)
 const loginElapsed = ref(null)
@@ -32,6 +32,7 @@ async function handleProdLogin() {
   if (loggingIn.value || prodSlow.value) return
   loggingIn.value = true
   loginElapsed.value = 0
+  emit('prod-login-started')
 
   await new Promise((r) => setTimeout(r, 2200))
   loggingIn.value = false

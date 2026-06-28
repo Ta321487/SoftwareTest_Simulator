@@ -9,6 +9,7 @@ import {
   isDailyQuestId,
 } from '../data/dailyChallenges'
 import { getLevelById, isMainQuestId } from '../utils/levelRegistry'
+import { countMainlineCompleted, TOTAL_MAIN_LEVELS } from '../data/mainlineMeta'
 import { calculateStars, calculateBonusXp } from '../utils/validator'
 import { evaluateAchievements } from '../data/achievements'
 
@@ -83,11 +84,11 @@ export const useProgressStore = defineStore('progress', {
 
   getters: {
     totalLevelCount() {
-      return levelOrder.length
+      return TOTAL_MAIN_LEVELS
     },
 
     mainCompletedCount(state) {
-      return state.completedLevelIds.filter((id) => isMainQuestId(id)).length
+      return countMainlineCompleted(state.completedLevelIds)
     },
 
     sideCompletedCount(state) {

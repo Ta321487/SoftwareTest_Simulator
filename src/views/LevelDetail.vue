@@ -24,7 +24,11 @@ import {
   isSutModeRoute,
   getSutDockQuery,
   resolveSutEntry,
-  isImmersionDone,
+  getImmersionStepsProgress,
+  setImmersionStepProgress,
+  initPassiveSutStep,
+  syncDbConnectedStep,
+  getImmersionEntries,
 } from '../utils/sutImmersion'
 import { shouldRecordMistake, computeArtifactQuality, getPassDebriefNote } from '../data/consequences'
 import DebriefPanel from '../components/DebriefPanel.vue'
@@ -207,9 +211,30 @@ const isTaskView = computed(
 
 const sutSteps = computed(() => {
   if (!sutEntry.value || !project.value) return []
-  const done = isImmersionDone(sutEntry.value, projectStore, project.value.id)
-  return sutEntry.value.steps.map((text) => ({ text, done }))
+  return getImmersionStepsProgress(sutEntry.value, projectStore, project.value.id)
 })
+
+function sutContext() {
+  return { entry: sutEntry.value, projectId: project.value?.id }
+}
+
+function advanceSutSteps(completedSteps) {
+  const { entry, projectId } = sutContext()
+  if (!entry || !projectId) return
+  setImmersionStepProgress(entry, projectStore, projectId, completedSteps)
+}
+
+function finishSutImmersion() {
+  const { entry, projectId } = sutContext()
+  if (!entry || !projectId) return
+  setImmersionStepProgress(entry, projectStore, projectId, entry.steps.length)
+}
+
+function setupSutSession() {
+  if (!isSutMode.value || !sutEntry.value || !project.value) return
+  initPassiveSutStep(sutEntry.value, projectStore, project.value.id)
+  syncDbConnectedStep(sutEntry.value, projectStore, project.value.id, progressStore)
+}
 
 function handleDockChange(id) {
   const item = dockItems.value.find((d) => d.levelId === id)
@@ -590,34 +615,79 @@ watch(
     }
 
     resetState()
+    setupSutSession()
   },
   { immediate: true }
 )
 
+watch(
+  () => [
+    paymentSutState.value.dbConnected,
+    progressStore.completedLevelIds.includes(6),
+    sutEntry.value?.key,
+    isSutMode.value,
+  ],
+  () => {
+    if (isSutMode.value && sutEntry.value?.key === 'dbConnected' && project.value) {
+      syncDbConnectedStep(sutEntry.value, projectStore, project.value.id, progressStore)
+    }
+  }
+)
+
+function onLoginSmsRequested() {
+  const { entry } = sutContext()
+  if (!entry) return
+  if (entry.key === 'reproducedBug') advanceSutSteps(2)
+  if (entry.key === 'verifiedFix') advanceSutSteps(1)
+}
+
 function onLoginBugReproduced() {
+  finishSutImmersion()
   projectStore.patchLoginSut(LOGIN_MODULE_ID, { reproducedBug: true })
   progressStore.recordLoginBugReproduced()
   showSutCompleteToast('✓ App 复现 Bug 完成 · 可返回主线写 Jira')
 }
 
 function onLoginFixVerified() {
+  finishSutImmersion()
   projectStore.patchLoginSut(LOGIN_MODULE_ID, { verifiedFix: true })
   progressStore.recordLoginFixVerified()
   showSutCompleteToast('✓ 修复已验证 · 可返回主线勾选回归')
 }
 
 function onPaymentDbConnected() {
+  const { entry } = sutContext()
+  if (entry?.key === 'dbConnected') advanceSutSteps(1)
   projectStore.patchPaymentSut(PAYMENT_MODULE_ID, { dbConnected: true })
   showSutCompleteToast('✓ 沙箱已连通 · 可返回主线继续配置任务')
 }
 
+function onPaymentPayAttempt() {
+  const { entry } = sutContext()
+  if (entry?.key === 'payErrorReproduced') advanceSutSteps(1)
+  if (entry?.key === 'callbackMiss') advanceSutSteps(1)
+}
+
+function onPaymentPaySuccess() {
+  const { entry } = sutContext()
+  if (entry?.key === 'dbConnected') {
+    finishSutImmersion()
+    projectStore.patchPaymentSut(PAYMENT_MODULE_ID, { dbConnected: true })
+    showSutCompleteToast('✓ 沙箱连通已验证 · 可返回主线继续')
+    return
+  }
+  if (entry?.key === 'callbackMiss') advanceSutSteps(1)
+}
+
 function onPaymentCallbackMiss() {
+  finishSutImmersion()
   projectStore.patchPaymentSut(PAYMENT_MODULE_ID, { callbackMiss: true })
   progressStore.recordPaymentCallbackMiss()
   showSutCompleteToast('✓ 回调缺失已复现 · 可返回主线写企微回复')
 }
 
 function onPaymentErrorReproduced() {
+  finishSutImmersion()
   projectStore.patchPaymentSut(PAYMENT_MODULE_ID, { payErrorReproduced: true })
   progressStore.recordPaymentErrorReproduced()
   showSutCompleteToast('✓ 支付失败已复现 · 可返回主线补 Bug 单')
@@ -629,22 +699,42 @@ function onPaymentVerified() {
 }
 
 function onOrderBottleneckIdentified() {
+  finishSutImmersion()
   projectStore.patchOrderSut(ORDER_MODULE_ID, { bottleneckIdentified: true })
   progressStore.recordOrderBottleneckIdentified()
   showSutCompleteToast('✓ 瓶颈已定位 · 可返回主线提交选择')
 }
 
+function onProdLoginStarted() {
+  const { entry } = sutContext()
+  if (entry?.key === 'prodSlowReproduced') advanceSutSteps(2)
+}
+
 function onProdSlowReproduced() {
+  finishSutImmersion()
   projectStore.patchOnboardSut(ONBOARD_WEEK2_ID, { prodSlowReproduced: true })
   progressStore.recordProdSlowReproduced()
   showSutCompleteToast('✓ 慢登录已复现 · 可返回主线写 Bug 单')
 }
 
 function onLogReviewed() {
+  finishSutImmersion()
   projectStore.patchOnboardSut(ONBOARD_WEEK2_ID, { logReviewed: true })
   progressStore.recordLogReviewed()
   showSutCompleteToast('✓ 日志已核对 · 可返回主线 grep 终端')
 }
+
+const paymentConfigArtifact = computed(() =>
+  projectStore.getArtifact(PAYMENT_MODULE_ID, 6)
+)
+
+const showDbConnectedMainLink = computed(
+  () =>
+    isSutMode.value &&
+    sutEntry.value?.key === 'dbConnected' &&
+    !paymentSutState.value.dbConnected &&
+    !progressStore.completedLevelIds.includes(6)
+)
 
 function saveStoryArtifact(submitData) {
   if (!level.value?.projectId) return
@@ -668,6 +758,10 @@ function saveStoryArtifact(submitData) {
 
   if (level.value.id === 6 && level.value.projectId === PAYMENT_MODULE_ID) {
     projectStore.patchPaymentSut(PAYMENT_MODULE_ID, { dbConnected: true })
+    const dbEntry = getImmersionEntries(PAYMENT_MODULE_ID).find((e) => e.key === 'dbConnected')
+    if (dbEntry) {
+      syncDbConnectedStep(dbEntry, projectStore, PAYMENT_MODULE_ID, progressStore)
+    }
   }
 }
 
@@ -815,11 +909,25 @@ function goBack() {
           v-for="(step, idx) in sutSteps"
           :key="idx"
           class="sut-mode__step"
-          :class="{ 'sut-mode__step--done': step.done }"
+          :class="{
+            'sut-mode__step--done': step.done,
+            'sut-mode__step--active': step.active,
+          }"
         >
-          {{ step.done ? '✓' : idx + 1 }}. {{ step.text }}
+          {{ step.done ? '✓' : step.active ? '→' : idx + 1 }}. {{ step.text }}
         </li>
       </ol>
+
+      <div v-if="showDbConnectedMainLink" class="sut-mode__main-link">
+        <p>沙箱连通需先在主线第 6 关修改配置并测试连接。</p>
+        <button type="button" class="sim-btn sim-btn--ghost sim-btn--sm" @click="router.push(buildMainLevelRoute(6))">
+          前往主线第 6 关配置
+        </button>
+      </div>
+
+      <p v-else-if="sutEntry?.key === 'dbConnected' && paymentConfigArtifact" class="sut-mode__config-hint">
+        主线已保存配置 · 支付 App 可验证连通
+      </p>
 
       <p v-if="sutToast" class="sut-mode__toast">{{ sutToast }}</p>
 
@@ -829,6 +937,7 @@ function goBack() {
           :build="loginBuild"
           :initial-reproduced="loginSutState.reproducedBug"
           :initial-fix-verified="loginSutState.verifiedFix"
+          @sms-requested="onLoginSmsRequested"
           @bug-reproduced="onLoginBugReproduced"
           @fix-verified="onLoginFixVerified"
         />
@@ -841,6 +950,8 @@ function goBack() {
           :initial-callback-miss="paymentSutState.callbackMiss"
           :initial-pay-error="paymentSutState.payErrorReproduced"
           :initial-pay-verified="paymentSutState.payVerified"
+          @pay-attempt="onPaymentPayAttempt"
+          @pay-success="onPaymentPaySuccess"
           @callback-miss="onPaymentCallbackMiss"
           @pay-error-reproduced="onPaymentErrorReproduced"
           @pay-verified="onPaymentVerified"
@@ -863,6 +974,7 @@ function goBack() {
           :log-lines="onCallLogLines"
           :initial-prod-slow="onboardSutState.prodSlowReproduced"
           :initial-log-reviewed="onboardSutState.logReviewed"
+          @prod-login-started="onProdLoginStarted"
           @prod-slow-reproduced="onProdSlowReproduced"
           @log-reviewed="onLogReviewed"
         />

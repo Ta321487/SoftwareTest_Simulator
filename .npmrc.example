@@ -1,0 +1,7 @@
+# 国内网络：复制本文件为 .npmrc 后 npm install 会走 npmmirror
+#   copy .npmrc.example .npmrc        (Windows)
+#   cp .npmrc.example .npmrc          (macOS / Linux)
+#
+# 注意：.npmrc 已加入 .gitignore，仅影响本机，不会提交到仓库。
+
+registry=https://registry.npmmirror.com

@@ -6,6 +6,8 @@ import PhaseTimeline from './workbench/PhaseTimeline.vue'
 
 const progressStore = useProgressStore()
 
+const LEAD_UNLOCK_LEVEL = 28
+
 function firstIncompletePhase() {
   for (const id of phaseOrder) {
     const { done, total } = getPhaseProgress(phases[id], progressStore.completedLevelIds)
@@ -30,7 +32,9 @@ const tabs = computed(() =>
   phaseOrder.map((id) => {
     const phase = phases[id]
     const { done, total } = getPhaseProgress(phase, progressStore.completedLevelIds)
-    return { id, icon: phase.icon, name: phase.name, done, total }
+    const locked =
+      id === 'lead' && progressStore.getStatus(LEAD_UNLOCK_LEVEL) === 'locked'
+    return { id, icon: phase.icon, name: phase.name, done, total, locked }
   })
 )
 </script>
@@ -39,7 +43,7 @@ const tabs = computed(() =>
   <section class="career-map">
     <header class="career-map__head">
       <h2 class="career-map__title">主线关卡</h2>
-      <p class="career-map__hint">唯一闯关入口 · 按阶段选关交作业</p>
+      <p class="career-map__hint">按阶段分类浏览全部 33 关，方便查漏补缺</p>
     </header>
 
     <div class="career-map__tabs" role="tablist">
@@ -54,6 +58,7 @@ const tabs = computed(() =>
         @click="activePhaseId = tab.id"
       >
         <span class="career-map__tab-label">{{ tab.icon }} {{ tab.name }}</span>
+        <span v-if="tab.locked" class="career-map__tab-lock">🔒 第一季结业后解锁</span>
         <span class="career-map__tab-progress">{{ tab.done }}/{{ tab.total }}</span>
       </button>
     </div>

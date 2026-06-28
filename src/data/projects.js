@@ -2,7 +2,7 @@ export const projects = {
   'login-module': {
     id: 'login-module',
     name: '登录模块',
-    subtitle: '备考剧本 · 从读需求到上线排障',
+    subtitle: '新人营 · 登录模块从读需求到上线排障',
     levelIds: [1, 2, 3, 4, 5],
     days: [
       { levelId: 1, label: 'Day 1', title: '接 PRD，圈测试点' },
@@ -15,7 +15,7 @@ export const projects = {
   'payment-module': {
     id: 'payment-module',
     name: '支付模块',
-    subtitle: '笔试剧本 · 协作、工单、发布与日报',
+    subtitle: '部门笔试 · 协作、工单、发布与日报',
     levelIds: [6, 7, 8, 9, 10],
     days: [
       { levelId: 6, label: 'Day 1', title: '接入测试环境' },
@@ -28,7 +28,7 @@ export const projects = {
   'order-module': {
     id: 'order-module',
     name: '订单模块',
-    subtitle: '入职剧本 · 第一至二周',
+    subtitle: '订单组 · 第一至二周真实项目',
     levelIds: [11, 12, 13, 14, 15],
     days: [
       { levelId: 11, label: 'Day 1', title: '评估测试工时' },
@@ -41,7 +41,7 @@ export const projects = {
   'onboard-week2': {
     id: 'onboard-week2',
     name: '线上值班',
-    subtitle: '入职剧本 · 第二周救火',
+    subtitle: 'On-call · 第二周线上救火',
     levelIds: [22, 23, 24, 25],
     days: [
       { levelId: 22, label: 'Day 6', title: '线上 Bug 单' },
@@ -53,7 +53,7 @@ export const projects = {
   'season2-lead': {
     id: 'season2-lead',
     name: '测试 Lead 线',
-    subtitle: '进阶剧本 · 带人、排期与跨团队',
+    subtitle: 'Lead 线 · 带人、排期与跨团队',
     levelIds: [28, 29, 30, 31, 32, 33],
     days: [
       { levelId: 28, label: 'Week 1', title: 'Review 新人用例' },

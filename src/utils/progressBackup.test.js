@@ -38,7 +38,7 @@ describe('progressBackup', () => {
 
   it('builds valid backup envelope', () => {
     const backup = buildBackup(progressStore, projectStore)
-    expect(backup.version).toBe(BACKUP_VERSION)
+    expect(backup.version).toBe(2)
     expect(backup.app).toBe('softwaretest-simulator')
     expect(backup.progress.completedLevelIds).toEqual([1, 2])
   })

@@ -6,6 +6,7 @@ import { debriefs } from '../data/debriefs'
 import { sideLevels, sideArcs } from '../data/sideQuests'
 import { sideDebriefs } from '../data/sideDebriefs'
 import ThemeToggle from '../components/ThemeToggle.vue'
+import { getHandbookBlurb, matchesHandbookSearch } from '../utils/handbook'
 
 const router = useRouter()
 const activePhase = ref('all')
@@ -59,13 +60,7 @@ const filteredEntries = computed(() => {
   }
   const q = searchQuery.value.trim().toLowerCase()
   if (!q) return list
-  return list.filter(
-    (e) =>
-      e.title.toLowerCase().includes(q) ||
-      e.summary.toLowerCase().includes(q) ||
-      String(e.levelId).includes(q) ||
-      e.phaseName.toLowerCase().includes(q)
-  )
+  return list.filter((e) => matchesHandbookSearch(e, q))
 })
 
 function openEntry(entry) {
@@ -84,7 +79,7 @@ function closeModal() {
         <button type="button" class="workbench__back" @click="router.push('/')">← 地图</button>
         <div class="workbench__title-block">
           <h1 class="workbench__title">测试手札</h1>
-          <p class="workbench__subtitle">{{ allEntries.length }} 条复盘 · 点卡片查看详情</p>
+          <p class="workbench__subtitle">{{ allEntries.length }} 条知识点 · 随时查阅复习</p>
         </div>
       </div>
       <ThemeToggle />
@@ -96,7 +91,7 @@ function closeModal() {
           v-model="searchQuery"
           type="search"
           class="handbook__search-input"
-          placeholder="搜索关卡标题、要点、编号…"
+          placeholder="搜索标题、知识点、常见坑…"
           aria-label="搜索手札"
         />
       </div>
@@ -142,8 +137,8 @@ function closeModal() {
           <span class="handbook__card-phase">{{ entry.phaseIcon }} {{ entry.phaseName }}</span>
           <span class="handbook__card-id">#{{ entry.levelId }}</span>
           <h3 class="handbook__card-title">{{ entry.title }}</h3>
-          <p class="handbook__card-summary">{{ entry.summary }}</p>
-          <span class="handbook__card-more">查看详情 →</span>
+          <p class="handbook__card-summary">{{ getHandbookBlurb(entry) }}</p>
+          <span class="handbook__card-more">展开笔记 →</span>
         </button>
       </div>
 
@@ -162,12 +157,8 @@ function closeModal() {
           <button type="button" class="handbook-modal__close" aria-label="关闭" @click="closeModal">×</button>
         </header>
 
-        <section class="handbook-modal__section">
-          <h3>要点</h3>
-          <p>{{ selectedEntry.summary }}</p>
-        </section>
         <section class="handbook-modal__section handbook-modal__section--highlight">
-          <h3>为什么</h3>
+          <h3>核心要点</h3>
           <p>{{ selectedEntry.why }}</p>
         </section>
         <section class="handbook-modal__section handbook-modal__section--warn">
