@@ -15,6 +15,17 @@ import { validateSimulation } from '../utils/validator'
 import { getValidationCriteria } from '../utils/validationCriteria'
 import { getSimGuide } from '../utils/simGuides'
 import { getFailureHint, getLevelHint } from '../utils/failureHints'
+import { getLevelDeliverable } from '../data/levelDeliverables'
+import { getPhaseMilestoneForLevel } from '../data/phaseMilestones'
+import {
+  buildSutRoute,
+  buildMainLevelRoute,
+  getSutEntriesForLevel,
+  isSutModeRoute,
+  getSutDockQuery,
+  resolveSutEntry,
+  isImmersionDone,
+} from '../utils/sutImmersion'
 import { shouldRecordMistake, computeArtifactQuality, getPassDebriefNote } from '../data/consequences'
 import DebriefPanel from '../components/DebriefPanel.vue'
 import PreviousSubmission from '../components/PreviousSubmission.vue'
@@ -39,7 +50,6 @@ import {
   LOGIN_SUT_DOCK_ID,
   LOGIN_MODULE_ID,
   getLoginBuildVersion,
-  shouldShowInlineLoginSut,
   shouldShowLoginAppDock,
   getLoginSutLead,
   isLoginModuleProject,
@@ -48,7 +58,6 @@ import {
   PAYMENT_SUT_DOCK_ID,
   PAYMENT_MODULE_ID,
   getPaymentScenario,
-  shouldShowInlinePaymentSut,
   shouldShowPaymentAppDock,
   getPaymentSutLead,
   isPaymentModuleProject,
@@ -57,7 +66,6 @@ import {
   ORDER_OBS_DOCK_ID,
   ORDER_MODULE_ID,
   getOrderObsMode,
-  shouldShowInlineOrderObs,
   shouldShowOrderObsDock,
   getOrderObsLead,
   isOrderModuleProject,
@@ -66,7 +74,6 @@ import {
   ONCALL_DOCK_ID,
   ONBOARD_WEEK2_ID,
   getOnCallMode,
-  shouldShowInlineOnCall,
   shouldShowOnCallDock,
   getOnCallLead,
   isOnboardWeek2Project,
@@ -97,14 +104,28 @@ const sessionAttempts = ref(0)
 const sessionHintUsed = ref(false)
 const passDebriefNote = ref(null)
 const sessionJiraTier = ref(null)
+const phaseMilestone = ref(null)
+const sutToast = ref('')
 
 const levelId = computed(() => Number(route.params.id))
 const level = computed(() => getLevelById(levelId.value))
+const isSutMode = computed(() => isSutModeRoute(route))
+const sutDockQuery = computed(() => getSutDockQuery(route))
 const isExtraLevel = computed(
   () => level.value && (isSideQuestId(levelId.value) || isDailyQuestId(levelId.value))
 )
 const project = computed(() =>
   level.value && !isExtraLevel.value ? getProjectForLevel(level.value.id) : null
+)
+const sutEntry = computed(() => {
+  if (!isSutMode.value || !project.value) return null
+  return resolveSutEntry(route, project.value.id)
+})
+const deliverable = computed(() =>
+  level.value && !isExtraLevel.value ? getLevelDeliverable(level.value.id) : null
+)
+const sutEntriesOnLevel = computed(() =>
+  project.value ? getSutEntriesForLevel(levelId.value, project.value.id) : []
 )
 const phase = computed(() =>
   level.value && !isExtraLevel.value ? getPhaseForLevel(level.value.id) : null
@@ -181,12 +202,38 @@ const simComponent = computed(() =>
 )
 
 const isTaskView = computed(
-  () => level.value && activeDockLevelId.value === level.value.id
+  () => level.value && !isSutMode.value && activeDockLevelId.value === level.value.id
 )
 
-const isLoginAppView = computed(
-  () => activeDockLevelId.value === LOGIN_SUT_DOCK_ID && isLoginModuleProject(project.value)
-)
+const sutSteps = computed(() => {
+  if (!sutEntry.value || !project.value) return []
+  const done = isImmersionDone(sutEntry.value, projectStore, project.value.id)
+  return sutEntry.value.steps.map((text) => ({ text, done }))
+})
+
+function handleDockChange(id) {
+  const item = dockItems.value.find((d) => d.levelId === id)
+  if (item?.isSutEntry && item.sutDock) {
+    router.push(buildSutRoute(levelId.value, item.sutDock))
+    return
+  }
+  activeDockLevelId.value = id
+}
+
+function goToMainTask() {
+  router.push(buildMainLevelRoute(levelId.value))
+}
+
+function openSutEntry(entry) {
+  router.push(buildSutRoute(entry.levelId, entry.dock))
+}
+
+function showSutCompleteToast(message) {
+  sutToast.value = message
+  setTimeout(() => {
+    sutToast.value = ''
+  }, 4000)
+}
 
 const loginBuild = computed(() =>
   level.value ? getLoginBuildVersion(level.value.id) : 'buggy'
@@ -196,17 +243,15 @@ const loginSutState = computed(() => projectStore.getLoginSut(LOGIN_MODULE_ID))
 
 const showInlineLoginSut = computed(
   () =>
+    isSutMode.value &&
+    sutDockQuery.value === 'app' &&
     isLoginModuleProject(project.value) &&
     level.value &&
-    shouldShowInlineLoginSut(level.value.id)
+    shouldShowLoginAppDock(level.value.id)
 )
 
 const loginSutLead = computed(() =>
   level.value ? getLoginSutLead(level.value.id) : ''
-)
-
-const isPaymentAppView = computed(
-  () => activeDockLevelId.value === PAYMENT_SUT_DOCK_ID && isPaymentModuleProject(project.value)
 )
 
 const paymentScenario = computed(() =>
@@ -219,17 +264,15 @@ const paymentSutState = computed(() => projectStore.getPaymentSut(PAYMENT_MODULE
 
 const showInlinePaymentSut = computed(
   () =>
+    isSutMode.value &&
+    sutDockQuery.value === 'pay' &&
     isPaymentModuleProject(project.value) &&
     level.value &&
-    shouldShowInlinePaymentSut(level.value.id)
+    shouldShowPaymentAppDock(level.value.id)
 )
 
 const paymentSutLead = computed(() =>
   level.value ? getPaymentSutLead(level.value.id) : ''
-)
-
-const isOrderObsView = computed(
-  () => activeDockLevelId.value === ORDER_OBS_DOCK_ID && isOrderModuleProject(project.value)
 )
 
 const orderObsMode = computed(() =>
@@ -240,17 +283,15 @@ const orderSutState = computed(() => projectStore.getOrderSut(ORDER_MODULE_ID))
 
 const showInlineOrderObs = computed(
   () =>
+    isSutMode.value &&
+    sutDockQuery.value === 'obs' &&
     isOrderModuleProject(project.value) &&
     level.value &&
-    shouldShowInlineOrderObs(level.value.id)
+    shouldShowOrderObsDock(level.value.id)
 )
 
 const orderObsLead = computed(() =>
   level.value ? getOrderObsLead(level.value.id) : ''
-)
-
-const isOnCallView = computed(
-  () => activeDockLevelId.value === ONCALL_DOCK_ID && isOnboardWeek2Project(project.value)
 )
 
 const onCallMode = computed(() =>
@@ -265,9 +306,11 @@ const onCallLogLines = computed(() =>
 
 const showInlineOnCall = computed(
   () =>
+    isSutMode.value &&
+    sutDockQuery.value === 'oncall' &&
     isOnboardWeek2Project(project.value) &&
     level.value &&
-    shouldShowInlineOnCall(level.value.id)
+    shouldShowOnCallDock(level.value.id)
 )
 
 const onCallLead = computed(() =>
@@ -306,9 +349,11 @@ const dockItems = computed(() => {
       levelId: LOGIN_SUT_DOCK_ID,
       simType: 'loginapp',
       shortLabel: 'App',
-      dayLabel: '被测',
+      dayLabel: '实操',
       locked: false,
       lockReason: '',
+      isSutEntry: true,
+      sutDock: 'app',
       hasArtifact: Boolean(
         loginSutState.value.reproducedBug || loginSutState.value.verifiedFix
       ),
@@ -320,13 +365,16 @@ const dockItems = computed(() => {
       levelId: PAYMENT_SUT_DOCK_ID,
       simType: 'paymentapp',
       shortLabel: '支付',
-      dayLabel: '被测',
+      dayLabel: '实操',
       locked: false,
       lockReason: '',
+      isSutEntry: true,
+      sutDock: 'pay',
       hasArtifact: Boolean(
         paymentSutState.value.callbackMiss ||
           paymentSutState.value.payErrorReproduced ||
-          paymentSutState.value.payVerified
+          paymentSutState.value.payVerified ||
+          paymentSutState.value.dbConnected
       ),
     })
   }
@@ -336,9 +384,11 @@ const dockItems = computed(() => {
       levelId: ORDER_OBS_DOCK_ID,
       simType: 'orderobs',
       shortLabel: '监控',
-      dayLabel: '可观测',
+      dayLabel: '实操',
       locked: false,
       lockReason: '',
+      isSutEntry: true,
+      sutDock: 'obs',
       hasArtifact: Boolean(orderSutState.value.bottleneckIdentified),
     })
   }
@@ -348,9 +398,11 @@ const dockItems = computed(() => {
       levelId: ONCALL_DOCK_ID,
       simType: 'oncall',
       shortLabel: '值班',
-      dayLabel: '线上',
+      dayLabel: '实操',
       locked: false,
       lockReason: '',
+      isSutEntry: true,
+      sutDock: 'oncall',
       hasArtifact: Boolean(
         onboardSutState.value.prodSlowReproduced || onboardSutState.value.logReviewed
       ),
@@ -499,8 +551,9 @@ function revealHint() {
 }
 
 watch(
-  level,
-  (currentLevel) => {
+  () => [levelId.value, route.name, route.params.dock, route.query.mode, route.query.dock],
+  () => {
+    const currentLevel = level.value
     if (!currentLevel) {
       router.replace('/')
       return
@@ -509,7 +562,33 @@ watch(
       router.replace('/')
       return
     }
-    activeDockLevelId.value = currentLevel.id
+
+    // 旧链接 ?mode=sut → 新路径 /level/:id/sut/:dock
+    if (route.name === 'LevelDetail' && route.query.mode === 'sut') {
+      const legacyDock = getSutDockQuery(route) || 'app'
+      router.replace(buildSutRoute(currentLevel.id, legacyDock))
+      return
+    }
+
+    if (isSutMode.value) {
+      if (!project.value) {
+        router.replace(buildMainLevelRoute(currentLevel.id))
+        return
+      }
+      const dock = getSutDockQuery(route)
+      const entry = resolveSutEntry(route, project.value.id)
+      if (!dock && entry) {
+        router.replace(buildSutRoute(currentLevel.id, entry.dock))
+        return
+      }
+      if (dock && !entry) {
+        router.replace(buildMainLevelRoute(currentLevel.id))
+        return
+      }
+    } else {
+      activeDockLevelId.value = currentLevel.id
+    }
+
     resetState()
   },
   { immediate: true }
@@ -518,25 +597,30 @@ watch(
 function onLoginBugReproduced() {
   projectStore.patchLoginSut(LOGIN_MODULE_ID, { reproducedBug: true })
   progressStore.recordLoginBugReproduced()
+  showSutCompleteToast('✓ App 复现 Bug 完成 · 可返回主线写 Jira')
 }
 
 function onLoginFixVerified() {
   projectStore.patchLoginSut(LOGIN_MODULE_ID, { verifiedFix: true })
   progressStore.recordLoginFixVerified()
+  showSutCompleteToast('✓ 修复已验证 · 可返回主线勾选回归')
 }
 
 function onPaymentDbConnected() {
   projectStore.patchPaymentSut(PAYMENT_MODULE_ID, { dbConnected: true })
+  showSutCompleteToast('✓ 沙箱已连通 · 可返回主线继续配置任务')
 }
 
 function onPaymentCallbackMiss() {
   projectStore.patchPaymentSut(PAYMENT_MODULE_ID, { callbackMiss: true })
   progressStore.recordPaymentCallbackMiss()
+  showSutCompleteToast('✓ 回调缺失已复现 · 可返回主线写企微回复')
 }
 
 function onPaymentErrorReproduced() {
   projectStore.patchPaymentSut(PAYMENT_MODULE_ID, { payErrorReproduced: true })
   progressStore.recordPaymentErrorReproduced()
+  showSutCompleteToast('✓ 支付失败已复现 · 可返回主线补 Bug 单')
 }
 
 function onPaymentVerified() {
@@ -547,16 +631,19 @@ function onPaymentVerified() {
 function onOrderBottleneckIdentified() {
   projectStore.patchOrderSut(ORDER_MODULE_ID, { bottleneckIdentified: true })
   progressStore.recordOrderBottleneckIdentified()
+  showSutCompleteToast('✓ 瓶颈已定位 · 可返回主线提交选择')
 }
 
 function onProdSlowReproduced() {
   projectStore.patchOnboardSut(ONBOARD_WEEK2_ID, { prodSlowReproduced: true })
   progressStore.recordProdSlowReproduced()
+  showSutCompleteToast('✓ 慢登录已复现 · 可返回主线写 Bug 单')
 }
 
 function onLogReviewed() {
   projectStore.patchOnboardSut(ONBOARD_WEEK2_ID, { logReviewed: true })
   progressStore.recordLogReviewed()
+  showSutCompleteToast('✓ 日志已核对 · 可返回主线 grep 终端')
 }
 
 function saveStoryArtifact(submitData) {
@@ -614,6 +701,7 @@ function handlePass(submitData) {
   }
 
   passDebriefNote.value = getPassDebriefNote(level.value.id, progressStore, projectStore)
+  phaseMilestone.value = getPhaseMilestoneForLevel(level.value.id)
 
   showFeedback.value = false
   feedbackMessage.value = ''
@@ -689,6 +777,10 @@ function closeDebrief() {
 }
 
 function goBack() {
+  if (isSutMode.value) {
+    goToMainTask()
+    return
+  }
   router.push('/')
 }
 </script>
@@ -705,27 +797,34 @@ function goBack() {
     :dock-items="dockItems"
     :inbox-messages="storyContext.inbox"
     :env-status="storyContext.envStatus"
-    @dock-change="activeDockLevelId = $event"
+    :view-mode="isSutMode ? 'sut' : 'main'"
+    :sut-label="sutEntry?.label || ''"
+    @dock-change="handleDockChange"
     @back="goBack"
   >
-    <section v-if="!showDebrief && isTaskView" class="task-panel task-panel--compact">
-      <p v-if="isExtraLevel" class="task-panel__extra-tag">
-        {{ isDailyQuestId(levelId) ? '📅 每日特训' : '🎬 番外关卡' }}
-      </p>
-      <div class="task-panel__action">
-        <span class="task-panel__action-icon">📋</span>
-        <p>{{ level.content }}</p>
+    <section v-if="!showDebrief && isSutMode" class="sut-mode">
+      <div class="sut-mode__toolbar">
+        <button type="button" class="sut-mode__back-main" @click="goToMainTask">
+          ← 返回主线任务
+        </button>
+        <span v-if="sutEntry" class="sut-mode__goal">{{ sutEntry.label }}</span>
       </div>
-      <details class="task-panel__details">
-        <summary>背景与判定标准</summary>
-        <p class="task-panel__text">{{ level.description }}</p>
-        <p class="task-panel__criteria-inline">{{ validationCriteria }}</p>
-      </details>
-    </section>
 
-    <section v-if="!showDebrief && isTaskView" class="workbench__sim-area">
-      <div v-if="showInlineLoginSut" class="login-sut-panel">
-        <p class="login-sut-panel__lead">{{ loginSutLead }}</p>
+      <ol v-if="sutSteps.length" class="sut-mode__steps">
+        <li
+          v-for="(step, idx) in sutSteps"
+          :key="idx"
+          class="sut-mode__step"
+          :class="{ 'sut-mode__step--done': step.done }"
+        >
+          {{ step.done ? '✓' : idx + 1 }}. {{ step.text }}
+        </li>
+      </ol>
+
+      <p v-if="sutToast" class="sut-mode__toast">{{ sutToast }}</p>
+
+      <div v-if="showInlineLoginSut" class="sut-mode__panel">
+        <p class="login-sut-panel__lead">{{ loginSutLead || '在被测 App 中完成上述步骤。' }}</p>
         <LoginAppMock
           :build="loginBuild"
           :initial-reproduced="loginSutState.reproducedBug"
@@ -735,8 +834,8 @@ function goBack() {
         />
       </div>
 
-      <div v-if="showInlinePaymentSut" class="login-sut-panel">
-        <p class="login-sut-panel__lead">{{ paymentSutLead }}</p>
+      <div v-else-if="showInlinePaymentSut" class="sut-mode__panel">
+        <p class="login-sut-panel__lead">{{ paymentSutLead || '在支付 App 中完成上述步骤。' }}</p>
         <PaymentAppMock
           :scenario="paymentScenario"
           :initial-callback-miss="paymentSutState.callbackMiss"
@@ -748,8 +847,8 @@ function goBack() {
         />
       </div>
 
-      <div v-if="showInlineOrderObs" class="login-sut-panel">
-        <p class="login-sut-panel__lead">{{ orderObsLead }}</p>
+      <div v-else-if="showInlineOrderObs" class="sut-mode__panel">
+        <p class="login-sut-panel__lead">{{ orderObsLead || '在 APM 面板中完成上述步骤。' }}</p>
         <OrderObsPanel
           :mode="orderObsMode"
           :initial-bottleneck="orderSutState.bottleneckIdentified"
@@ -757,8 +856,8 @@ function goBack() {
         />
       </div>
 
-      <div v-if="showInlineOnCall" class="login-sut-panel">
-        <p class="login-sut-panel__lead">{{ onCallLead }}</p>
+      <div v-else-if="showInlineOnCall" class="sut-mode__panel">
+        <p class="login-sut-panel__lead">{{ onCallLead || '在值班面板中完成上述步骤。' }}</p>
         <OnCallPanel
           :mode="onCallMode"
           :log-lines="onCallLogLines"
@@ -768,7 +867,40 @@ function goBack() {
           @log-reviewed="onLogReviewed"
         />
       </div>
+    </section>
 
+    <section v-if="!showDebrief && isTaskView" class="task-panel task-panel--compact">
+      <p v-if="isExtraLevel" class="task-panel__extra-tag">
+        {{ isDailyQuestId(levelId) ? '📅 每日特训' : '🎬 番外关卡' }}
+      </p>
+      <p v-if="deliverable" class="task-panel__deliverable">
+        <span class="task-panel__deliverable-label">今日交付物</span>
+        {{ deliverable }}
+      </p>
+      <div class="task-panel__action">
+        <span class="task-panel__action-icon">📋</span>
+        <p>{{ level.content }}</p>
+      </div>
+      <div v-if="sutEntriesOnLevel.length" class="task-panel__sut-links">
+        <span class="task-panel__sut-label">可选上机实操（不影响通关）：</span>
+        <button
+          v-for="entry in sutEntriesOnLevel"
+          :key="entry.key"
+          type="button"
+          class="task-panel__sut-link"
+          @click="openSutEntry(entry)"
+        >
+          ▶ {{ entry.label }}
+        </button>
+      </div>
+      <details class="task-panel__details">
+        <summary>背景与判定标准</summary>
+        <p class="task-panel__text">{{ level.description }}</p>
+        <p class="task-panel__criteria-inline">{{ validationCriteria }}</p>
+      </details>
+    </section>
+
+    <section v-if="!showDebrief && isTaskView" class="workbench__sim-area">
       <div class="sim-workspace__header">
         <span class="sim-workspace__tag">{{ simGuide.label }}</span>
         <span
@@ -808,65 +940,8 @@ function goBack() {
       />
     </section>
 
-    <section v-if="!showDebrief && isLoginAppView" class="workbench__sim-area">
-      <div class="sim-workspace__header">
-        <span class="sim-workspace__tag">被测 App</span>
-        <span class="level-detail__tool">登录模块 · 测试包</span>
-      </div>
-      <LoginAppMock
-        :build="loginBuild"
-        :initial-reproduced="loginSutState.reproducedBug"
-        :initial-fix-verified="loginSutState.verifiedFix"
-        @bug-reproduced="onLoginBugReproduced"
-        @fix-verified="onLoginFixVerified"
-      />
-    </section>
-
-    <section v-if="!showDebrief && isPaymentAppView" class="workbench__sim-area">
-      <div class="sim-workspace__header">
-        <span class="sim-workspace__tag">支付 App</span>
-        <span class="level-detail__tool">支付模块 · 测试包</span>
-      </div>
-      <PaymentAppMock
-        :scenario="paymentScenario"
-        :initial-callback-miss="paymentSutState.callbackMiss"
-        :initial-pay-error="paymentSutState.payErrorReproduced"
-        :initial-pay-verified="paymentSutState.payVerified"
-        @callback-miss="onPaymentCallbackMiss"
-        @pay-error-reproduced="onPaymentErrorReproduced"
-        @pay-verified="onPaymentVerified"
-      />
-    </section>
-
-    <section v-if="!showDebrief && isOrderObsView" class="workbench__sim-area">
-      <div class="sim-workspace__header">
-        <span class="sim-workspace__tag">可观测面板</span>
-        <span class="level-detail__tool">订单模块 · APM / 监控</span>
-      </div>
-      <OrderObsPanel
-        :mode="orderObsMode"
-        :initial-bottleneck="orderSutState.bottleneckIdentified"
-        @bottleneck-identified="onOrderBottleneckIdentified"
-      />
-    </section>
-
-    <section v-if="!showDebrief && isOnCallView" class="workbench__sim-area">
-      <div class="sim-workspace__header">
-        <span class="sim-workspace__tag">值班面板</span>
-        <span class="level-detail__tool">线上值班 · 入职第 2 周</span>
-      </div>
-      <OnCallPanel
-        :mode="onCallMode"
-        :log-lines="onCallLogLines"
-        :initial-prod-slow="onboardSutState.prodSlowReproduced"
-        :initial-log-reviewed="onboardSutState.logReviewed"
-        @prod-slow-reproduced="onProdSlowReproduced"
-        @log-reviewed="onLogReviewed"
-      />
-    </section>
-
     <ProjectContextPanel
-      v-if="!showDebrief && !isTaskView && !isLoginAppView && !isPaymentAppView && !isOrderObsView && !isOnCallView && project"
+      v-if="!showDebrief && !isSutMode && !isTaskView && project"
       :project="project"
       :source-level-id="activeDockLevelId"
       :current-level-id="level.id"
@@ -896,6 +971,7 @@ function goBack() {
       :jira-tier="sessionJiraTier"
       :tip-label="phase?.debriefTipLabel || '职场建议'"
       :rank-up="rankUp"
+      :phase-milestone="phaseMilestone"
       @close="closeDebrief"
     />
   </WorkbenchShell>

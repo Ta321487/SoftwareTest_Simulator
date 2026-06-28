@@ -1,52 +1,18 @@
-import { LOGIN_MODULE_ID } from './loginSut.js'
-import { PAYMENT_MODULE_ID } from './paymentSut.js'
-import { ORDER_MODULE_ID } from './orderSut.js'
-import { ONBOARD_WEEK2_ID } from './onboardSut.js'
+import { IMMERSION_BY_PROJECT, isImmersionDone } from './sutImmersion.js'
 
-const IMMERSION_DEFS = {
-  [LOGIN_MODULE_ID]: [
-    { key: 'reproducedBug', label: 'App 复现 Bug' },
-    { key: 'verifiedFix', label: 'App 验证修复' },
-  ],
-  [PAYMENT_MODULE_ID]: [
-    { key: 'dbConnected', label: '沙箱连通' },
-    { key: 'callbackMiss', label: '回调缺失复现' },
-    { key: 'payErrorReproduced', label: '支付失败复现' },
-  ],
-  [ORDER_MODULE_ID]: [{ key: 'bottleneckIdentified', label: 'APM 定位瓶颈' }],
-  [ONBOARD_WEEK2_ID]: [
-    { key: 'prodSlowReproduced', label: '生产慢登录复现' },
-    { key: 'logReviewed', label: '日志摘要已阅' },
-  ],
-}
-
-function getSut(projectStore, projectId) {
-  switch (projectId) {
-    case LOGIN_MODULE_ID:
-      return projectStore.getLoginSut(projectId)
-    case PAYMENT_MODULE_ID:
-      return projectStore.getPaymentSut(projectId)
-    case ORDER_MODULE_ID:
-      return projectStore.getOrderSut(projectId)
-    case ONBOARD_WEEK2_ID:
-      return projectStore.getOnboardSut(projectId)
-    default:
-      return {}
-  }
-}
-
-/** 首页展示：各项目剧本可选沉浸体验完成度 */
+/** 首页展示：各项目线上机实操完成度 */
 export function getProjectImmersion(projectId, projectStore) {
-  const defs = IMMERSION_DEFS[projectId] || []
+  const defs = IMMERSION_BY_PROJECT[projectId] || []
   if (!defs.length) {
-    return { total: 0, done: 0, items: [], label: '' }
+    return { total: 0, done: 0, items: [], entries: [], label: '' }
   }
 
-  const sut = getSut(projectStore, projectId)
   const items = defs.map((d) => ({
     key: d.key,
     label: d.label,
-    done: Boolean(sut[d.key]),
+    levelId: d.levelId,
+    dock: d.dock,
+    done: isImmersionDone(d, projectStore, projectId),
   }))
   const done = items.filter((i) => i.done).length
 
@@ -54,14 +20,16 @@ export function getProjectImmersion(projectId, projectStore) {
     total: items.length,
     done,
     items,
-    label: done > 0 ? `沉浸 ${done}/${items.length}` : '含可选 App/监控体验',
+    entries: defs,
+    label: done > 0 ? `上机实操 ${done}/${items.length}` : '含可选上机实操',
   }
 }
 
 export const HOME_PROJECT_IDS = [
-  LOGIN_MODULE_ID,
-  PAYMENT_MODULE_ID,
-  ORDER_MODULE_ID,
-  ONBOARD_WEEK2_ID,
-  'season2-lead',
+  'login-module',
+  'payment-module',
+  'order-module',
+  'onboard-week2',
 ]
+
+export { getImmersionEntries, buildSutRoute, IMMERSION_BY_PROJECT } from './sutImmersion.js'

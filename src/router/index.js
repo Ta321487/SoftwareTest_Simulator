@@ -15,6 +15,11 @@ const routes = [
     component: Handbook,
   },
   {
+    path: '/level/:id/sut/:dock',
+    name: 'LevelSut',
+    component: LevelDetail,
+  },
+  {
     path: '/level/:id',
     name: 'LevelDetail',
     component: LevelDetail,

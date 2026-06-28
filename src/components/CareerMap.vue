@@ -39,7 +39,7 @@ const tabs = computed(() =>
   <section class="career-map">
     <header class="career-map__head">
       <h2 class="career-map__title">主线关卡</h2>
-      <p class="career-map__hint">按阶段选关，不用一路滚到底</p>
+      <p class="career-map__hint">唯一闯关入口 · 按阶段选关交作业</p>
     </header>
 
     <div class="career-map__tabs" role="tablist">

@@ -5,6 +5,7 @@ import { projects } from '../../data/projects'
 import { useProgressStore } from '../../stores/progressStore'
 import { useProjectStore } from '../../stores/projectStore'
 import { getProjectImmersion } from '../../utils/projectImmersion'
+import { buildSutRoute } from '../../utils/sutImmersion'
 
 const props = defineProps({
   projectId: {
@@ -32,10 +33,19 @@ const completedCount = computed(
   () => days.value.filter((d) => d.status === 'completed').length
 )
 
-function goToDay(levelId) {
-  const status = progressStore.getStatus(levelId)
+function openImmersion(item) {
+  const status = progressStore.getStatus(item.levelId)
   if (status === 'locked') return
-  router.push('/level/' + levelId)
+  router.push(buildSutRoute(item.levelId, item.dock))
+}
+
+function goToDay(levelId) {
+  if (progressStore.getStatus(levelId) === 'locked') return
+  router.push({ name: 'LevelDetail', params: { id: String(levelId) } })
+}
+
+function immersionLocked(item) {
+  return progressStore.getStatus(item.levelId) === 'locked'
 }
 </script>
 
@@ -49,17 +59,28 @@ function goToDay(levelId) {
       <span class="project-timeline__progress">{{ completedCount }}/{{ days.length }} 天</span>
     </div>
 
+    <p class="project-timeline__hint">
+      <strong>Day</strong> 卡片 → 主线关卡；上方 <strong>▶</strong> → 上机实操（可选，不影响通关）。
+    </p>
+
     <div v-if="immersion.total" class="project-timeline__immersion">
       <span class="project-timeline__immersion-label">{{ immersion.label }}</span>
-      <div class="project-timeline__immersion-tags">
-        <span
+      <div class="project-timeline__immersion-actions">
+        <button
           v-for="item in immersion.items"
           :key="item.key"
-          class="project-timeline__immersion-tag"
-          :class="{ 'project-timeline__immersion-tag--done': item.done }"
+          type="button"
+          class="project-timeline__immersion-btn"
+          :class="{
+            'project-timeline__immersion-btn--done': item.done,
+            'project-timeline__immersion-btn--locked': immersionLocked(item),
+          }"
+          :disabled="immersionLocked(item)"
+          :title="immersionLocked(item) ? `先解锁主线第 ${item.levelId} 关` : `进入上机实操：${item.label}`"
+          @click="openImmersion(item)"
         >
-          {{ item.done ? '✓' : '○' }} {{ item.label }}
-        </span>
+          {{ item.done ? '✓' : '▶' }} {{ item.label }}
+        </button>
       </div>
     </div>
 
@@ -74,6 +95,7 @@ function goToDay(levelId) {
           { 'project-timeline__day--last': index === days.length - 1 },
         ]"
         :disabled="day.status === 'locked'"
+        :title="day.status === 'locked' ? '完成前一关主线后解锁' : `进入主线：${day.title}`"
         @click="goToDay(day.levelId)"
       >
         <span class="project-timeline__day-label">{{ day.label }}</span>

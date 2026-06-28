@@ -35,6 +35,36 @@
   border-bottom: 1px solid var(--border-subtle);
 }
 
+.debrief-panel__phase-milestone {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 0 20px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(52, 211, 153, 0.1));
+  border: 1px solid rgba(124, 58, 237, 0.35);
+}
+
+.debrief-panel__phase-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.debrief-panel__phase-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin: 0 0 4px;
+  color: var(--text-primary);
+}
+
+.debrief-panel__phase-msg {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
 .debrief-panel__heading {
   min-width: 0;
 }

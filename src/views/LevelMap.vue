@@ -47,7 +47,7 @@ function showOnboarding() {
       <div class="workbench__topbar-left">
         <div class="workbench__title-block">
           <h1 class="workbench__title workbench__title--app">测试人一生</h1>
-          <p class="workbench__subtitle">主线 27 关 · 番外支线 · 每日特训</p>
+          <p class="workbench__subtitle">主线 33 关 · 番外 · 每日 · 上机实操</p>
         </div>
       </div>
       <div class="workbench__topbar-right">
@@ -94,10 +94,10 @@ function showOnboarding() {
         <SideQuestHub />
 
         <details class="home-fold">
-          <summary class="home-fold__summary">项目剧本 · 沉浸进度（可选）</summary>
+          <summary class="home-fold__summary">项目剧本 · 上机实操（可选）</summary>
           <div class="home-fold__body">
             <p class="home-map__projects-desc">
-              五大项目线含 App / 监控 / 值班 / Lead 体验。通关不依赖这些，但做完更像真实上班。
+              <strong>Day 卡片</strong>进入对应主线关；<strong>▶ 按钮</strong>进入独立上机实操页（App / 监控 / 值班，可选）。
             </p>
             <ProjectTimeline
               v-for="projectId in HOME_PROJECT_IDS"

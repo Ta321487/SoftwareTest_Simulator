@@ -46,6 +46,14 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  viewMode: {
+    type: String,
+    default: 'main',
+  },
+  sutLabel: {
+    type: String,
+    default: '',
+  },
 })
 
 defineEmits(['dock-change', 'back'])
@@ -53,6 +61,9 @@ defineEmits(['dock-change', 'back'])
 const isTaskDock = computed(() => props.activeDockLevelId === props.level.id)
 
 const headerTitle = computed(() => {
+  if (props.viewMode === 'sut') {
+    return `🎮 上机实操${props.project ? ` · ${props.project.name}` : ''}`
+  }
   if (props.phase && props.phaseStep) {
     return `${props.phase.icon} ${props.phase.name} · 第 ${props.phaseStep.index} 关`
   }
@@ -63,6 +74,9 @@ const headerTitle = computed(() => {
 })
 
 const headerSubtitle = computed(() => {
+  if (props.viewMode === 'sut') {
+    return props.sutLabel || '可选实操，不影响主线通关'
+  }
   if (props.phase) return props.level.title
   return props.project?.subtitle || ''
 })
@@ -84,15 +98,15 @@ const unreadCount = computed(() => props.inboxMessages.filter((m) => !m.read).le
         <WorkInbox :messages="inboxMessages" />
         <span v-if="unreadCount" class="workbench__badge">{{ unreadCount }} 未读</span>
         <RankBadge :xp="progressStore.totalXp" compact class="workbench__rank-compact" />
-        <span class="workbench__level-tag">#{{ level.id }}</span>
+      <span class="workbench__level-tag">{{ viewMode === 'sut' ? '上机' : '主线' }} · #{{ level.id }}</span>
         <ThemeToggle />
       </div>
     </header>
 
     <WorkStatusBar :items="envStatus" />
 
-    <div class="workbench__body">
-      <aside class="workbench__dock">
+    <div class="workbench__body" :class="{ 'workbench__body--sut': viewMode === 'sut' }">
+      <aside v-if="viewMode === 'main'" class="workbench__dock">
         <p class="workbench__dock-label">工作台</p>
         <button
           v-for="item in dockItems"

@@ -141,6 +141,47 @@
   color: var(--success, #22c55e);
 }
 
+.project-timeline__hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0 0 12px;
+}
+
+.project-timeline__hint strong {
+  color: var(--text-secondary);
+}
+
+.project-timeline__immersion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.project-timeline__immersion-btn {
+  font-size: 0.78rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--cyan-border);
+  background: var(--surface-muted);
+  color: var(--accent-cyan);
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+
+.project-timeline__immersion-btn:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.project-timeline__immersion-btn--done {
+  border-color: var(--green-border);
+  color: var(--success, #22c55e);
+}
+
+.project-timeline__immersion-btn--locked {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .home-map__projects {
   margin-top: 32px;
   display: flex;

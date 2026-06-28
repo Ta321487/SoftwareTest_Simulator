@@ -55,6 +55,10 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  phaseMilestone: {
+    type: Object,
+    default: null,
+  },
 })
 
 const emit = defineEmits(['close'])
@@ -99,6 +103,14 @@ const showHighlights = computed(
           </span>
         </div>
       </header>
+
+      <div v-if="phaseMilestone" class="debrief-panel__phase-milestone">
+        <span class="debrief-panel__phase-icon">{{ phaseMilestone.icon }}</span>
+        <div>
+          <p class="debrief-panel__phase-title">{{ phaseMilestone.title }}</p>
+          <p class="debrief-panel__phase-msg">{{ phaseMilestone.message }}</p>
+        </div>
+      </div>
 
       <div v-if="showAlerts" class="debrief-panel__alerts">
         <p v-if="improved" class="debrief-panel__improved">🎉 刷新最高星级记录！</p>
