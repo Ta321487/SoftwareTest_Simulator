@@ -17,3 +17,31 @@ export function matchesHandbookSearch(entry, query) {
     entry.phaseName?.toLowerCase().includes(q)
   )
 }
+
+export function getGlossaryBlurb(term) {
+  if (!term) return ''
+  return term.definition || ''
+}
+
+export function matchesGlossarySearch(term, query, categoryName = '') {
+  const q = query.trim().toLowerCase()
+  if (!q) return true
+  const aliasHit = term.aliases?.some((a) => a.toLowerCase().includes(q))
+  return (
+    term.term?.toLowerCase().includes(q) ||
+    aliasHit ||
+    term.definition?.toLowerCase().includes(q) ||
+    term.example?.toLowerCase().includes(q) ||
+    categoryName.toLowerCase().includes(q)
+  )
+}
+
+export function filterGlossaryTerms(terms, { query = '', categoryId = 'all' } = {}, getCategoryName) {
+  const q = query.trim()
+  return terms.filter((term) => {
+    const categoryName = getCategoryName?.(term.category) || term.category || ''
+    if (categoryId !== 'all' && term.category !== categoryId) return false
+    if (!q) return true
+    return matchesGlossarySearch(term, q, categoryName)
+  })
+}

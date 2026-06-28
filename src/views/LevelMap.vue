@@ -88,7 +88,7 @@ function showOnboarding() {
         </button>
         <button type="button" class="workbench__dock-item" @click="router.push('/handbook')">
           <span class="workbench__dock-icon">📖</span>
-          <span class="workbench__dock-text">手札</span>
+          <span class="workbench__dock-text">手札·百科</span>
         </button>
       </aside>
 
