@@ -97,7 +97,7 @@ function showOnboarding() {
           <summary class="home-fold__summary">项目剧本 · 沉浸进度（可选）</summary>
           <div class="home-fold__body">
             <p class="home-map__projects-desc">
-              四大项目线含 App / 监控 / 值班体验。通关不依赖这些，但做完更像真实上班。
+              五大项目线含 App / 监控 / 值班 / Lead 体验。通关不依赖这些，但做完更像真实上班。
             </p>
             <ProjectTimeline
               v-for="projectId in HOME_PROJECT_IDS"

@@ -25,6 +25,8 @@ export function getValidationCriteria(level) {
       return '结合场景数据与团队/环境背景，选择最合理的一项。'
     case 'calculator':
       return '按公式自行计算，在结果框填写数字（建议两位小数），参数无需修改。'
+    case 'packet':
+      return '点击最可疑的 HTTP 请求（关注 status、Host/URL 是否与测试环境一致），然后确认提交。'
     default:
       return '完成操作后提交。'
   }

@@ -68,6 +68,12 @@ export function getFailureHint(level, data, result) {
         ? `你选了「${picked.label}」。${pitfall || '请结合场景中的数据与环境背景重新分析。'}`
         : pitfall || ''
     }
+    case 'packet': {
+      const picked = level.packetRequests?.find((o) => o.id === data.selected)
+      return picked
+        ? `你选了 ${picked.method} ${picked.url}（${picked.status}）。${pitfall || '对照回调链路与 Host 环境重新分析。'}`
+        : pitfall || ''
+    }
     case 'jira':
       return pitfall ? `常见坑：${pitfall}` : ''
     case 'template':

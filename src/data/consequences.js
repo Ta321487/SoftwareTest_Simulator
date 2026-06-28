@@ -10,6 +10,7 @@ const MISTAKE_SIM_TYPES = new Set([
   'template',
   'apiclient',
   'terminal',
+  'packet',
 ])
 
 export function shouldRecordMistake(simType) {
@@ -70,7 +71,16 @@ export function applyConsequences(levelId, { progressStore, projectStore }) {
   const m7 = mistakes(progressStore, 7)
   const m8 = mistakes(progressStore, 8)
   const m9 = mistakes(progressStore, 9)
+  const m11 = mistakes(progressStore, 11)
+  const m12 = mistakes(progressStore, 12)
+  const m13 = mistakes(progressStore, 13)
+  const m14 = mistakes(progressStore, 14)
+  const m15 = mistakes(progressStore, 15)
   const m21 = mistakes(progressStore, 21)
+  const m22 = mistakes(progressStore, 22)
+  const m23 = mistakes(progressStore, 23)
+  const m24 = mistakes(progressStore, 24)
+  const m28 = mistakes(progressStore, 28)
 
   // —— 登录模块 ——
   if (levelId === 2 && m1 > 0) {
@@ -185,6 +195,143 @@ export function applyConsequences(levelId, { progressStore, projectStore }) {
     })
   }
 
+  // —— 订单模块 ——
+  if (levelId === 12 && m11 > 0) {
+    inbox.push({
+      id: 'conseq-l12-schedule',
+      from: '项目经理',
+      avatar: '📋',
+      time: '10:00',
+      text: '上次工时估算偏乐观，今天定位性能瓶颈时别把 Nginx 当首嫌——先看数据最大的那段。',
+      read: false,
+    })
+    envStatus.push({ label: '订单 P99', value: '● 2.1s', tone: 'warn' })
+  }
+
+  if (levelId === 13 && m12 > 0) {
+    inbox.push({
+      id: 'conseq-l13-perf',
+      from: '架构师老周',
+      avatar: '🧑‍💻',
+      time: '11:15',
+      text: '链路里 MySQL 800ms 才是大头。框架选型别被「社区最火」带跑，看团队栈。',
+      read: false,
+    })
+  }
+
+  if (levelId === 14 && m13 > 0) {
+    inbox.push({
+      id: 'conseq-l14-framework',
+      from: '测试组长',
+      avatar: '👩‍💼',
+      time: '09:40',
+      text: '自动化框架选型和灰度监控是两件事——今天放量前务必盯支付成功率，别选 UI 像素当监控项。',
+      read: false,
+    })
+  }
+
+  if (levelId === 15 && m14 > 0) {
+    inbox.push({
+      id: 'conseq-l15-gray',
+      from: 'SRE',
+      avatar: '📡',
+      time: '15:20',
+      text: '灰度监控漏看支付成功率的话，P0 复盘写再漂亮也是事后诸葛亮。措施要 actionable。',
+      read: false,
+    })
+  }
+
+  if (levelId === 22 && m15 > 0) {
+    inbox.push({
+      id: 'conseq-l22-p0',
+      from: '测试组长',
+      avatar: '👩‍💼',
+      time: '08:30',
+      text: '上次 P0 复盘措施写太虚。今天线上 Bug 单步骤要写清 4G 环境，别又来「加强测试」。',
+      read: false,
+    })
+    envStatus.push({ label: '线上登录 P99', value: '● 8s 投诉中', tone: 'warn' })
+  }
+
+  // —— 值班线 ——
+  if (levelId === 23 && m22 > 0) {
+    inbox.push({
+      id: 'conseq-l23-jira',
+      from: '王工',
+      avatar: '👨‍💻',
+      time: '09:10',
+      text: 'TEST-1022 步骤里网络环境不够具体，grep 前先确认 error.log 路径，别 tail 错文件。',
+      read: false,
+    })
+  }
+
+  if (levelId === 24 && m23 > 0) {
+    inbox.push({
+      id: 'conseq-l24-grep',
+      from: '运维',
+      avatar: '🛠️',
+      time: '10:25',
+      text: '日志关键字 grep 偏了。升级 PM 前把 AuthController timeout 和 TEST-1022 现象对齐。',
+      read: false,
+    })
+  }
+
+  if (levelId === 25 && m24 > 0) {
+    inbox.push({
+      id: 'conseq-l25-escalate',
+      from: 'PM',
+      avatar: '👔',
+      time: '16:00',
+      text: '升级邮件缺影响面和 Blocker 状态。满月总结别流水账，写成果 + 踩坑 + 下月可交付目标。',
+      read: false,
+    })
+  }
+
+  if (levelId === 25 && m4 > 0 && m15 === 0) {
+    inbox.push({
+      id: 'conseq-l25-regression-echo',
+      from: '系统提醒',
+      avatar: '📎',
+      time: '刚刚',
+      text: '档案备注：备考阶段回归曾漏 FAIL 项——满月总结可反思「风险驱动回归」的实践。',
+      read: true,
+    })
+  }
+
+  // —— 进阶线 ——
+  if (levelId === 29 && m28 > 0) {
+    inbox.push({
+      id: 'conseq-l29-review',
+      from: '实习生小赵',
+      avatar: '🧑‍🎓',
+      time: '09:30',
+      text: '谢谢 Review！我按您说的补了边界用例。今天 Bug 单您再帮我把标题改具体一点？',
+      read: false,
+    })
+  }
+
+  if (levelId === 31 && mistakes(progressStore, 7) > 0) {
+    inbox.push({
+      id: 'conseq-l31-callback-echo',
+      from: '李工',
+      avatar: '👨‍💻',
+      time: '10:00',
+      text: '又是回调地址问题？抓包先看 notify Host 是不是 prod——支付 Day 2 那关练过类似的。',
+      read: false,
+    })
+  }
+
+  if (levelId === 33 && (m15 > 0 || mistakes(progressStore, 12) > 0)) {
+    inbox.push({
+      id: 'conseq-l33-promo',
+      from: 'SRE',
+      avatar: '📡',
+      time: '14:00',
+      text: '大促 Go/No-Go：错误率比 P99 更要命。上次性能/复盘关有失误的话，今天决策务必看库存服务。',
+      read: false,
+    })
+  }
+
   return { inbox, envStatus }
 }
 
@@ -263,6 +410,15 @@ export function getPassDebriefNote(levelId, progressStore, projectStore = null) 
   }
   if (levelId === 10 && m9 > 0) {
     return '📝 日报发出去了。运维备注：分支核对要养成习惯，笔试和入职都会考。'
+  }
+  if (levelId === 28) {
+    return '👩‍🏫 小赵去补用例了。带人时指出缺口 + 给示范场景，比代写更能涨战力。'
+  }
+  if (levelId === 31) {
+    return '🔍 回调 Host 指向 prod——经典坑。抓包 + 配置中心双核对，比猜代码快十倍。'
+  }
+  if (levelId === 33) {
+    return '🎯 Go/No-Go 写进邮件存档。错误率超 SLO 时 No-Go 不是怂，是对用户负责。'
   }
   return null
 }

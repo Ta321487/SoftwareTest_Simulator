@@ -156,6 +156,20 @@ export const achievements = [
     desc: '值班 grep 关先阅 error.log 摘要',
     check: (s) => s.logReviewed === true,
   },
+  {
+    id: 'lead_graduate',
+    icon: '🚀',
+    title: '进阶结业',
+    desc: '完成进阶线全部 6 关',
+    check: (s) => [28, 29, 30, 31, 32, 33].every((id) => s.completedLevelIds.includes(id)),
+  },
+  {
+    id: 'packet_pro',
+    icon: '🔍',
+    title: '抓包能手',
+    desc: '完成任意抓包关卡（番外 113 或进阶 31）',
+    check: (s) => [113, 31].some((id) => s.completedLevelIds.includes(id)),
+  },
 ]
 
 export function evaluateAchievements(state) {

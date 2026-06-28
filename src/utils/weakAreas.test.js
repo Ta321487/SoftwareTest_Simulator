@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getWeakAreas } from './weakAreas'
+import { getWeakAreas, getWeakSimTypeDrills } from './weakAreas'
 
 describe('getWeakAreas', () => {
   it('returns empty when no weak signals', () => {
@@ -22,5 +22,17 @@ describe('getWeakAreas', () => {
       completedLevelIds: [4, 7],
     })
     expect(areas.map((a) => a.levelId).sort()).toEqual([4, 7])
+  })
+})
+
+describe('getWeakSimTypeDrills', () => {
+  it('groups weak levels by simType', () => {
+    const drills = getWeakSimTypeDrills({
+      levelMistakes: { 2: 2, 3: 1 },
+      completedLevelIds: [2, 3],
+    })
+    expect(drills.length).toBeGreaterThan(0)
+    expect(drills[0]).toHaveProperty('simType')
+    expect(drills[0]).toHaveProperty('levelId')
   })
 })

@@ -53,6 +53,30 @@ export const sideDebriefs = {
     pitfalls: '自动化从 UI 像素或低频报表开始；忽略支付验签。',
     workplace: '自动化 backlog 按：频率 × 风险 × 维护成本 排序。',
   },
+  110: {
+    summary: '你圈出了 API 鉴权与水平/垂直越权测试点。',
+    why: '接口安全首测：未登录、越权访问、参数篡改；UI 细节不在安全冒烟范围。',
+    pitfalls: '只测 happy path 200；忽略 userId 篡改；把样式当安全项。',
+    workplace: '每个新接口至少过：401/403 + 水平越权 + 敏感参数篡改。',
+  },
+  111: {
+    summary: '你选对「回调延迟导致暂未落库」作为对账差异首查方向。',
+    why: '异步支付链路中，网关成功 ≠ 业务库即时一致；重试队列是常见差异源。',
+    pitfalls: '先怀疑财务 Excel；忽略回调时序；未查重试/死信队列。',
+    workplace: '对账三步：网关流水 → 回调日志 → 业务库状态，按时间窗对齐。',
+  },
+  112: {
+    summary: '你圈出了安全区、底栏遮挡与异形屏适配项。',
+    why: '全面屏/H5 必测 safe-area 与固定底栏；横屏和 Android 挖孔屏同类问题高发。',
+    pitfalls: '只测 iPhone 竖屏；忽略 safe-area-inset；不测 Android 异形屏。',
+    workplace: '兼容矩阵加一列：安全区 × 横竖屏 × 目标容器。',
+  },
+  113: {
+    summary: '你定位到回调请求指向生产域名导致 404。',
+    why: '测试环境 notify URL 配错是「支付成功但订单不更新」的高频根因；抓包看 Host 和 status。',
+    pitfalls: '只看 200 的创建订单；忽略回调 404；不核对域名环境。',
+    workplace: '联调抓包必看：回调 URL 环境、status、body 验签结果。',
+  },
 }
 
 export const dailyDebriefs = {
@@ -175,6 +199,24 @@ export const dailyDebriefs = {
     why: 'Blocker 定义为核心路径不可用或数据风险，未关不应放行。',
     pitfalls: '其他模块 PASS 就签字；相信「今晚一定修完」。',
     workplace: '发布决策写清 Blocker 清单与延期/裁剪方案。',
+  },
+  'auth-checklist-daily': {
+    summary: '你圈出了未登录、过期 token 与越权访问项。',
+    why: '鉴权冒烟三板斧：401、过期拒绝、水平越权。',
+    pitfalls: '只测登录成功；忽略 token 过期；把 JSON 格式当测试点。',
+    workplace: '新接口上线前跑一轮鉴权 checklist，比事后补洞便宜。',
+  },
+  'reconcile-daily': {
+    summary: '你选对回调延迟/重试作为对账差异首查方向。',
+    why: '异步链路下网关与业务库存在时间差，重试队列是常见解释。',
+    pitfalls: '先改 Excel；忽略回调日志；未对齐时间窗。',
+    workplace: '对账从回调日志 + 订单状态机入手，不要先怀疑财务。',
+  },
+  'safe-area-daily': {
+    summary: '你圈出了安全区、底栏遮挡与 Android 异形屏项。',
+    why: '全面屏适配的核心是可达性与 safe-area，不是分享文案。',
+    pitfalls: '只测一款 iPhone；忽略 inset；不测横屏。',
+    workplace: 'H5 兼容加「安全区 + 固定底栏」专项冒烟。',
   },
 }
 

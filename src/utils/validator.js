@@ -188,6 +188,19 @@ export function validateSimulation(level, data) {
       }
     }
 
+    case 'packet': {
+      const isPass = data.selected === level.correctClick
+      if (!data.selected) {
+        return { isPass: false, message: '请先点击选中一条请求，再确认提交。' }
+      }
+      return {
+        isPass,
+        message: isPass
+          ? '定位正确！'
+          : '选错了。对照 status、Host/URL 环境与业务链路（支付→回调→落库）重新分析。',
+      }
+    }
+
     case 'calculator': {
       const fields = data.values || {}
       const userAnswer = normalizeCalcAnswer(data.userResult)

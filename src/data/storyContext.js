@@ -499,6 +499,84 @@ Content-Type: application/json
       { label: '职级', value: '随 XP 成长', tone: 'neutral' },
     ],
   },
+  28: {
+    inbox: [
+      {
+        id: 'intern-cases',
+        from: '实习生小赵',
+        avatar: '🧑‍🎓',
+        time: '09:00',
+        text: '姐/哥，我交了登录用例初稿，麻烦帮忙 Review 一下，边界场景我可能漏了…',
+        read: false,
+      },
+    ],
+    envStatus: [{ label: '带教任务', value: 'Review 用例', tone: 'neutral' }],
+  },
+  29: {
+    inbox: [
+      {
+        id: 'intern-bug',
+        from: '实习生小赵',
+        avatar: '🧑‍🎓',
+        time: '10:15',
+        text: 'Bug 单我提交了，标题可能写得不太清楚…您能帮我把关一下吗？',
+        read: false,
+      },
+    ],
+  },
+  30: {
+    inbox: [
+      {
+        id: 'pm-schedule',
+        from: '项目经理',
+        avatar: '📋',
+        time: '11:00',
+        text: '订单大改版下周提测，6 个模块各 50 条用例。帮算一下需要几人日，周五前要排期。',
+        read: false,
+      },
+    ],
+  },
+  31: {
+    inbox: [
+      {
+        id: 'pay-callback',
+        from: '李工',
+        avatar: '👨‍💻',
+        time: '14:30',
+        text: '测试环境支付成功但订单 pending，我怀疑回调。Charles 会话导出了，帮看哪条请求有问题。',
+        read: false,
+      },
+    ],
+    envStatus: [{ label: '订单 8821', value: 'pending', tone: 'warn' }],
+  },
+  32: {
+    inbox: [
+      {
+        id: 'sec-audit',
+        from: '安全组',
+        avatar: '🛡️',
+        time: '09:30',
+        text: '用户中心联合审计下午开始。测试侧请准备鉴权、脱敏、导出审计相关用例清单。',
+        read: false,
+      },
+    ],
+  },
+  33: {
+    inbox: [
+      {
+        id: 'promo-go',
+        from: 'SRE',
+        avatar: '📡',
+        time: '15:00',
+        text: '压测报告出来了：P99 480ms，但库存服务错误率 2.1%。需要你给 Go/No-Go 建议，抄送 PM。',
+        read: false,
+      },
+    ],
+    envStatus: [
+      { label: '下单 P99', value: '480ms ✓', tone: 'ok' },
+      { label: '库存错误率', value: '2.1% ✗', tone: 'error' },
+    ],
+  },
 }
 
 export function getUnreadCount(inbox) {

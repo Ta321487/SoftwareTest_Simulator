@@ -20,6 +20,7 @@ export function getWeakAreas({
     areas.push({
       levelId,
       title: level.title,
+      simType: level.simType,
       reason,
       score,
     })
@@ -48,4 +49,38 @@ export function getWeakAreas({
   }
 
   return areas.sort((a, b) => b.score - a.score || a.levelId - b.levelId).slice(0, 6)
+}
+
+/** 按模拟器题型聚合薄弱关，用于「按题型特训」 */
+export function getWeakSimTypeDrills({
+  levelMistakes = {},
+  levelMeta = {},
+  hintsUsed = {},
+  completedLevelIds = [],
+}) {
+  const weak = getWeakAreas({ levelMistakes, levelMeta, hintsUsed, completedLevelIds })
+  const bySim = new Map()
+
+  for (const item of weak) {
+    if (!item.simType) continue
+    const existing = bySim.get(item.simType)
+    if (!existing) {
+      bySim.set(item.simType, {
+        simType: item.simType,
+        count: 1,
+        levelId: item.levelId,
+        title: item.title,
+        score: item.score,
+      })
+    } else {
+      existing.count += 1
+      if (item.score > existing.score) {
+        existing.levelId = item.levelId
+        existing.title = item.title
+        existing.score = item.score
+      }
+    }
+  }
+
+  return [...bySim.values()].sort((a, b) => b.score - a.score || b.count - a.count).slice(0, 4)
 }

@@ -50,6 +50,20 @@ export const projects = {
       { levelId: 25, label: 'Day 9', title: '满月总结' },
     ],
   },
+  'season2-lead': {
+    id: 'season2-lead',
+    name: '测试 Lead 线',
+    subtitle: '进阶剧本 · 带人、排期与跨团队',
+    levelIds: [28, 29, 30, 31, 32, 33],
+    days: [
+      { levelId: 28, label: 'Week 1', title: 'Review 新人用例' },
+      { levelId: 29, label: 'Week 1', title: '批改 Bug 单' },
+      { levelId: 30, label: 'Week 2', title: '大版本排期' },
+      { levelId: 31, label: 'Week 2', title: '抓包定位回调' },
+      { levelId: 32, label: 'Week 3', title: '安全联合审计' },
+      { levelId: 33, label: 'Week 3', title: '大促 Go/No-Go' },
+    ],
+  },
 }
 
 export const dockApps = {
@@ -63,6 +77,7 @@ export const dockApps = {
   config: { id: 'config', icon: '⚙️', label: '配置中心', shortLabel: '配置' },
   clickcard: { id: 'decision', icon: '🎯', label: '决策板', shortLabel: '决策' },
   calculator: { id: 'calc', icon: '🧮', label: '工时计算', shortLabel: '计算' },
+  packet: { id: 'packet', icon: '🔍', label: 'Charles 抓包', shortLabel: '抓包' },
   loginapp: { id: 'app', icon: '📱', label: '被测 App', shortLabel: 'App' },
   paymentapp: { id: 'payapp', icon: '💳', label: '支付 App', shortLabel: '支付' },
   orderobs: { id: 'obs', icon: '📈', label: 'APM / 监控', shortLabel: '监控' },

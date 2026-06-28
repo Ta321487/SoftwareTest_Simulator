@@ -1,12 +1,15 @@
 <script setup>
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useProgressStore } from '../stores/progressStore'
 import { achievements } from '../data/achievements'
 import { getRankForXp } from '../data/ranks'
 import { sideLevels } from '../data/sideQuests'
+import { simTypeLabels } from '../data/levels'
 import { buildShareText, copyShareText, PLAY_URL } from '../utils/shareProgress'
-import { getWeakAreas } from '../utils/weakAreas'
+import { getWeakAreas, getWeakSimTypeDrills } from '../utils/weakAreas'
 
+const router = useRouter()
 const progressStore = useProgressStore()
 const shareMsg = ref('')
 const shareError = ref(false)
@@ -37,6 +40,23 @@ const weakAreas = computed(() =>
     completedLevelIds: progressStore.completedLevelIds,
   })
 )
+
+const weakDrills = computed(() =>
+  getWeakSimTypeDrills({
+    levelMistakes: progressStore.levelMistakes,
+    levelMeta: progressStore.levelMeta,
+    hintsUsed: progressStore.hintsUsed,
+    completedLevelIds: progressStore.completedLevelIds,
+  })
+)
+
+function simLabel(simType) {
+  return simTypeLabels[simType] || simType
+}
+
+function goDrill(levelId) {
+  router.push('/level/' + levelId)
+}
 
 async function handleShare() {
   shareMsg.value = ''
@@ -95,6 +115,20 @@ async function handleShare() {
         <span class="player-dashboard__stat-value">{{ progressStore.achievements.length }}/{{ achievements.length }}</span>
         <span class="player-dashboard__stat-label">成就</span>
       </div>
+    </div>
+
+    <div v-if="weakDrills.length" class="player-dashboard__drill">
+      <h3 class="player-dashboard__weak-title">按题型特训</h3>
+      <p class="player-dashboard__drill-desc">根据薄弱记录，优先重玩同类型关卡冲星。</p>
+      <ul class="player-dashboard__drill-list">
+        <li v-for="drill in weakDrills" :key="drill.simType" class="player-dashboard__drill-item">
+          <span class="player-dashboard__drill-type">{{ simLabel(drill.simType) }}</span>
+          <span class="player-dashboard__drill-meta">{{ drill.count }} 关待加强</span>
+          <button type="button" class="player-dashboard__drill-btn" @click="goDrill(drill.levelId)">
+            重玩 #{{ drill.levelId }}
+          </button>
+        </li>
+      </ul>
     </div>
 
     <div v-if="weakAreas.length" class="player-dashboard__weak">

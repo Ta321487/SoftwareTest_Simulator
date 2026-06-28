@@ -457,6 +457,64 @@
   background: #059669;
 }
 
+.player-dashboard__phase-fill--lead {
+  background: #7c3aed;
+}
+
+.player-dashboard__drill {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border-subtle);
+}
+
+.player-dashboard__drill-desc {
+  margin: 0 0 10px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.player-dashboard__drill-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.player-dashboard__drill-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+}
+
+.player-dashboard__drill-type {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.player-dashboard__drill-meta {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.player-dashboard__drill-btn {
+  margin-left: auto;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  border: 1px solid var(--accent-cyan);
+  border-radius: 6px;
+  background: var(--cyan-bg);
+  color: var(--accent-cyan);
+  cursor: pointer;
+}
+
+.player-dashboard__drill-btn:hover {
+  filter: brightness(1.08);
+}
+
 .player-dashboard__weak {
   margin-top: 16px;
   padding-top: 14px;

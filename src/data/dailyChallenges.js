@@ -330,6 +330,53 @@ export const DAILY_POOL = [
     hint: 'Blocker 未修复不应按原计划发布；需评估延期或范围裁剪。',
     xpReward: 10,
   },
+  {
+    key: 'auth-checklist-daily',
+    title: '今日：接口鉴权冒烟',
+    description: '【每日特训】新接口上线前，圈出鉴权冒烟必测项。',
+    simType: 'checklist',
+    content: '勾选【必须覆盖】的鉴权项：',
+    checklistItems: [
+      { id: 'a', label: '无 token 访问应 401' },
+      { id: 'b', label: '过期 token 应拒绝' },
+      { id: 'c', label: '响应 JSON 字段顺序' },
+      { id: 'd', label: '越权访问他人资源应 403/404' },
+    ],
+    correctChecks: ['a', 'b', 'd'],
+    hint: '鉴权冒烟：未登录、过期、越权；JSON 字段顺序不是功能重点。',
+    xpReward: 10,
+  },
+  {
+    key: 'reconcile-daily',
+    title: '今日：对账差 3 笔',
+    description: '【每日特训】网关 50 笔成功，业务库 47 笔。选出最该先查的原因。',
+    simType: 'clickcard',
+    content: '点击【最应优先排查】：',
+    clickOptions: [
+      { id: 'a', label: '回调仍在重试，尚未全部落库' },
+      { id: 'b', label: '财务表格字体太小' },
+      { id: 'c', label: '测试同学忘记点保存' },
+    ],
+    correctClick: 'a',
+    hint: '对账先看异步回调与落库时序，别先怀疑 UI。',
+    xpReward: 10,
+  },
+  {
+    key: 'safe-area-daily',
+    title: '今日：全面屏底栏',
+    description: '【每日特训】活动页底部按钮在 iPhone 上被挡。圈出必测项。',
+    simType: 'checklist',
+    content: '勾选【必须验证】的兼容项：',
+    checklistItems: [
+      { id: 'a', label: '底部按钮是否被 Home Indicator 遮挡' },
+      { id: 'b', label: 'safe-area 内边距是否生效' },
+      { id: 'c', label: '分享标题是否用了 emoji' },
+      { id: 'd', label: 'Android 异形屏同类场景' },
+    ],
+    correctChecks: ['a', 'b', 'd'],
+    hint: '全面屏看安全区与底栏可达性；emoji 不是兼容冒烟重点。',
+    xpReward: 10,
+  },
 ]
 
 export const DAILY_POOL_SIZE = DAILY_POOL.length

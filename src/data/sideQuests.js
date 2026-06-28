@@ -193,6 +193,111 @@ export const sideLevels = [
     xpReward: 22,
     unlock: { type: 'mainCount', min: 20 },
   },
+  {
+    id: 110,
+    sideArc: 'security',
+    title: 'API 越权怎么测',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【安全进阶 · 解锁于 XSS 番外之后】用户中心接口上线前，安全组要求补测越权场景——圈出必须覆盖的项。',
+    simType: 'checklist',
+    content: '勾选用户中心 API 测试中【必须覆盖】的鉴权/越权项：',
+    checklistItems: [
+      { id: 'a', label: '未登录访问 /api/user/profile 应返回 401' },
+      { id: 'b', label: '用户 A 的 token 访问用户 B 的订单 ID 应拒绝' },
+      { id: 'c', label: '个人中心头像圆角是否为 4px' },
+      { id: 'd', label: '普通用户 token 调用 /api/admin/users 应 403' },
+      { id: 'e', label: '修改他人 userId 的请求体参数应被服务端校验拦截' },
+      { id: 'f', label: '接口响应 JSON 缩进是否美观' },
+    ],
+    correctChecks: ['a', 'b', 'd', 'e'],
+    hint: 'API 安全测鉴权、水平/垂直越权、参数篡改；UI 样式不是接口安全冒烟重点。',
+    xpReward: 22,
+    unlock: { type: 'sideLevel', sideLevelId: 101 },
+  },
+  {
+    id: 111,
+    sideArc: 'data',
+    title: '支付对账差异归因',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【数据进阶 · 解锁于造数番外之后】财务对账：支付网关 100 笔成功，业务库只有 97 笔。选出最该先查的方向。',
+    simType: 'clickcard',
+    content: '点击【最应优先排查】的原因：',
+    clickOptions: [
+      { id: 'a', label: '回调延迟：3 笔仍在重试队列，尚未落库' },
+      { id: 'b', label: '报表导出按钮颜色不对' },
+      { id: 'c', label: '测试同学手滑多点了 3 次刷新' },
+      { id: 'd', label: '财务 Excel 公式写错' },
+    ],
+    correctClick: 'a',
+    hint: '对账差异先看异步链路：回调延迟/丢单/幂等；UI 和 Excel 通常靠后。',
+    xpReward: 20,
+    unlock: { type: 'sideLevel', sideLevelId: 107 },
+  },
+  {
+    id: 112,
+    sideArc: 'compat',
+    title: '刘海屏与安全区',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【兼容进阶 · 解锁于 H5 矩阵之后】活动页在 iPhone 刘海屏上底部按钮被遮挡。圈出必测兼容项。',
+    simType: 'checklist',
+    content: '勾选刘海屏/全面屏适配中【必须验证】的项：',
+    checklistItems: [
+      { id: 'a', label: '底部固定按钮是否被 Home Indicator 遮挡' },
+      { id: 'b', label: 'safe-area-inset-bottom 是否生效' },
+      { id: 'c', label: '后台运营位图片分辨率' },
+      { id: 'd', label: '横屏模式下关键操作区是否可达' },
+      { id: 'e', label: 'Android 异形屏（挖孔/瀑布屏）同类场景' },
+      { id: 'f', label: '分享文案标点是否全角' },
+    ],
+    correctChecks: ['a', 'b', 'd', 'e'],
+    hint: '全面屏适配看安全区、固定底栏、横屏与 Android 异形屏；运营素材和文案标点非首发重点。',
+    xpReward: 20,
+    unlock: { type: 'sideLevel', sideLevelId: 105 },
+  },
+  {
+    id: 113,
+    sideArc: 'collab',
+    title: '抓包：回调发哪去了',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【抓包番外 · 解锁于主线 25 关后】测试环境支付成功但订单未更新。Charles 抓到以下请求，选出问题请求。',
+    simType: 'packet',
+    content: '点击【最可疑、应优先排查】的请求：',
+    packetRequests: [
+      {
+        id: 'a',
+        method: 'POST',
+        url: 'https://api.test.com/order/create',
+        status: 200,
+        summary: '创建订单 200 · 45ms',
+      },
+      {
+        id: 'b',
+        method: 'POST',
+        url: 'https://pay.prod.com/notify/callback',
+        status: 404,
+        summary: '支付回调 404 · Host 指向生产域名',
+      },
+      {
+        id: 'c',
+        method: 'GET',
+        url: 'https://cdn.test.com/static/pay-icon.png',
+        status: 200,
+        summary: '静态资源 200 · 12ms',
+      },
+    ],
+    correctClick: 'b',
+    hint: '回调 404 且域名指向生产——测试环境配错 notify URL 是典型联调坑。',
+    xpReward: 24,
+    unlock: { type: 'mainCount', min: 25 },
+  },
 ]
 
 export const sideArcs = [
@@ -272,6 +377,9 @@ export function isSideQuestUnlocked(level, completedLevelIds) {
     const mainDone = completedLevelIds.filter((id) => id >= 1 && id <= 99).length
     return mainDone >= unlock.min
   }
+  if (unlock.type === 'sideLevel') {
+    return completedLevelIds.includes(unlock.sideLevelId)
+  }
   return false
 }
 
@@ -283,6 +391,9 @@ export function getUnlockHint(level) {
   }
   if (unlock.type === 'mainCount') {
     return `主线通关 ${unlock.min} 关后解锁`
+  }
+  if (unlock.type === 'sideLevel') {
+    return `完成番外 #${unlock.sideLevelId} 后解锁`
   }
   return '完成更多主线后解锁'
 }

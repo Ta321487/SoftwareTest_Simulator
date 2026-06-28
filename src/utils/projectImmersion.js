@@ -63,4 +63,5 @@ export const HOME_PROJECT_IDS = [
   PAYMENT_MODULE_ID,
   ORDER_MODULE_ID,
   ONBOARD_WEEK2_ID,
+  'season2-lead',
 ]

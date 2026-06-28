@@ -163,6 +163,42 @@ export const debriefs = {
     pitfalls: '只测 happy path；漏空字符串；忽略 Content-Type；把 UI 当接口用例。',
     workplace: '设计接口用例先列参数表，再对每个参数做：缺、空、错、边界。',
   },
+  28: {
+    summary: '你指出了新人用例缺失的边界与规则维度，并给出可补充场景。',
+    why: '带人评审要对照需求找缺口：长度、字符集、锁定逻辑等不能只写「密码错误」。',
+    pitfalls: '只说「写得不好」不给具体场景；自己重写而不教方法。',
+    workplace: 'Review 用例 = 标注缺口 + 给 2–3 个示范场景，让新人自己补全。',
+  },
+  29: {
+    summary: '你改写了规范 Bug 标题，并指出步骤缺环境/预期/实际。',
+    why: '批改 Bug 单的目标仍是「可独立复现」；标题拒绝空话，步骤要可执行。',
+    pitfalls: '只改标题不改步骤；步骤仍缺网络/账号/浏览器。',
+    workplace: '带新人：先改标题示范，再列「步骤 checklist」让其自查。',
+  },
+  30: {
+    summary: '大版本约需 3.13 人日（6×50÷12÷8）。',
+    why: '排期用数字说话，便于申请加人或砍 scope。',
+    pitfalls: '忘记除每日工时；模块数漏乘。',
+    workplace: 'Lead 排期：算人日 → 对比窗口 → 明确风险与补测计划。',
+  },
+  31: {
+    summary: '你定位到回调请求指向生产 notify 域名导致 404。',
+    why: '订单 pending 时抓包优先看回调：Host 环境、status、body。',
+    pitfalls: '只看支付发起 200；忽略回调 404；不核对域名。',
+    workplace: '支付联调三板斧：抓包看回调 → 对配置中心 → 查网关日志。',
+  },
+  32: {
+    summary: '你圈出了脱敏、权限审计、验证码限流与越权项。',
+    why: '跨团队安全审计测试代表要覆盖数据面与控制面，UI 规范通常非审计范围。',
+    pitfalls: '只测功能不测权限；忽略导出审计日志；漏短信轰炸防护。',
+    workplace: '联合审计前列 checklist，与安全/开发对齐「谁测什么」。',
+  },
+  33: {
+    summary: '你建议库存错误率超标时 No-Go 并复测。',
+    why: '大促 Go/No-Go 看核心链路错误率与 SLO；P99 略好不能掩盖 2% 库存错误。',
+    pitfalls: '单指标达标就 Go；「先上再观察」无 rollback 预案。',
+    workplace: '压测结论写清：哪项超标、影响面、复测标准与负责人。',
+  },
 }
 
 export function getDebrief(levelId, dailyKey) {

@@ -883,3 +883,113 @@
   font-size: 0.82rem;
   color: var(--text-secondary);
 }
+
+/* Packet capture */
+.packet-capture__header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--surface-muted);
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+}
+
+.packet-capture__hint {
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.packet-capture__row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 4px 10px;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: var(--surface-muted);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.packet-capture__row:hover {
+  border-color: var(--accent-cyan);
+}
+
+.packet-capture__row--active {
+  border-color: var(--accent-cyan);
+  background: var(--cyan-bg);
+  box-shadow: 0 0 0 1px var(--accent-cyan);
+}
+
+.packet-capture__method {
+  grid-row: 1 / 3;
+  align-self: center;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+.packet-capture__method--get {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.packet-capture__method--post {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.packet-capture__method--mutate {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.packet-capture__method--delete {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.packet-capture__url {
+  grid-column: 2;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+.packet-capture__status {
+  grid-column: 3;
+  grid-row: 1;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.packet-capture__status--ok {
+  color: var(--accent-green);
+}
+
+.packet-capture__status--4xx {
+  color: var(--error);
+}
+
+.packet-capture__status--5xx {
+  color: var(--error);
+}
+
+.packet-capture__summary {
+  grid-column: 2 / 4;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}

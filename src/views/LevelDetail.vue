@@ -30,6 +30,7 @@ import ClickCard from '../components/simulators/ClickCard.vue'
 import TemplateFiller from '../components/simulators/TemplateFiller.vue'
 import Calculator from '../components/simulators/Calculator.vue'
 import ApiClient from '../components/simulators/ApiClient.vue'
+import PacketCapture from '../components/simulators/PacketCapture.vue'
 import LoginAppMock from '../components/simulators/LoginAppMock.vue'
 import PaymentAppMock from '../components/simulators/PaymentAppMock.vue'
 import OrderObsPanel from '../components/simulators/OrderObsPanel.vue'
@@ -172,6 +173,7 @@ const simComponentMap = {
   template: TemplateFiller,
   calculator: Calculator,
   apiclient: ApiClient,
+  packet: PacketCapture,
 }
 
 const simComponent = computed(() =>
@@ -458,6 +460,10 @@ const simProps = computed(() => {
         calculatorFields: lv.calculatorFields,
         calculatorFormula: lv.calculatorFormula || 'schedule',
         calculatorReadonly: lv.calculatorReadonly !== false,
+      }
+    case 'packet':
+      return {
+        packetRequests: lv.packetRequests,
       }
     default:
       return {}

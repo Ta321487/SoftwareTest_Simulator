@@ -41,6 +41,10 @@ const simGuideContent = {
     action: '按公式心算或笔算，填写结果后提交',
     steps: ['看清题目里的各项参数', '按提示公式自行计算', '在「你的计算结果」中填写（两位小数）'],
   },
+  packet: {
+    action: '点击最可疑的请求，然后确认提交',
+    steps: ['查看每条请求的 method、URL、status', '对照业务链路找异常（如回调 404、Host 错环境）', '点击选中后确认'],
+  },
 }
 
 export function getSimGuide(simType) {
