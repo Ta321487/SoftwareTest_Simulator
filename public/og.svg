@@ -1,0 +1,35 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="测试人一生">
+  <defs>
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="50%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0a0e17"/>
+  <rect x="48" y="48" width="1104" height="534" rx="20" fill="none" stroke="url(#borderGrad)" stroke-width="2" opacity="0.55"/>
+  <text x="80" y="118" fill="url(#titleGrad)" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="52" font-weight="700">测试人一生</text>
+  <text x="80" y="168" fill="#94a3b8" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="28">用「闯关」练软件测试 · 攒 XP 升职级</text>
+  <rect x="80" y="200" width="1040" height="72" rx="12" fill="#111827" stroke="#1e293b"/>
+  <text x="104" y="246" fill="#e2e8f0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="24">备考 → 面试 → 笔试 → 入职 → Lead</text>
+  <text x="680" y="246" fill="#64748b" font-family="Segoe UI, PingFang SC, sans-serif" font-size="22">33 关主线 · 13 番外 · 每日特训</text>
+  <rect x="80" y="300" width="240" height="120" rx="12" fill="#111827" stroke="#334155"/>
+  <text x="104" y="342" fill="#22d3ee" font-family="Segoe UI, PingFang SC, sans-serif" font-size="26">Jira</text>
+  <text x="104" y="378" fill="#94a3b8" font-family="Segoe UI, PingFang SC, sans-serif" font-size="20">写 Bug 单 · 定优先级</text>
+  <rect x="340" y="300" width="240" height="120" rx="12" fill="#111827" stroke="#334155"/>
+  <text x="364" y="342" fill="#22d3ee" font-family="Segoe UI, PingFang SC, sans-serif" font-size="26">终端</text>
+  <text x="364" y="378" fill="#94a3b8" font-family="Segoe UI, PingFang SC, sans-serif" font-size="20">tail / grep 查日志</text>
+  <rect x="600" y="300" width="240" height="120" rx="12" fill="#111827" stroke="#334155"/>
+  <text x="624" y="342" fill="#22d3ee" font-family="Segoe UI, PingFang SC, sans-serif" font-size="26">接口</text>
+  <text x="624" y="378" fill="#94a3b8" font-family="Segoe UI, PingFang SC, sans-serif" font-size="20">API 调试与断言</text>
+  <rect x="860" y="300" width="260" height="120" rx="12" fill="#111827" stroke="#a78bfa" stroke-opacity="0.5"/>
+  <text x="884" y="342" fill="#a78bfa" font-family="Segoe UI, PingFang SC, sans-serif" font-size="26">手札·百科</text>
+  <text x="884" y="378" fill="#94a3b8" font-family="Segoe UI, PingFang SC, sans-serif" font-size="20">黑盒 · 等价类 · Blocker</text>
+  <rect x="80" y="448" width="1040" height="56" rx="10" fill="#111827"/>
+  <text x="104" y="484" fill="#64748b" font-family="Segoe UI, PingFang SC, sans-serif" font-size="22">上机实操四条线 · 进度本地存档 · 免费在线玩</text>
+  <text x="80" y="560" fill="#22d3ee" font-family="Segoe UI, PingFang SC, sans-serif" font-size="24">ta321487.github.io/SoftwareTest_Simulator/</text>
+</svg>

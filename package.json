@@ -1,7 +1,7 @@
 {
   "name": "softwaretest-simulator",
   "private": true,
-  "version": "1.6.2",
+  "version": "1.7.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,6 +13,7 @@
     "playwright:install": "node scripts/playwright-install.mjs",
     "playwright:install:cn": "node scripts/playwright-install.mjs --cn --fallback",
     "test:e2e:cn": "npm run playwright:install:cn && playwright test",
+    "og:render": "node scripts/render-og.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",

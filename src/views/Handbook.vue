@@ -123,6 +123,17 @@ function closeModal() {
   selectedTerm.value = null
 }
 
+function goToLevelFromEntry() {
+  if (!selectedEntry.value) return
+  router.push('/level/' + selectedEntry.value.routeId)
+  closeModal()
+}
+
+function goToLevelFromTerm(levelId) {
+  router.push('/level/' + levelId)
+  closeModal()
+}
+
 function openRelatedTerm(termId) {
   const term = getGlossaryTerm(termId)
   if (term) selectedTerm.value = term
@@ -366,14 +377,7 @@ watch(
 
         <footer class="handbook-modal__footer">
           <button type="button" class="sim-btn sim-btn--primary" @click="closeModal">关闭</button>
-          <button
-            type="button"
-            class="sim-btn sim-btn--ghost"
-            @click="
-              router.push('/level/' + selectedEntry.routeId)
-              closeModal()
-            "
-          >
+          <button type="button" class="sim-btn sim-btn--ghost" @click="goToLevelFromEntry">
             去这一关 →
           </button>
         </footer>
@@ -427,10 +431,7 @@ watch(
               :key="levelId"
               type="button"
               class="handbook-modal__link-chip"
-              @click="
-                router.push('/level/' + levelId)
-                closeModal()
-              "
+              @click="goToLevelFromTerm(levelId)"
             >
               #{{ levelId }} {{ getLevelTitle(levelId) }}
             </button>

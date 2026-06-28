@@ -65,7 +65,11 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['close', 'next'])
+const emit = defineEmits(['close', 'next', 'retry'])
+
+const showRetryStars = computed(
+  () => props.sessionStars > 0 && props.sessionStars < 3 && props.stars < 3
+)
 
 function starLabel(n) {
   return n >= 3 ? '完美通关' : n >= 2 ? '良好' : '通关'
@@ -188,6 +192,14 @@ const showHighlights = computed(() => props.newAchievements.length > 0 || Boolea
             @click="emit('next')"
           >
             下一关 · #{{ nextLevel.id }} {{ nextLevel.title }}
+          </button>
+          <button
+            v-if="showRetryStars"
+            type="button"
+            class="sim-btn sim-btn--ghost debrief-panel__btn"
+            @click="emit('retry')"
+          >
+            再练一次冲 ★★★
           </button>
           <button
             type="button"

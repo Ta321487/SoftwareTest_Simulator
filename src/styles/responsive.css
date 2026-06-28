@@ -498,6 +498,10 @@ body {
     margin-top: 12px;
   }
 
+  .workbench__mobile-hint {
+    display: block;
+  }
+
   .workbench__context-banner {
     flex-direction: column;
     align-items: stretch;

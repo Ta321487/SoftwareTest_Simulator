@@ -188,6 +188,11 @@ const debrief = computed(() =>
 
 const simComponent = computed(() => (level.value ? simComponentMap[level.value.simType] : null))
 
+const MOBILE_HEAVY_SIMS = new Set(['terminal', 'apiclient', 'packet'])
+const showMobileSimHint = computed(
+  () => level.value && MOBILE_HEAVY_SIMS.has(level.value.simType)
+)
+
 const isTaskView = computed(
   () => level.value && !isSutMode.value && activeDockLevelId.value === level.value.id
 )
@@ -841,6 +846,10 @@ function goToNextLevel() {
   }
 }
 
+function retryFromDebrief() {
+  resetState()
+}
+
 function goBack() {
   if (isSutMode.value) {
     goToMainTask()
@@ -991,6 +1000,9 @@ function goBack() {
     </section>
 
     <section v-if="!showDebrief && isTaskView" class="workbench__sim-area">
+      <p v-if="showMobileSimHint" class="workbench__mobile-hint">
+        💡 终端 / 接口 / 抓包关建议在电脑浏览器玩，小屏操作会吃力。
+      </p>
       <div class="sim-workspace__header">
         <span class="sim-workspace__tag">{{ simGuide.label }}</span>
         <span
@@ -1072,6 +1084,7 @@ function goBack() {
       :next-level="nextLevelAfterPass"
       @close="closeDebrief"
       @next="goToNextLevel"
+      @retry="retryFromDebrief"
     />
   </WorkbenchShell>
 </template>

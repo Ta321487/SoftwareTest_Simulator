@@ -32,6 +32,11 @@ function handleSave() {
   testResult.value = null
 }
 
+function onHostInput() {
+  saved.value = false
+  testResult.value = null
+}
+
 function handleTest() {
   if (testing.value) return
   testing.value = true
@@ -85,10 +90,7 @@ defineExpose({ reset })
         type="text"
         class="sim-field__input config-editor__input"
         placeholder="填写测试环境的真实地址"
-        @input="
-          saved = false
-          testResult = null
-        "
+        @input="onHostInput"
       />
     </div>
 

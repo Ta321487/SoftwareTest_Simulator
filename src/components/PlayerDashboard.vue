@@ -5,6 +5,8 @@ import { achievements } from '../data/achievements'
 import { getRankForXp } from '../data/ranks'
 import { sideLevels } from '../data/sideQuests'
 import { buildShareText, copyShareText, PLAY_URL } from '../utils/shareProgress'
+import { getSharePracticeContext, formatPracticeLine } from '../utils/sharePractice'
+import { downloadShareCard } from '../utils/shareCard'
 import { getWeakAreas } from '../utils/weakAreas'
 
 defineProps({
@@ -20,6 +22,16 @@ const shareError = ref(false)
 
 const rank = computed(() => getRankForXp(progressStore.totalXp))
 
+const focusLevelId = computed(() => {
+  const next = progressStore.firstAvailableLevelId
+  if (next) return next
+  const ids = progressStore.completedLevelIds
+  if (!ids.length) return 1
+  return Math.max(...ids)
+})
+
+const practiceContext = computed(() => getSharePracticeContext(focusLevelId.value))
+
 const shareText = computed(() =>
   buildShareText({
     rankTitle: rank.value.title,
@@ -33,8 +45,24 @@ const shareText = computed(() =>
     streak: progressStore.dailyStreak || 0,
     achievementDone: progressStore.achievements.length,
     achievementTotal: achievements.length,
+    practiceLine: formatPracticeLine(practiceContext.value),
   })
 )
+
+function shareCardPayload() {
+  return {
+    rankTitle: rank.value.title,
+    rankIcon: rank.value.icon,
+    xp: progressStore.totalXp,
+    stars: progressStore.totalStars,
+    mainDone: progressStore.mainCompletedCount,
+    mainTotal: progressStore.totalLevelCount,
+    sideDone: progressStore.sideCompletedCount,
+    sideTotal: sideLevels.length,
+    streak: progressStore.dailyStreak || 0,
+    practiceContext: practiceContext.value,
+  }
+}
 
 const weakAreas = computed(() =>
   getWeakAreas({
@@ -50,7 +78,7 @@ async function handleShare() {
   try {
     const result = await copyShareText(shareText.value)
     if (result.ok) {
-      shareMsg.value = '成绩已复制，可以粘贴到微信/朋友圈'
+      shareMsg.value = '成绩已复制，可粘贴到微信；也可点「保存分享图」'
       shareError.value = false
     } else {
       shareMsg.value = result.message || '复制失败'
@@ -58,6 +86,18 @@ async function handleShare() {
     }
   } catch {
     shareMsg.value = '复制失败，请手动复制下方文本'
+    shareError.value = true
+  }
+}
+
+function handleSaveShareImage() {
+  shareMsg.value = ''
+  try {
+    downloadShareCard(shareCardPayload())
+    shareMsg.value = '分享图已下载，可发朋友圈或聊天'
+    shareError.value = false
+  } catch {
+    shareMsg.value = '生成分享图失败，请稍后重试'
     shareError.value = true
   }
 }
@@ -73,6 +113,9 @@ async function handleShare() {
       <div class="player-dashboard__actions">
         <button type="button" class="level-map__btn level-map__btn--ghost" @click="handleShare">
           分享成绩
+        </button>
+        <button type="button" class="level-map__btn level-map__btn--ghost" @click="handleSaveShareImage">
+          保存分享图
         </button>
         <a
           :href="PLAY_URL"

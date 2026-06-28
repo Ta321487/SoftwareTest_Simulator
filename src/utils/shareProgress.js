@@ -1,4 +1,5 @@
 export const PLAY_URL = 'https://ta321487.github.io/SoftwareTest_Simulator/'
+export const OG_IMAGE_URL = `${PLAY_URL}og.png`
 
 export function buildShareText({
   rankTitle,
@@ -12,14 +13,17 @@ export function buildShareText({
   streak,
   achievementDone,
   achievementTotal,
+  practiceLine = null,
 }) {
   const lines = [
     `${rankIcon} 我在「测试人一生」打到【${rankTitle}】`,
     `XP ${xp} · ★${stars} · 主线 ${mainDone}/${mainTotal} · 番外 ${sideDone}/${sideTotal}`,
     `每日连续 ${streak} 天 · 成就 ${achievementDone}/${achievementTotal}`,
-    `来挑战软件测试职场模拟 👇`,
-    PLAY_URL,
   ]
+  if (practiceLine) {
+    lines.push(`最近在练：${practiceLine}`)
+  }
+  lines.push('来挑战软件测试职场模拟 👇', PLAY_URL)
   return lines.join('\n')
 }
 

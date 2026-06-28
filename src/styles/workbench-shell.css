@@ -221,6 +221,18 @@
   border-top: 1px solid var(--border-subtle);
 }
 
+.workbench__mobile-hint {
+  display: none;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent-amber, #f5a623) 12%, transparent);
+  border: 1px solid var(--border-dashed);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
 .workbench__feedback {
   margin-top: 16px;
   text-align: center;
