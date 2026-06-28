@@ -116,6 +116,66 @@ export const dailyDebriefs = {
     pitfalls: '随机抽 10 条；只测 happy path。',
     workplace: '压缩测试先写「必测清单」给 PM/开发对齐。',
   },
+  'mock-strategy': {
+    summary: '你选了核心链路真测 + 非核心 Mock 的折中方案。',
+    why: '沙箱不稳定时，完全 Mock 失去验证价值，完全停摆又耽误进度。',
+    pitfalls: '极端全 Mock 或无限等待沙箱恢复。',
+    workplace: '和开发对齐哪些链路必须真连、不稳定时如何降级。',
+  },
+  'schedule-calc': {
+    summary: '3×30÷8÷5 = 2.25 天。',
+    why: '排期要基于用例总量与有效执行速率，而不是拍脑袋。',
+    pitfalls: '忘记除每天有效小时；单位搞错。',
+    workplace: '估时留 buffer，并说明假设（执行速率、是否含回归）。',
+  },
+  'token-assert': {
+    summary: '你写清了 200 状态码与 token 字段断言。',
+    why: '登录成功至少断言 HTTP 200 与 token 存在且非空。',
+    pitfalls: '只断言 200 不检查 body；token 为空也通过。',
+    workplace: '接口断言写进用例，避免「能调通就算过」。',
+  },
+  'avatar-regression': {
+    summary: '你选了头像相关 FAIL + 高风险项。',
+    why: '小版本改什么测什么；无关 PASS 低风险可暂缓。',
+    pitfalls: '全量回归或测无关模块。',
+    workplace: '回归范围与 diff 绑定，写在报告里。',
+  },
+  'branch-hotfix': {
+    summary: '你识别 hotfix/pay-callback 为应验证分支。',
+    why: '线上问题修复通常在 hotfix/* 分支，测错分支等于白测。',
+    pitfalls: '在 develop 或 feature 上验 hotfix。',
+    workplace: '部署前确认分支名 + commit + 环境标签。',
+  },
+  'equiv-class': {
+    summary: '你覆盖了有效类、长度边界与非法字符类。',
+    why: '等价类划分减少冗余用例，又保证覆盖代表场景。',
+    pitfalls: '漏边界；把 UI 当等价类。',
+    workplace: '先划等价类再写用例，比随机凑场景高效。',
+  },
+  'retro-one': {
+    summary: '你写出了一条可落地的技术/流程改进。',
+    why: '复盘措施要可执行，便于跟踪闭环。',
+    pitfalls: '写「加强测试」「提高意识」等空话。',
+    workplace: '每条措施对应责任人与验收方式。',
+  },
+  'callback-chat-daily': {
+    summary: '你提出先核对回调地址/配置并请求配合排查。',
+    why: '回调问题先查 URL、网关、环境配置，再查代码。',
+    pitfalls: '空泛说「支付有问题」；不给出可验证步骤。',
+    workplace: '协作排查 = 你的假设 + 需要的日志/配置信息。',
+  },
+  'doc-update': {
+    summary: '接口变更应同步更新用例与断言说明。',
+    why: '文档/用例滞后会导致回归漏测新字段或新规则。',
+    pitfalls: '只改代码不更新测试资产。',
+    workplace: '接口变更 checklist：用例、自动化、通知下游。',
+  },
+  'blocker-judge': {
+    summary: 'Blocker 未修复时不建议按原计划全量上线。',
+    why: 'Blocker 定义为核心路径不可用或数据风险，未关不应放行。',
+    pitfalls: '其他模块 PASS 就签字；相信「今晚一定修完」。',
+    workplace: '发布决策写清 Blocker 清单与延期/裁剪方案。',
+  },
 }
 
 export function getSideDebrief(levelId) {

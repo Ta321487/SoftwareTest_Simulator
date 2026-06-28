@@ -9,10 +9,12 @@ import RankBadge from '../components/RankBadge.vue'
 import AchievementPanel from '../components/AchievementPanel.vue'
 import SideQuestHub from '../components/SideQuestHub.vue'
 import ProjectTimeline from '../components/workbench/ProjectTimeline.vue'
+import PlayerDashboard from '../components/PlayerDashboard.vue'
 import OnboardingTour from '../components/OnboardingTour.vue'
 import ProgressSettings from '../components/ProgressSettings.vue'
 import { HOME_PROJECT_IDS } from '../utils/projectImmersion'
 import { sideLevels } from '../data/sideQuests'
+import { DAILY_POOL_SIZE } from '../data/dailyChallenges'
 import ThemeToggle from '../components/ThemeToggle.vue'
 
 const router = useRouter()
@@ -79,6 +81,8 @@ function showOnboarding() {
       <main class="workbench__main home-map__main">
         <RankBadge :xp="progressStore.totalXp" class="home-map__rank" />
 
+        <PlayerDashboard />
+
         <section class="home-map__hero">
           <p class="home-map__hero-tag">软件测试 · 闯关游戏</p>
           <h2 class="home-map__hero-title">想学测试的人能玩懂，已经在测的人会心一笑</h2>
@@ -123,7 +127,7 @@ function showOnboarding() {
         <SideQuestHub />
 
         <p class="home-map__extra-note">
-          主线 27 关 + 番外 {{ sideTotal }} 关 + 每日特训（10 题轮换）
+          主线 27 关 + 番外 {{ sideTotal }} 关 + 每日特训（{{ DAILY_POOL_SIZE }} 题轮换）
         </p>
 
         <AchievementPanel class="home-map__achievements" />

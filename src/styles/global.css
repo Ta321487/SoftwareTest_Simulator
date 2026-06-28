@@ -4836,3 +4836,115 @@ body {
   outline: 2px solid var(--accent-primary, #6366f1);
   outline-offset: 1px;
 }
+
+/* ===== 玩家仪表盘 ===== */
+.player-dashboard {
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-soft, rgba(255, 255, 255, 0.03));
+}
+
+.player-dashboard__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.player-dashboard__title {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.player-dashboard__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.player-dashboard__link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.player-dashboard__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.player-dashboard__stat {
+  text-align: center;
+  padding: 10px 8px;
+  border-radius: 8px;
+  background: var(--surface-elevated, rgba(0, 0, 0, 0.15));
+}
+
+.player-dashboard__stat-value {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.player-dashboard__stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.player-dashboard__phases {
+  display: grid;
+  gap: 10px;
+}
+
+.player-dashboard__phase-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  margin-bottom: 4px;
+}
+
+.player-dashboard__phase-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border-subtle);
+  overflow: hidden;
+}
+
+.player-dashboard__phase-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent-primary, #6366f1);
+  transition: width 0.3s ease;
+}
+
+.player-dashboard__phase-fill--prepare {
+  background: #0891b2;
+}
+
+.player-dashboard__phase-fill--interview {
+  background: #7c3aed;
+}
+
+.player-dashboard__phase-fill--written {
+  background: #d97706;
+}
+
+.player-dashboard__phase-fill--onboard {
+  background: #059669;
+}
+
+.player-dashboard__msg {
+  margin: 12px 0 0;
+  font-size: 0.85rem;
+  color: var(--accent-green, #22c55e);
+}
+
+.player-dashboard__msg--error {
+  color: var(--error);
+}

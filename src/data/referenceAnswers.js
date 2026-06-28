@@ -42,6 +42,54 @@ export const referenceAnswers = {
       { title: '明日计划', text: '跟进 Bug 修复，完成支付回归与上线检查。' },
     ],
   },
+  4: {
+    label: '回归范围参考',
+    items: [
+      { title: '必回归', text: 'TEST-1003 验证码倒计时（FAIL + 高风险）；密码错误 5 次锁定（FAIL + 高风险）。' },
+      { title: '可暂缓', text: '正常登录 PASS、记住密码 medium、背景图 low 可在时间极紧时后补。' },
+    ],
+  },
+  6: {
+    label: '环境配置参考',
+    items: [
+      { title: '应修改为', text: 'PAYMENT_DB_HOST=10.0.1.5（运维文档中的测试库地址，非 127.0.0.1 占位符）。' },
+    ],
+  },
+  9: {
+    label: '分支选择参考',
+    items: [
+      { title: '答案', text: 'release/payment-2.3 —— 当前支付测试环境正在部署的发布分支。' },
+    ],
+  },
+  11: {
+    label: '工时计算参考',
+    items: [
+      { title: '公式', text: '5 模块 × 40 用例 ÷ 10 条/小时 ÷ 6 小时/天 = 3.33 天。' },
+    ],
+  },
+  21: {
+    label: '分析题参考',
+    items: [
+      { title: '必回归', text: 'FAIL + 高风险项；与头像改动相关的失败用例优先。' },
+      { title: '可暂缓', text: '无关模块 PASS 且低风险项可在 2 小时手测中后补。' },
+    ],
+  },
+  24: {
+    label: '升级 PM 参考',
+    items: [
+      {
+        title: '示例',
+        text: 'TEST-1022 支付 Blocker 仍未修复，阻塞回归，可能影响周五上线，请协调开发优先处理并评估是否调整发布计划。',
+      },
+    ],
+  },
+  27: {
+    label: '接口用例参考',
+    items: [
+      { title: '必覆盖', text: '正常登录 200+token；密码错 401；缺 username/password；空密码；错误 Content-Type。' },
+      { title: '非接口层', text: '登录按钮 hover 颜色属于 UI，不是接口用例。' },
+    ],
+  },
   15: {
     label: '复盘措施参考',
     items: [

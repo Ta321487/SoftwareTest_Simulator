@@ -75,6 +75,7 @@ body {
   }
 
   .home-map__main > .home-map__rank,
+  .home-map__main > .player-dashboard,
   .home-map__main > .home-map__hero,
   .home-map__main > .home-map__actions,
   .home-map__main > .phase-timeline,
@@ -115,6 +116,7 @@ body {
   }
 
   .home-map__main > .home-map__rank,
+  .home-map__main > .player-dashboard,
   .home-map__main > .home-map__hero,
   .home-map__main > .home-map__actions,
   .home-map__main > .phase-timeline,
@@ -319,6 +321,15 @@ body {
   .home-map__actions {
     flex-direction: column;
     margin-bottom: 20px;
+  }
+
+  .player-dashboard__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .player-dashboard__header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .level-map__btn {
