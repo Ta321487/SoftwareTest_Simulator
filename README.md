@@ -1,0 +1,51 @@
+# 测试人一生 · 软件测试闯关
+
+备考 → 面试 → 笔试 → 入职。在 Jira、终端、企微、API 调试等模拟工具里完成 27 关主线，攒 XP 升职级。
+
+## 玩法概览
+
+| 模块 | 说明 |
+|------|------|
+| 主线 27 关 | 四阶段职场剧本：备考、面试、笔试、入职 |
+| 番外 9 关 | 安全、性能、流水线等，按主线进度解锁 |
+| 每日特训 | 通关登录模块第 5 关后解锁，10 题轮换 |
+| 项目沉浸 | 被测 App、支付沙箱、APM、值班面板（可选） |
+| 测试手札 | 通关复盘与参考写法，支持搜索 |
+
+## 本地运行
+
+```bash
+npm install
+npm run dev
+```
+
+浏览器打开终端显示的本地地址（默认 `http://localhost:5173`）。
+
+## 构建与预览
+
+```bash
+npm run build
+npm run preview
+```
+
+## 部署到 GitHub Pages
+
+仓库 Settings → Pages → Source 选 **GitHub Actions**。推送 `main` 分支后 workflow 会自动构建并发布。
+
+若仓库名不是 `username.github.io`，构建会使用 `/repo-name/` 作为 base path（由 workflow 自动注入）。
+
+## 存档说明
+
+- 进度保存在浏览器 **localStorage**
+- 首页底部 **导出存档** 可下载 JSON；换设备或清缓存前请先备份
+- **导入存档** 会覆盖当前进度与项目档案
+
+## 测试
+
+```bash
+npm test
+```
+
+## 技术栈
+
+Vue 3 · Vite · Pinia · Vue Router · Vitest

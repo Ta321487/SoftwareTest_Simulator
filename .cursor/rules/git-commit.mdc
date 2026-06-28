@@ -1,0 +1,56 @@
+---
+description: Git 提交与版本号规范（中文日志、语义化版本）
+alwaysApply: true
+---
+
+# Git 提交规范
+
+## 版本号
+
+- 单一来源：`package.json` 的 `version` 字段（语义化版本 `MAJOR.MINOR.PATCH`）
+- 发版前若用户未指定版本，按改动类型递增：
+  - **PATCH**：修复、文案、样式微调
+  - **MINOR**：新功能、新关卡、新模拟器
+  - **MAJOR**：不兼容的大改或架构重构
+- 提交信息第一行必须带版本前缀：`vX.Y.Z:`
+
+## 提交信息格式
+
+```
+v1.0.0: 一句话概括本次改动的目的（中文）
+
+- 要点 1：做了什么、为什么
+- 要点 2：…
+```
+
+- **语言**：正文与标题均使用中文（专有名词如 Vue、GitHub Pages 可保留英文）
+- **标题**：≤ 72 字，说「为什么/价值」，不只罗列文件名
+- **正文**：用 `-` 列表概括主要变更，3～6 条为宜
+- **禁止**：空泛的 `update`、`fix bug`；未经用户要求不要 `--no-verify`
+
+## 示例
+
+```
+v1.0.0: 产品化升级，支持公开发布与存档备份
+
+- 新增新手引导与进度导入导出
+- 第 26 关接入 API 调试模拟器
+- 补充 README 与 GitHub Pages 自动部署
+```
+
+```
+v1.0.1: 修复移动端 Dock 遮挡模拟区
+
+- 调整 responsive.css 中 workbench 布局断点
+```
+
+## 提交流程
+
+1. 并行执行 `git status`、`git diff`、`git log -5` 了解现状
+2. 确认 `package.json` 版本号与提交前缀一致
+3. 不提交 `node_modules`、`.env`、密钥；`dist` 已在 `.gitignore`
+4. 仅当用户明确要求时 `git push`；push 前确认 remote 与分支
+
+## 远程仓库
+
+-  origin：`git@github.com:Ta321487/SoftwareTest_Simulator.git`
