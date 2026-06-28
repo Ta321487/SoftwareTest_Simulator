@@ -301,6 +301,12 @@
   background: var(--bg-card);
 }
 
+.debrief-panel__footer-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .debrief-panel__btn {
   width: 100%;
   justify-content: center;

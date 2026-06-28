@@ -175,6 +175,13 @@ const submissionInitialSelected = computed(() => {
 
 const existingStars = computed(() => progressStore.getLevelMeta(levelId.value)?.stars || 0)
 
+const nextLevelAfterPass = computed(() => {
+  const id = progressStore.firstAvailableLevelId
+  if (!id) return null
+  const next = getLevelById(id)
+  return next ? { id: next.id, title: next.title } : null
+})
+
 const levelStatus = computed(() =>
   level.value ? progressStore.getStatus(level.value.id) : 'locked'
 )
@@ -870,6 +877,13 @@ function closeDebrief() {
   router.push('/')
 }
 
+function goToNextLevel() {
+  const id = progressStore.firstAvailableLevelId
+  if (id) {
+    router.push(`/level/${id}`)
+  }
+}
+
 function goBack() {
   if (isSutMode.value) {
     goToMainTask()
@@ -1084,7 +1098,9 @@ function goBack() {
       :tip-label="phase?.debriefTipLabel || '职场建议'"
       :rank-up="rankUp"
       :phase-milestone="phaseMilestone"
+      :next-level="nextLevelAfterPass"
       @close="closeDebrief"
+      @next="goToNextLevel"
     />
   </WorkbenchShell>
 </template>

@@ -59,9 +59,13 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  nextLevel: {
+    type: Object,
+    default: null,
+  },
 })
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'next'])
 
 function starLabel(n) {
   return n >= 3 ? '完美通关' : n >= 2 ? '良好' : '通关'
@@ -179,9 +183,24 @@ const showHighlights = computed(
       </div>
 
       <footer class="debrief-panel__footer">
-        <button type="button" class="sim-btn sim-btn--primary debrief-panel__btn" @click="emit('close')">
-          返回地图
-        </button>
+        <div class="debrief-panel__footer-actions">
+          <button
+            v-if="nextLevel"
+            type="button"
+            class="sim-btn sim-btn--primary debrief-panel__btn"
+            @click="emit('next')"
+          >
+            下一关 · #{{ nextLevel.id }} {{ nextLevel.title }}
+          </button>
+          <button
+            type="button"
+            class="sim-btn debrief-panel__btn"
+            :class="nextLevel ? 'sim-btn--ghost' : 'sim-btn--primary'"
+            @click="emit('close')"
+          >
+            返回地图
+          </button>
+        </div>
       </footer>
     </div>
   </div>
