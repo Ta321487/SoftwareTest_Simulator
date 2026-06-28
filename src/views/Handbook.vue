@@ -160,10 +160,9 @@ watch(
 </script>
 
 <template>
-  <div class="workbench handbook">
+  <div class="workbench home-map handbook">
     <header class="workbench__topbar">
       <div class="workbench__topbar-left">
-        <button type="button" class="workbench__back" @click="router.push('/')">← 地图</button>
         <div class="workbench__title-block">
           <h1 class="workbench__title">测试手札 · 百科</h1>
           <p class="workbench__subtitle">
@@ -174,7 +173,24 @@ watch(
       <ThemeToggle />
     </header>
 
-    <main class="handbook__main">
+    <div class="workbench__body">
+      <aside class="workbench__dock">
+        <p class="workbench__dock-label">导航</p>
+        <button type="button" class="workbench__dock-item" @click="router.push('/')">
+          <span class="workbench__dock-icon">🏠</span>
+          <span class="workbench__dock-text">首页</span>
+        </button>
+        <button
+          type="button"
+          class="workbench__dock-item workbench__dock-item--active"
+          disabled
+        >
+          <span class="workbench__dock-icon">📖</span>
+          <span class="workbench__dock-text">手札·百科</span>
+        </button>
+      </aside>
+
+      <main class="workbench__main handbook__main">
       <div class="handbook__search">
         <input
           v-model="searchQuery"
@@ -344,7 +360,8 @@ watch(
 
         <p v-if="!filteredEntries.length" class="handbook__empty">该阶段暂无手札内容</p>
       </template>
-    </main>
+      </main>
+    </div>
 
     <div v-if="selectedEntry" class="handbook-modal" @click.self="closeModal">
       <article class="handbook-modal__panel">

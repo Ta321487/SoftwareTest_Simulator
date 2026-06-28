@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onUnmounted, ref } from 'vue'
 import { useProgressStore } from '../stores/progressStore'
 import { achievements } from '../data/achievements'
 import { getRankForXp } from '../data/ranks'
@@ -19,6 +19,24 @@ defineProps({
 const progressStore = useProgressStore()
 const shareMsg = ref('')
 const shareError = ref(false)
+let shareMsgTimer = null
+
+function showShareMsg(message, isError = false) {
+  if (shareMsgTimer) {
+    clearTimeout(shareMsgTimer)
+    shareMsgTimer = null
+  }
+  shareMsg.value = message
+  shareError.value = isError
+  shareMsgTimer = setTimeout(() => {
+    shareMsg.value = ''
+    shareMsgTimer = null
+  }, isError ? 5000 : 3500)
+}
+
+onUnmounted(() => {
+  if (shareMsgTimer) clearTimeout(shareMsgTimer)
+})
 
 const rank = computed(() => getRankForXp(progressStore.totalXp))
 
@@ -74,31 +92,24 @@ const weakAreas = computed(() =>
 )
 
 async function handleShare() {
-  shareMsg.value = ''
   try {
     const result = await copyShareText(shareText.value)
     if (result.ok) {
-      shareMsg.value = '成绩已复制，可粘贴到微信；也可点「保存分享图」'
-      shareError.value = false
+      showShareMsg('成绩已复制，可粘贴到微信；也可点「保存分享图」')
     } else {
-      shareMsg.value = result.message || '复制失败'
-      shareError.value = true
+      showShareMsg(result.message || '复制失败', true)
     }
   } catch {
-    shareMsg.value = '复制失败，请手动复制下方文本'
-    shareError.value = true
+    showShareMsg('复制失败，请手动复制下方文本', true)
   }
 }
 
 function handleSaveShareImage() {
-  shareMsg.value = ''
   try {
     downloadShareCard(shareCardPayload())
-    shareMsg.value = '分享图已下载，可发朋友圈或聊天'
-    shareError.value = false
+    showShareMsg('分享图已下载，可发朋友圈或聊天')
   } catch {
-    shareMsg.value = '生成分享图失败，请稍后重试'
-    shareError.value = true
+    showShareMsg('生成分享图失败，请稍后重试', true)
   }
 }
 </script>

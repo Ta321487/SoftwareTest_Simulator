@@ -448,6 +448,10 @@ body {
     padding-bottom: max(32px, env(safe-area-inset-bottom));
   }
 
+  .home-map.handbook .handbook__main {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+
   .handbook__tabs {
     flex-wrap: nowrap;
     overflow-x: auto;
