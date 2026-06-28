@@ -214,7 +214,9 @@ export function scoreJiraTier(levelId, values) {
   const summary = String(values.summary || '').trim()
   const steps = String(values.steps || '').trim()
   const stepLines = countLines(steps)
-  const summaryBonus = rules?.summaryMinLength ? summary.length >= rules.summaryMinLength + 6 : summary.length >= 16
+  const summaryBonus = rules?.summaryMinLength
+    ? summary.length >= rules.summaryMinLength + 6
+    : summary.length >= 16
   const stepsBonus = stepLines >= 3 && steps.length >= (rules?.stepsMinLength || 20) + 5
 
   if (summaryBonus && stepsBonus) return 'excellent'

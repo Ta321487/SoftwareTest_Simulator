@@ -95,7 +95,9 @@ const headerSubtitle = computed(() => {
       <div class="workbench__topbar-right">
         <WorkInbox :messages="inboxMessages" />
         <RankBadge :xp="progressStore.totalXp" compact class="workbench__rank-compact" />
-        <span class="workbench__level-tag">{{ viewMode === 'sut' ? '上机' : '主线' }} · #{{ level.id }}</span>
+        <span class="workbench__level-tag"
+          >{{ viewMode === 'sut' ? '上机' : '主线' }} · #{{ level.id }}</span
+        >
         <ThemeToggle />
       </div>
     </header>
@@ -119,16 +121,27 @@ const headerSubtitle = computed(() => {
           @click="!item.locked && $emit('dock-change', item.levelId)"
         >
           <span class="workbench__dock-icon">{{ dockApps[item.simType]?.icon }}</span>
-          <span class="workbench__dock-text">{{ item.shortLabel || dockApps[item.simType]?.shortLabel }}</span>
+          <span class="workbench__dock-text">{{
+            item.shortLabel || dockApps[item.simType]?.shortLabel
+          }}</span>
           <span v-if="item.levelId === level.id" class="workbench__dock-dot" />
-          <span v-if="item.hasArtifact && item.levelId !== level.id" class="workbench__dock-check">✓</span>
+          <span v-if="item.hasArtifact && item.levelId !== level.id" class="workbench__dock-check"
+            >✓</span
+          >
         </button>
       </aside>
 
       <main class="workbench__main">
         <div v-if="!isTaskDock" class="workbench__context-banner">
-          <span>📂 阶段档案 · {{ dockItems.find((d) => d.levelId === activeDockLevelId)?.dayLabel || '产出' }}</span>
-          <button type="button" class="workbench__context-back" @click="$emit('dock-change', level.id)">
+          <span
+            >📂 阶段档案 ·
+            {{ dockItems.find((d) => d.levelId === activeDockLevelId)?.dayLabel || '产出' }}</span
+          >
+          <button
+            type="button"
+            class="workbench__context-back"
+            @click="$emit('dock-change', level.id)"
+          >
             返回当前任务 →
           </button>
         </div>

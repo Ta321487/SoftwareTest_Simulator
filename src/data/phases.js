@@ -56,9 +56,7 @@ export const phases = {
 export const phaseOrder = ['prepare', 'interview', 'written', 'onboard', 'lead']
 
 export function getPhaseForLevel(levelId) {
-  return (
-    Object.values(phases).find((phase) => phase.levelIds.includes(levelId)) || null
-  )
+  return Object.values(phases).find((phase) => phase.levelIds.includes(levelId)) || null
 }
 
 export function getPhaseStep(phase, levelId) {

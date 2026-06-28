@@ -922,7 +922,9 @@
   border-radius: 8px;
   background: var(--surface-muted);
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 
 .packet-capture__row:hover {

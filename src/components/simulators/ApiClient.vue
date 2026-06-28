@@ -173,12 +173,15 @@ defineExpose({ reset })
         <pre class="api-client__body">{{ apiRequestBody }}</pre>
       </div>
       <p v-if="lastStatus" class="api-client__send-result">
-        响应状态码：<strong>{{ lastStatus }}</strong><template v-if="!isChecklistMode">（样本 {{ activeTab + 1 }}）</template>
+        响应状态码：<strong>{{ lastStatus }}</strong
+        ><template v-if="!isChecklistMode">（样本 {{ activeTab + 1 }}）</template>
       </p>
     </div>
 
     <div v-if="requirement" class="template-filler__requirement">
-      <span class="template-filler__requirement-label">{{ isChecklistMode ? '接口说明' : '断言规则' }}</span>
+      <span class="template-filler__requirement-label">{{
+        isChecklistMode ? '接口说明' : '断言规则'
+      }}</span>
       <p>{{ requirement }}</p>
     </div>
     <p v-if="fillHint" class="template-filler__hint">{{ fillHint }}</p>
@@ -197,56 +200,58 @@ defineExpose({ reset })
     </div>
 
     <template v-else>
-    <div class="api-client__scenarios">
-      <div class="api-client__tabs" role="tablist">
-        <button
-          v-for="(sc, idx) in scenarios"
-          :key="sc.field.field"
-          type="button"
-          role="tab"
-          class="api-client__tab"
-          :class="{ 'api-client__tab--active': activeTab === idx }"
-          :aria-selected="activeTab === idx"
-          @click="activeTab = idx"
-        >
-          样本 {{ idx + 1 }}
-        </button>
-      </div>
-
-      <div v-if="activeScenario" class="api-client__response">
-        <div class="api-client__response-head">
-          <span>{{ activeScenario.title }}</span>
-          <span class="api-client__status">{{ activeScenario.statusLine || `HTTP ${activeScenario.status}` }}</span>
+      <div class="api-client__scenarios">
+        <div class="api-client__tabs" role="tablist">
+          <button
+            v-for="(sc, idx) in scenarios"
+            :key="sc.field.field"
+            type="button"
+            role="tab"
+            class="api-client__tab"
+            :class="{ 'api-client__tab--active': activeTab === idx }"
+            :aria-selected="activeTab === idx"
+            @click="activeTab = idx"
+          >
+            样本 {{ idx + 1 }}
+          </button>
         </div>
-        <pre class="api-client__response-body">{{ activeScenario.responseBody }}</pre>
+
+        <div v-if="activeScenario" class="api-client__response">
+          <div class="api-client__response-head">
+            <span>{{ activeScenario.title }}</span>
+            <span class="api-client__status">{{
+              activeScenario.statusLine || `HTTP ${activeScenario.status}`
+            }}</span>
+          </div>
+          <pre class="api-client__response-body">{{ activeScenario.responseBody }}</pre>
+        </div>
+
+        <label class="sim-field__label">测试断言（status + body 要点）</label>
+        <textarea
+          v-model="values[activeScenario.field.field]"
+          class="sim-field__textarea"
+          rows="3"
+          :placeholder="activeScenario.field.placeholder"
+        />
+        <p v-if="activeScenario.field.validationHint" class="api-client__field-hint">
+          {{ activeScenario.field.validationHint }}
+        </p>
       </div>
 
-      <label class="sim-field__label">测试断言（status + body 要点）</label>
-      <textarea
-        v-model="values[activeScenario.field.field]"
-        class="sim-field__textarea"
-        rows="3"
-        :placeholder="activeScenario.field.placeholder"
-      />
-      <p v-if="activeScenario.field.validationHint" class="api-client__field-hint">
-        {{ activeScenario.field.validationHint }}
-      </p>
-    </div>
-
-    <div
-      v-if="composePreview.hasPreview"
-      class="template-filler__preview"
-      :class="`template-filler__preview--${composePreview.tier}`"
-    >
-      <p class="template-filler__preview-title">
-        提交前预览 · {{ composePreview.tierLabel }}
-        <span class="template-filler__preview-progress">样本 {{ composePreview.progress }}</span>
-      </p>
-      <ul v-if="composePreview.tips.length" class="template-filler__preview-tips">
-        <li v-for="(tip, idx) in composePreview.tips" :key="idx">{{ tip }}</li>
-      </ul>
-      <p v-else class="template-filler__preview-ok">各样本断言达标，可以提交。</p>
-    </div>
+      <div
+        v-if="composePreview.hasPreview"
+        class="template-filler__preview"
+        :class="`template-filler__preview--${composePreview.tier}`"
+      >
+        <p class="template-filler__preview-title">
+          提交前预览 · {{ composePreview.tierLabel }}
+          <span class="template-filler__preview-progress">样本 {{ composePreview.progress }}</span>
+        </p>
+        <ul v-if="composePreview.tips.length" class="template-filler__preview-tips">
+          <li v-for="(tip, idx) in composePreview.tips" :key="idx">{{ tip }}</li>
+        </ul>
+        <p v-else class="template-filler__preview-ok">各样本断言达标，可以提交。</p>
+      </div>
     </template>
 
     <button type="button" class="sim-btn sim-btn--primary" @click="handleSubmit">

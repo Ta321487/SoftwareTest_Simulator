@@ -1,7 +1,12 @@
 import { describe, it, expect } from 'vitest'
 import { executeTerminalCommand, parseTailLineCount } from './terminalExecution.js'
 import { validateSimulation, calculateStars } from './validator.js'
-import { validateJiraQuality, scoreJiraTier, validateJiraMinimum, getJiraTierPreview } from './jiraValidation.js'
+import {
+  validateJiraQuality,
+  scoreJiraTier,
+  validateJiraMinimum,
+  getJiraTierPreview,
+} from './jiraValidation.js'
 import { validateTerminalCommand } from './terminalValidation.js'
 
 const level3 = {
@@ -84,11 +89,15 @@ describe('validateTerminalCommand', () => {
   const grepLevel = { correctCommand: 'grep ERROR /var/log/app/error.log' }
 
   it('accepts exact tail command', () => {
-    expect(validateTerminalCommand('tail -n 100 /var/log/app/error.log', tailLevel).isPass).toBe(true)
+    expect(validateTerminalCommand('tail -n 100 /var/log/app/error.log', tailLevel).isPass).toBe(
+      true
+    )
   })
 
   it('accepts grep with keyword and path', () => {
-    expect(validateTerminalCommand('grep ERROR /var/log/app/error.log', grepLevel).isPass).toBe(true)
+    expect(validateTerminalCommand('grep ERROR /var/log/app/error.log', grepLevel).isPass).toBe(
+      true
+    )
   })
 })
 

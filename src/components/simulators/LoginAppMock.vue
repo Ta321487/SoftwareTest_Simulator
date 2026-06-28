@@ -101,7 +101,12 @@ onUnmounted(clearTick)
         <p class="login-app-mock__title">欢迎登录</p>
         <label class="login-app-mock__field">
           <span>手机号</span>
-          <input v-model="phone" type="tel" class="login-app-mock__input" placeholder="11 位手机号" />
+          <input
+            v-model="phone"
+            type="tel"
+            class="login-app-mock__input"
+            placeholder="11 位手机号"
+          />
         </label>
         <label class="login-app-mock__field">
           <span>密码</span>
@@ -123,7 +128,9 @@ onUnmounted(clearTick)
           >
             {{ countdown }} 秒
           </span>
-          <span v-else class="login-app-mock__countdown login-app-mock__countdown--idle">未请求</span>
+          <span v-else class="login-app-mock__countdown login-app-mock__countdown--idle"
+            >未请求</span
+          >
         </div>
         <button type="button" class="login-app-mock__submit" disabled>登录</button>
       </div>
@@ -132,14 +139,18 @@ onUnmounted(clearTick)
     <p v-if="build === 'buggy'" class="login-app-mock__guide">
       执行用例：点击「获取验证码」，观察倒计时是否异常。
     </p>
-    <p v-else class="login-app-mock__guide">
-      回归验证：修复后倒计时应从 60 递减，不应出现负数。
-    </p>
+    <p v-else class="login-app-mock__guide">回归验证：修复后倒计时应从 60 递减，不应出现负数。</p>
 
-    <p v-if="reproduced && build === 'buggy'" class="login-app-mock__status login-app-mock__status--bug">
+    <p
+      v-if="reproduced && build === 'buggy'"
+      class="login-app-mock__status login-app-mock__status--bug"
+    >
       ✓ 已复现 Bug：倒计时显示 -1 秒 —— 可以写 Jira 了
     </p>
-    <p v-if="fixVerified && build === 'fixed'" class="login-app-mock__status login-app-mock__status--ok">
+    <p
+      v-if="fixVerified && build === 'fixed'"
+      class="login-app-mock__status login-app-mock__status--ok"
+    >
       ✓ 修复验证：倒计时正常 —— 可对照报告勾选回归项
     </p>
   </div>

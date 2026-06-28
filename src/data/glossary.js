@@ -16,8 +16,7 @@ export const glossaryTerms = [
     term: 'Blocker',
     aliases: ['阻塞', 'P0', '阻塞级'],
     category: 'defect',
-    definition:
-      '最高严重级别：核心功能完全不可用，或存在严重数据/安全风险，且无合理临时绕过方案。',
+    definition: '最高严重级别：核心功能完全不可用，或存在严重数据/安全风险，且无合理临时绕过方案。',
     example: '全站无法登录、支付成功但订单未生成且无法补单——通常标 Blocker，并阻塞发布。',
     relatedLevelIds: [3, 22],
     seeAlso: ['major', 'critical', 'regression'],
@@ -202,7 +201,8 @@ export const glossaryTerms = [
     category: 'technique',
     definition:
       '介于黑盒与白盒之间：整体当黑盒测，但利用数据库、日志、接口文档等「部分内部信息」辅助设计用例。',
-    example: '界面黑盒点登录，同时查 DB 是否写入 Session、tail 日志是否有 Auth ERROR——游戏值班关常见。',
+    example:
+      '界面黑盒点登录，同时查 DB 是否写入 Session、tail 日志是否有 Auth ERROR——游戏值班关常见。',
     relatedLevelIds: [23, 24],
     seeAlso: ['black-box', 'white-box', 'api-test'],
   },
@@ -211,8 +211,7 @@ export const glossaryTerms = [
     term: '判定表法',
     aliases: ['判定表', '决策表', 'decision table'],
     category: 'technique',
-    definition:
-      '把多种条件组合与对应动作列成表格，系统化覆盖「如果 A 且 B 则 C」，避免漏组合。',
+    definition: '把多种条件组合与对应动作列成表格，系统化覆盖「如果 A 且 B 则 C」，避免漏组合。',
     example: '登录：用户名空/非空 × 密码合法/非法 → 表格列出 4 种组合各自预期，比凭感觉写用例全。',
     relatedLevelIds: [2],
     seeAlso: ['cause-effect', 'equivalence-class', 'black-box'],
@@ -224,7 +223,8 @@ export const glossaryTerms = [
     category: 'technique',
     definition:
       '用因果图表示输入条件与结果的关系，再转成判定表生成用例，适合条件多、有约束（互斥/依赖）的场景。',
-    example: '「记住密码勾选且登录成功才写 Cookie」——因果图能看清哪些条件组合有效、哪些不可能出现。',
+    example:
+      '「记住密码勾选且登录成功才写 Cookie」——因果图能看清哪些条件组合有效、哪些不可能出现。',
     relatedLevelIds: [2],
     seeAlso: ['decision-table', 'equivalence-class'],
   },
@@ -233,9 +233,9 @@ export const glossaryTerms = [
     term: '场景法',
     aliases: ['场景测试', '业务流程法', 'use case'],
     category: 'technique',
-    definition:
-      '按真实用户业务流程串步骤设计用例，覆盖主流程、分支流程、异常中断与恢复。',
-    example: '登录 → 浏览商品 → 下单 → 支付 → 查订单：任一步失败会怎样，比单点测一个输入框更贴近用户。',
+    definition: '按真实用户业务流程串步骤设计用例，覆盖主流程、分支流程、异常中断与恢复。',
+    example:
+      '登录 → 浏览商品 → 下单 → 支付 → 查订单：任一步失败会怎样，比单点测一个输入框更贴近用户。',
     relatedLevelIds: [1, 5],
     seeAlso: ['happy-path', 'black-box', 'exploratory'],
   },
@@ -244,8 +244,7 @@ export const glossaryTerms = [
     term: '错误推测法',
     aliases: ['错误猜想法', 'error guessing', '经验法'],
     category: 'technique',
-    definition:
-      '凭经验和历史缺陷，猜测容易出错的点重点测。不能替代系统方法，但可补充边界场景。',
+    definition: '凭经验和历史缺陷，猜测容易出错的点重点测。不能替代系统方法，但可补充边界场景。',
     example: '验证码倒计时、支付回调、4G 慢网络——都是「老坑」；游戏番外和值班关就是在练这种嗅觉。',
     relatedLevelIds: [3, 22],
     seeAlso: ['exploratory', 'boundary-value'],
@@ -268,7 +267,8 @@ export const glossaryTerms = [
     category: 'technique',
     definition:
       '同时学习、设计用例、执行和复盘，没有完整预定脚本，靠 Charter（测什么）+ 实时记录发现。',
-    example: '新版本登录页「先随便点 15 分钟」看有没有奇怪跳转——适合时间紧、文档少的探索，但要记步骤。',
+    example:
+      '新版本登录页「先随便点 15 分钟」看有没有奇怪跳转——适合时间紧、文档少的探索，但要记步骤。',
     relatedLevelIds: [1],
     seeAlso: ['error-guessing', 'scenario-method'],
   },
@@ -288,7 +288,8 @@ export const glossaryTerms = [
     term: '动态测试',
     aliases: ['动态', 'dynamic testing'],
     category: 'technique',
-    definition: '真正运行软件，给输入、看输出/行为是否符合预期。游戏里点 App、跑终端、发接口都属于动态测试。',
+    definition:
+      '真正运行软件，给输入、看输出/行为是否符合预期。游戏里点 App、跑终端、发接口都属于动态测试。',
     example: '手测登录、自动化回归、接口 POST /api/login——与「只看文档不运行」的静态测试相对。',
     relatedLevelIds: [4, 17],
     seeAlso: ['static-test', 'black-box'],
@@ -308,8 +309,7 @@ export const glossaryTerms = [
     term: '非功能测试',
     aliases: ['非功能', '质量属性', 'NFR'],
     category: 'technique',
-    definition:
-      '测性能、安全、兼容、易用、可靠等「做得好不好」，而不是「功能对不对」。',
+    definition: '测性能、安全、兼容、易用、可靠等「做得好不好」，而不是「功能对不对」。',
     example: 'P99 延迟、XSS、4G 下 8 秒打不开——分别属于性能、安全、兼容/体验类非功能测试。',
     relatedLevelIds: [12, 101, 22],
     seeAlso: ['functional-test', 'p99', 'xss'],
@@ -319,8 +319,7 @@ export const glossaryTerms = [
     term: '单元测试',
     aliases: ['单测', 'unit test'],
     category: 'technique',
-    definition:
-      '对最小可测单元（函数/类/模块）做自动化验证，开发编写，运行快，白盒思路多。',
+    definition: '对最小可测单元（函数/类/模块）做自动化验证，开发编写，运行快，白盒思路多。',
     example: '单独测「密码格式校验函数」传 5 位/6 位/13 位——不启动整个网站，CI 里几毫秒跑完。',
     relatedLevelIds: [103],
     seeAlso: ['white-box', 'integration-test', 'cicd'],
@@ -351,8 +350,7 @@ export const glossaryTerms = [
     term: '验收测试',
     aliases: ['验收', 'UAT', 'acceptance test', '用户验收'],
     category: 'technique',
-    definition:
-      '由业务/产品/用户确认软件是否「可交付、可上线」，常以需求与合同为准，通过才放行。',
+    definition: '由业务/产品/用户确认软件是否「可交付、可上线」，常以需求与合同为准，通过才放行。',
     example: '产品按 PRD 逐条勾选登录模块 Day 1–5 交付物——对应游戏主线登录项目收官。',
     relatedLevelIds: [5],
     seeAlso: ['system-test', 'smoke', 'go-nogo'],
@@ -364,7 +362,8 @@ export const glossaryTerms = [
     category: 'technique',
     definition:
       '白盒常用指标：测试执行到了多少代码（语句/分支/路径）。覆盖率高不代表没 Bug，但过低说明测得浅。',
-    example: '分支覆盖要求每个 if/else 都走到——「密码错误」和「账号不存在」两个分支都要有用例触发。',
+    example:
+      '分支覆盖要求每个 if/else 都走到——「密码错误」和「账号不存在」两个分支都要有用例触发。',
     relatedLevelIds: [103],
     seeAlso: ['white-box', 'unit-test'],
   },
@@ -473,7 +472,8 @@ export const glossaryTerms = [
     term: '回调 Callback',
     aliases: ['notify', '异步通知'],
     category: 'ops',
-    definition: '支付等场景：第三方完成后 POST 通知你的服务器。地址配错会导致「付了款但没通知到」。',
+    definition:
+      '支付等场景：第三方完成后 POST 通知你的服务器。地址配错会导致「付了款但没通知到」。',
     example: '抓包看 notify Host 是否 prod；PAYMENT_DB_HOST 与回调 URL 要双核对。',
     relatedLevelIds: [7, 8, 31],
     seeAlso: ['api-test'],

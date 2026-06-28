@@ -56,7 +56,18 @@ function isErrorLine(line) {
   <div class="oncall-panel sim-card">
     <header class="oncall-panel__header">
       <div>
-        <p class="oncall-panel__brand">线上值班 · {{ mode === 'prod-login' ? '生产复现' : mode === 'log-preview' ? '日志摘要' : mode === 'release-board' ? '发布看板' : '满月回顾' }}</p>
+        <p class="oncall-panel__brand">
+          线上值班 ·
+          {{
+            mode === 'prod-login'
+              ? '生产复现'
+              : mode === 'log-preview'
+                ? '日志摘要'
+                : mode === 'release-board'
+                  ? '发布看板'
+                  : '满月回顾'
+          }}
+        </p>
         <p class="oncall-panel__version">onboard-week2 · 入职第 2 周</p>
       </div>
       <span class="oncall-panel__env oncall-panel__env--prod">生产</span>
@@ -80,7 +91,9 @@ function isErrorLine(line) {
           本次登录耗时 <strong>{{ loginElapsed }}s</strong>
         </p>
       </div>
-      <p class="oncall-panel__guide">复现线上慢登录后再写 TEST-1022：步骤含 4G、预期 3 秒内、实际约 8 秒。</p>
+      <p class="oncall-panel__guide">
+        复现线上慢登录后再写 TEST-1022：步骤含 4G、预期 3 秒内、实际约 8 秒。
+      </p>
       <p v-if="prodSlow" class="oncall-panel__status oncall-panel__status--warn">
         ✓ 已复现：4G 下登录约 8 秒 —— 可以写 Jira 了
       </p>

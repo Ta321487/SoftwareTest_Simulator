@@ -49,19 +49,30 @@ const qualityBadge = computed(() => {
     <template v-if="artifact && sourceLevel">
       <header class="context-panel__header">
         <h3>{{ sourceLevel.title }}</h3>
-        <span v-if="qualityBadge" class="context-panel__tag" :class="`context-panel__tag--${qualityBadge.tone}`">
+        <span
+          v-if="qualityBadge"
+          class="context-panel__tag"
+          :class="`context-panel__tag--${qualityBadge.tone}`"
+        >
           {{ qualityBadge.text }}
         </span>
         <span v-else class="context-panel__tag">Day {{ sourceLevel.projectDay }} 存档</span>
       </header>
-      <div v-if="artifactMeta?.jiraTier === 'draft' && simType === 'jira'" class="context-panel__flaw-note">
+      <div
+        v-if="artifactMeta?.jiraTier === 'draft' && simType === 'jira'"
+        class="context-panel__flaw-note"
+      >
         王工曾反馈：工单为草稿档，描述略笼统，后续关卡回归时请对照现象再核一遍。
       </div>
-      <div v-else-if="artifactMeta?.mistakes > 0 && simType === 'jira'" class="context-panel__flaw-note">
+      <div
+        v-else-if="artifactMeta?.mistakes > 0 && simType === 'jira'"
+        class="context-panel__flaw-note"
+      >
         李工曾反馈：描述略笼统，后续关卡回归时请对照现象再核一遍。
       </div>
 
-      <div v-if="simType === 'checklist'" class="context-panel__body">        <p class="context-panel__intro">你在 PRD 评审中圈定的测试维度：</p>
+      <div v-if="simType === 'checklist'" class="context-panel__body">
+        <p class="context-panel__intro">你在 PRD 评审中圈定的测试维度：</p>
         <ul class="context-panel__list">
           <li
             v-for="id in artifact.selected"
@@ -111,7 +122,8 @@ const qualityBadge = computed(() => {
 
       <div v-else-if="simType === 'config'" class="context-panel__body">
         <p class="context-panel__intro">保存的环境配置：</p>
-        <pre class="context-panel__code">{{ sourceLevel.configKey || 'DB_HOST' }}={{ artifact.value }}</pre>
+        <pre class="context-panel__code"
+          >{{ sourceLevel.configKey || 'DB_HOST' }}={{ artifact.value }}</pre>
       </div>
 
       <div v-else-if="simType === 'chat'" class="context-panel__body">
@@ -122,7 +134,10 @@ const qualityBadge = computed(() => {
       <div v-else-if="simType === 'clickcard'" class="context-panel__body">
         <p class="context-panel__intro">确认的分支/选项：</p>
         <p class="context-panel__choice">
-          {{ sourceLevel.clickOptions?.find((o) => o.id === artifact.selected)?.label || artifact.selected }}
+          {{
+            sourceLevel.clickOptions?.find((o) => o.id === artifact.selected)?.label ||
+            artifact.selected
+          }}
         </p>
       </div>
 

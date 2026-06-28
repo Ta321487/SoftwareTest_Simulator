@@ -80,7 +80,9 @@
   background: var(--surface-muted);
   cursor: pointer;
   text-align: left;
-  transition: border-color var(--transition), transform var(--transition);
+  transition:
+    border-color var(--transition),
+    transform var(--transition);
   position: relative;
 }
 
@@ -234,7 +236,10 @@
   color: var(--text-secondary);
   font-size: 0.85rem;
   cursor: pointer;
-  transition: border-color var(--transition), background var(--transition), color var(--transition);
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    color var(--transition);
 }
 
 .career-map__tab:hover {

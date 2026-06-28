@@ -12,10 +12,16 @@ export function validateChatStructure(level, message) {
     const hasAction = actionWords.some((w) => message.includes(w))
     const hasRequest = requestWords.some((w) => message.includes(w))
     if (!hasAction) {
-      return { ok: false, message: '回复缺少具体动作。写清你会先查/核对什么（如回调地址、配置、日志）。' }
+      return {
+        ok: false,
+        message: '回复缺少具体动作。写清你会先查/核对什么（如回调地址、配置、日志）。',
+      }
     }
     if (!hasRequest) {
-      return { ok: false, message: '回复缺少协作请求。请明确请对方配合做什么（如一起看日志、确认分支）。' }
+      return {
+        ok: false,
+        message: '回复缺少协作请求。请明确请对方配合做什么（如一起看日志、确认分支）。',
+      }
     }
   }
 
@@ -36,7 +42,10 @@ export function validateChatStructure(level, message) {
     const valueWords = ['质量', '用户', '缺陷', '体验', '风险', '验证', '细致', '负责']
     const hasValue = valueWords.some((w) => lower.includes(w))
     if (!hasValue) {
-      return { ok: false, message: '结合「为用户发现风险」「保证质量」等说说为什么选测试、你能带来什么。' }
+      return {
+        ok: false,
+        message: '结合「为用户发现风险」「保证质量」等说说为什么选测试、你能带来什么。',
+      }
     }
   }
 

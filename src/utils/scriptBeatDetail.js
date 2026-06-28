@@ -5,7 +5,9 @@ import { getLevelById } from './levelRegistry'
 /** 从关卡 description 提取一句场景 hook（去掉【标签】） */
 export function extractLevelHook(description) {
   if (!description) return ''
-  const text = String(description).replace(/^【[^】]+】\s*/, '').trim()
+  const text = String(description)
+    .replace(/^【[^】]+】\s*/, '')
+    .trim()
   const sentence = text.match(/^[^。！？\n]+[。！？]?/)?.[0] || text
   return sentence.length > 80 ? `${sentence.slice(0, 78)}…` : sentence
 }

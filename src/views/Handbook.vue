@@ -93,13 +93,17 @@ const filteredGlossaryTerms = computed(() =>
 )
 
 const searchResultNotes = computed(() =>
-  isSearching.value ? allEntries.value.filter((e) => matchesHandbookSearch(e, searchQuery.value)) : []
+  isSearching.value
+    ? allEntries.value.filter((e) => matchesHandbookSearch(e, searchQuery.value))
+    : []
 )
 
 const searchResultTerms = computed(() =>
   isSearching.value
-    ? filterGlossaryTerms(glossaryTerms, { query: searchQuery.value, categoryId: 'all' }, (categoryId) =>
-        getGlossaryCategory(categoryId)?.name || ''
+    ? filterGlossaryTerms(
+        glossaryTerms,
+        { query: searchQuery.value, categoryId: 'all' },
+        (categoryId) => getGlossaryCategory(categoryId)?.name || ''
       )
     : []
 )
@@ -336,11 +340,15 @@ watch(
         <header class="handbook-modal__header">
           <div>
             <span class="handbook-modal__phase">
-              {{ selectedEntry.phaseIcon }} {{ selectedEntry.phaseName }} · #{{ selectedEntry.levelId }}
+              {{ selectedEntry.phaseIcon }} {{ selectedEntry.phaseName }} · #{{
+                selectedEntry.levelId
+              }}
             </span>
             <h2 class="handbook-modal__title">{{ selectedEntry.title }}</h2>
           </div>
-          <button type="button" class="handbook-modal__close" aria-label="关闭" @click="closeModal">×</button>
+          <button type="button" class="handbook-modal__close" aria-label="关闭" @click="closeModal">
+            ×
+          </button>
         </header>
 
         <section class="handbook-modal__section handbook-modal__section--highlight">
@@ -361,7 +369,10 @@ watch(
           <button
             type="button"
             class="sim-btn sim-btn--ghost"
-            @click="router.push('/level/' + selectedEntry.routeId); closeModal()"
+            @click="
+              router.push('/level/' + selectedEntry.routeId)
+              closeModal()
+            "
           >
             去这一关 →
           </button>
@@ -381,7 +392,9 @@ watch(
               也叫：{{ selectedTerm.aliases.join('、') }}
             </p>
           </div>
-          <button type="button" class="handbook-modal__close" aria-label="关闭" @click="closeModal">×</button>
+          <button type="button" class="handbook-modal__close" aria-label="关闭" @click="closeModal">
+            ×
+          </button>
         </header>
 
         <section class="handbook-modal__section handbook-modal__section--highlight">
@@ -414,7 +427,10 @@ watch(
               :key="levelId"
               type="button"
               class="handbook-modal__link-chip"
-              @click="router.push('/level/' + levelId); closeModal()"
+              @click="
+                router.push('/level/' + levelId)
+                closeModal()
+              "
             >
               #{{ levelId }} {{ getLevelTitle(levelId) }}
             </button>

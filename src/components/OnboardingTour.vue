@@ -73,7 +73,13 @@ defineExpose({ reopen })
 </script>
 
 <template>
-  <div v-if="visible" class="onboarding" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
+  <div
+    v-if="visible"
+    class="onboarding"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="onboarding-title"
+  >
     <div class="onboarding__backdrop" @click="skip" />
     <article class="onboarding__panel">
       <header class="onboarding__header">
@@ -97,12 +103,7 @@ defineExpose({ reopen })
       </div>
 
       <footer class="onboarding__footer">
-        <button
-          v-if="step > 0"
-          type="button"
-          class="sim-btn sim-btn--ghost"
-          @click="step -= 1"
-        >
+        <button v-if="step > 0" type="button" class="sim-btn sim-btn--ghost" @click="step -= 1">
           上一步
         </button>
         <button type="button" class="sim-btn sim-btn--primary" @click="next">

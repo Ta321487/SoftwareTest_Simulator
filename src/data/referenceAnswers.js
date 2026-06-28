@@ -4,7 +4,10 @@ export const referenceAnswers = {
     label: '用例预期参考',
     items: [
       { title: '用户名空，密码正确', text: '不允许提交/登录；提示用户名必填或类似报错信息。' },
-      { title: '用户名正确，密码 6 位纯数字', text: '允许登录；6 位字母数字符合规则，系统正常跳转或提示成功。' },
+      {
+        title: '用户名正确，密码 6 位纯数字',
+        text: '允许登录；6 位字母数字符合规则，系统正常跳转或提示成功。',
+      },
       { title: '用户名正确，密码 13 位', text: '不允许；提示密码长度超出 6–12 位限制。' },
       { title: '用户名正确，密码含 @', text: '不允许；提示密码只能包含字母和数字。' },
     ],
@@ -30,7 +33,10 @@ export const referenceAnswers = {
     label: '支付 Bug 单参考',
     items: [
       { title: '标题', text: '微信支付成功后订单状态仍为待支付' },
-      { title: '预期 / 实际', text: '预期：支付成功回调后订单变为已支付；实际：用户已扣款但订单未更新' },
+      {
+        title: '预期 / 实际',
+        text: '预期：支付成功回调后订单变为已支付；实际：用户已扣款但订单未更新',
+      },
       { title: '复现步骤', text: '登录 → 下单 → 选择微信支付 → 完成支付 → 查看订单详情' },
     ],
   },
@@ -45,27 +51,29 @@ export const referenceAnswers = {
   4: {
     label: '回归范围参考',
     items: [
-      { title: '必回归', text: 'TEST-1003 验证码倒计时（FAIL + 高风险）；密码错误 5 次锁定（FAIL + 高风险）。' },
+      {
+        title: '必回归',
+        text: 'TEST-1003 验证码倒计时（FAIL + 高风险）；密码错误 5 次锁定（FAIL + 高风险）。',
+      },
       { title: '可暂缓', text: '正常登录 PASS、记住密码 medium、背景图 low 可在时间极紧时后补。' },
     ],
   },
   6: {
     label: '环境配置参考',
     items: [
-      { title: '应修改为', text: 'PAYMENT_DB_HOST=10.0.1.5（运维文档中的测试库地址，非 127.0.0.1 占位符）。' },
+      {
+        title: '应修改为',
+        text: 'PAYMENT_DB_HOST=10.0.1.5（运维文档中的测试库地址，非 127.0.0.1 占位符）。',
+      },
     ],
   },
   9: {
     label: '分支选择参考',
-    items: [
-      { title: '答案', text: 'release/payment-2.3 —— 当前支付测试环境正在部署的发布分支。' },
-    ],
+    items: [{ title: '答案', text: 'release/payment-2.3 —— 当前支付测试环境正在部署的发布分支。' }],
   },
   11: {
     label: '工时计算参考',
-    items: [
-      { title: '公式', text: '5 模块 × 40 用例 ÷ 10 条/小时 ÷ 6 小时/天 = 3.33 天。' },
-    ],
+    items: [{ title: '公式', text: '5 模块 × 40 用例 ÷ 10 条/小时 ÷ 6 小时/天 = 3.33 天。' }],
   },
   21: {
     label: '分析题参考',
@@ -86,14 +94,20 @@ export const referenceAnswers = {
   27: {
     label: '接口用例参考',
     items: [
-      { title: '必覆盖', text: '正常登录 200+token；密码错 401；缺 username/password；空密码；错误 Content-Type。' },
+      {
+        title: '必覆盖',
+        text: '正常登录 200+token；密码错 401；缺 username/password；空密码；错误 Content-Type。',
+      },
       { title: '非接口层', text: '登录按钮 hover 颜色属于 UI，不是接口用例。' },
     ],
   },
   15: {
     label: '复盘措施参考',
     items: [
-      { title: '示例方向', text: '缓存：热点 key 永不过期 + 随机 TTL；限流/熔断保护 DB；连接池扩容与慢 SQL 治理；完善缓存击穿监控告警。' },
+      {
+        title: '示例方向',
+        text: '缓存：热点 key 永不过期 + 随机 TTL；限流/熔断保护 DB；连接池扩容与慢 SQL 治理；完善缓存击穿监控告警。',
+      },
     ],
   },
   17: {
@@ -116,7 +130,10 @@ export const referenceAnswers = {
   25: {
     label: '满月总结参考',
     items: [
-      { title: '本月成果', text: '完成登录、支付、订单等模块测试；提交并跟踪多条 Bug；参与线上问题排查。' },
+      {
+        title: '本月成果',
+        text: '完成登录、支付、订单等模块测试；提交并跟踪多条 Bug；参与线上问题排查。',
+      },
       { title: '踩坑与收获', text: '学会了先看日志和配置再报 Bug；协作排查支付回调问题印象很深。' },
       { title: '下月计划', text: '推进订单自动化脚本；加强接口与性能测试学习。' },
     ],

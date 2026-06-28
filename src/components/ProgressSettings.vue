@@ -3,7 +3,13 @@ import { ref } from 'vue'
 import { useProgressStore } from '../stores/progressStore'
 import { useProjectStore } from '../stores/projectStore'
 import { useThemeStore } from '../stores/themeStore'
-import { buildBackup, applyBackup, downloadBackup, readBackupFile, BACKUP_VERSION } from '../utils/progressBackup'
+import {
+  buildBackup,
+  applyBackup,
+  downloadBackup,
+  readBackupFile,
+  BACKUP_VERSION,
+} from '../utils/progressBackup'
 
 const emit = defineEmits(['show-onboarding'])
 
@@ -30,11 +36,7 @@ async function onFileChange(event) {
   importMsg.value = ''
   try {
     const data = await readBackupFile(file)
-    if (
-      !window.confirm(
-        '导入将覆盖当前进度、项目档案与沉浸状态。确定继续？'
-      )
-    ) {
+    if (!window.confirm('导入将覆盖当前进度、项目档案与沉浸状态。确定继续？')) {
       return
     }
     const result = applyBackup(data, progressStore, projectStore, themeStore)
@@ -60,8 +62,10 @@ function triggerImport() {
   <section class="save-panel">
     <h2 class="save-panel__title">存档管理</h2>
     <p class="save-panel__desc">
-      进度保存在浏览器本地。换设备或清缓存前请先导出；支持 JSON 存档导入恢复。
-      当前存档格式 v{{ BACKUP_VERSION }} · 含上机分步进度。
+      进度保存在浏览器本地。换设备或清缓存前请先导出；支持 JSON 存档导入恢复。 当前存档格式 v{{
+        BACKUP_VERSION
+      }}
+      · 含上机分步进度。
     </p>
     <div class="save-panel__actions">
       <button type="button" class="level-map__btn level-map__btn--primary" @click="exportSave">
@@ -85,11 +89,7 @@ function triggerImport() {
         @change="onFileChange"
       />
     </div>
-    <p
-      v-if="importMsg"
-      class="save-panel__msg"
-      :class="{ 'save-panel__msg--error': importError }"
-    >
+    <p v-if="importMsg" class="save-panel__msg" :class="{ 'save-panel__msg--error': importError }">
       {{ importMsg }}
     </p>
   </section>

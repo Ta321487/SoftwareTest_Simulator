@@ -68,7 +68,9 @@ function handleKeydown(event) {
       <span class="level-card__xp">+{{ level.xpReward }} XP</span>
       <span class="level-card__type">{{ simTypeLabels[level.simType] || '模拟' }}</span>
       <span v-if="status === 'available'" class="level-card__enter">开始 →</span>
-      <span v-if="status === 'completed'" class="level-card__enter level-card__enter--review">复习 →</span>
+      <span v-if="status === 'completed'" class="level-card__enter level-card__enter--review"
+        >复习 →</span
+      >
     </div>
 
     <p v-if="toast" class="level-card__toast">{{ toast }}</p>

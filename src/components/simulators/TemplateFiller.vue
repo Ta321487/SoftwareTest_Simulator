@@ -34,9 +34,7 @@ const levelConfig = computed(() => ({
   requirement: props.requirement,
 }))
 
-const composePreview = computed(() =>
-  getTemplateComposePreview(levelConfig.value, values)
-)
+const composePreview = computed(() => getTemplateComposePreview(levelConfig.value, values))
 
 const isTableMode = () => props.templateFields.some((field) => field.scenario)
 
@@ -86,11 +84,7 @@ function handleSubmit() {
         <span class="template-table__col template-table__col--scenario">测试场景</span>
         <span class="template-table__col template-table__col--result">预期结果（你来填写）</span>
       </div>
-      <div
-        v-for="(field, index) in templateFields"
-        :key="field.field"
-        class="template-table__row"
-      >
+      <div v-for="(field, index) in templateFields" :key="field.field" class="template-table__row">
         <div class="template-table__col template-table__col--scenario">
           <span class="template-table__index">#{{ index + 1 }}</span>
           {{ getLabel(field) }}
@@ -133,8 +127,6 @@ function handleSubmit() {
       <p v-else class="template-filler__preview-ok">各字段达标，可以提交。</p>
     </div>
 
-    <button type="button" class="sim-btn sim-btn--primary" @click="handleSubmit">
-      ✓ 提交
-    </button>
+    <button type="button" class="sim-btn sim-btn--primary" @click="handleSubmit">✓ 提交</button>
   </div>
 </template>

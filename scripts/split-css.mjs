@@ -68,21 +68,25 @@ write('core.css', stripDebrief(lines.slice(127, 1720)))
 write('workbench.css', lines.slice(1720, 4493))
 write('features.css', lines.slice(4493))
 
-write(
-  'global.css',
-  [
-    '/* Aggregator — split for maintainability; edit section files, not duplicate rules here */',
-    "@import './tokens.css';",
-    "@import './core.css';",
-    "@import './debrief.css';",
-    "@import './workbench.css';",
-    "@import './features.css';",
-    '',
-  ]
-)
+write('global.css', [
+  '/* Aggregator — split for maintainability; edit section files, not duplicate rules here */',
+  "@import './tokens.css';",
+  "@import './core.css';",
+  "@import './debrief.css';",
+  "@import './workbench.css';",
+  "@import './features.css';",
+  '',
+])
 
 console.log('Split complete:')
-for (const f of ['tokens.css', 'core.css', 'debrief.css', 'workbench.css', 'features.css', 'global.css']) {
+for (const f of [
+  'tokens.css',
+  'core.css',
+  'debrief.css',
+  'workbench.css',
+  'features.css',
+  'global.css',
+]) {
   const n = fs.readFileSync(path.join(stylesDir, f), 'utf8').split(/\r?\n/).length
   console.log(`  ${f}: ${n} lines`)
 }

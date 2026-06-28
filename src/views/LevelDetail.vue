@@ -30,7 +30,11 @@ import {
   syncDbConnectedStep,
   getImmersionEntries,
 } from '../utils/sutImmersion'
-import { shouldRecordMistake, computeArtifactQuality, getPassDebriefNote } from '../data/consequences'
+import {
+  shouldRecordMistake,
+  computeArtifactQuality,
+  getPassDebriefNote,
+} from '../data/consequences'
 import DebriefPanel from '../components/DebriefPanel.vue'
 import PreviousSubmission from '../components/PreviousSubmission.vue'
 import WorkbenchShell from '../components/workbench/WorkbenchShell.vue'
@@ -139,9 +143,7 @@ const storyContext = computed(() =>
     : { inbox: [], envStatus: [] }
 )
 
-const referenceAnswer = computed(() =>
-  level.value ? getReferenceAnswer(level.value.id) : null
-)
+const referenceAnswer = computed(() => (level.value ? getReferenceAnswer(level.value.id) : null))
 
 const previousSubmission = computed(() =>
   level.value ? progressStore.getSubmission(level.value.id) : null
@@ -179,16 +181,12 @@ const levelStatus = computed(() =>
 )
 
 const simGuide = computed(() => (level.value ? getSimGuide(level.value.simType) : null))
-const validationCriteria = computed(() =>
-  level.value ? getValidationCriteria(level.value) : ''
-)
+const validationCriteria = computed(() => (level.value ? getValidationCriteria(level.value) : ''))
 const debrief = computed(() =>
   level.value ? getDebrief(level.value.id, level.value.dailyKey) : null
 )
 
-const simComponent = computed(() =>
-  level.value ? simComponentMap[level.value.simType] : null
-)
+const simComponent = computed(() => (level.value ? simComponentMap[level.value.simType] : null))
 
 const isTaskView = computed(
   () => level.value && !isSutMode.value && activeDockLevelId.value === level.value.id
@@ -245,9 +243,7 @@ function showSutCompleteToast(message) {
   }, 4000)
 }
 
-const loginBuild = computed(() =>
-  level.value ? getLoginBuildVersion(level.value.id) : 'buggy'
-)
+const loginBuild = computed(() => (level.value ? getLoginBuildVersion(level.value.id) : 'buggy'))
 
 const loginSutState = computed(() => projectStore.getLoginSut(LOGIN_MODULE_ID))
 
@@ -260,14 +256,10 @@ const showInlineLoginSut = computed(
     shouldShowLoginAppDock(level.value.id)
 )
 
-const loginSutLead = computed(() =>
-  level.value ? getLoginSutLead(level.value.id) : ''
-)
+const loginSutLead = computed(() => (level.value ? getLoginSutLead(level.value.id) : ''))
 
 const paymentScenario = computed(() =>
-  level.value
-    ? getPaymentScenario(level.value.id, projectStore, progressStore)
-    : 'no-db'
+  level.value ? getPaymentScenario(level.value.id, projectStore, progressStore) : 'no-db'
 )
 
 const paymentSutState = computed(() => projectStore.getPaymentSut(PAYMENT_MODULE_ID))
@@ -281,13 +273,9 @@ const showInlinePaymentSut = computed(
     shouldShowPaymentAppDock(level.value.id)
 )
 
-const paymentSutLead = computed(() =>
-  level.value ? getPaymentSutLead(level.value.id) : ''
-)
+const paymentSutLead = computed(() => (level.value ? getPaymentSutLead(level.value.id) : ''))
 
-const orderObsMode = computed(() =>
-  level.value ? getOrderObsMode(level.value.id) : 'overview'
-)
+const orderObsMode = computed(() => (level.value ? getOrderObsMode(level.value.id) : 'overview'))
 
 const orderSutState = computed(() => projectStore.getOrderSut(ORDER_MODULE_ID))
 
@@ -300,13 +288,9 @@ const showInlineOrderObs = computed(
     shouldShowOrderObsDock(level.value.id)
 )
 
-const orderObsLead = computed(() =>
-  level.value ? getOrderObsLead(level.value.id) : ''
-)
+const orderObsLead = computed(() => (level.value ? getOrderObsLead(level.value.id) : ''))
 
-const onCallMode = computed(() =>
-  level.value ? getOnCallMode(level.value.id) : 'release-board'
-)
+const onCallMode = computed(() => (level.value ? getOnCallMode(level.value.id) : 'release-board'))
 
 const onboardSutState = computed(() => projectStore.getOnboardSut(ONBOARD_WEEK2_ID))
 
@@ -323,9 +307,7 @@ const showInlineOnCall = computed(
     shouldShowOnCallDock(level.value.id)
 )
 
-const onCallLead = computed(() =>
-  level.value ? getOnCallLead(level.value.id) : ''
-)
+const onCallLead = computed(() => (level.value ? getOnCallLead(level.value.id) : ''))
 
 const dockItems = computed(() => {
   if (!level.value) return []
@@ -364,9 +346,7 @@ const dockItems = computed(() => {
       lockReason: '',
       isSutEntry: true,
       sutDock: 'app',
-      hasArtifact: Boolean(
-        loginSutState.value.reproducedBug || loginSutState.value.verifiedFix
-      ),
+      hasArtifact: Boolean(loginSutState.value.reproducedBug || loginSutState.value.verifiedFix),
     })
   }
 
@@ -382,9 +362,9 @@ const dockItems = computed(() => {
       sutDock: 'pay',
       hasArtifact: Boolean(
         paymentSutState.value.callbackMiss ||
-          paymentSutState.value.payErrorReproduced ||
-          paymentSutState.value.payVerified ||
-          paymentSutState.value.dbConnected
+        paymentSutState.value.payErrorReproduced ||
+        paymentSutState.value.payVerified ||
+        paymentSutState.value.dbConnected
       ),
     })
   }
@@ -466,14 +446,15 @@ const simProps = computed(() => {
         chatHistory: ctx.chatHistory,
         composeHint: lv.chatHint,
         placeholder: lv.chatPlaceholder,
-        chatPreviewConfig: lv.chatStructure || lv.chatKeywords?.length
-          ? {
-              chatStructure: lv.chatStructure,
-              chatKeywords: lv.chatKeywords,
-              chatMinLength: lv.chatMinLength,
-              chatMinKeywords: lv.chatMinKeywords,
-            }
-          : null,
+        chatPreviewConfig:
+          lv.chatStructure || lv.chatKeywords?.length
+            ? {
+                chatStructure: lv.chatStructure,
+                chatKeywords: lv.chatKeywords,
+                chatMinLength: lv.chatMinLength,
+                chatMinKeywords: lv.chatMinKeywords,
+              }
+            : null,
       }
     case 'config':
       return {
@@ -709,9 +690,7 @@ function onLogReviewed() {
   showSutCompleteToast('✓ 日志已核对 · 可返回主线 grep 终端')
 }
 
-const paymentConfigArtifact = computed(() =>
-  projectStore.getArtifact(PAYMENT_MODULE_ID, 6)
-)
+const paymentConfigArtifact = computed(() => projectStore.getArtifact(PAYMENT_MODULE_ID, 6))
 
 const showDbConnectedMainLink = computed(
   () =>
@@ -912,12 +891,19 @@ function goBack() {
 
       <div v-if="showDbConnectedMainLink" class="sut-mode__main-link">
         <p>沙箱连通需先在主线第 6 关修改配置并测试连接。</p>
-        <button type="button" class="sim-btn sim-btn--ghost sim-btn--sm" @click="router.push(buildMainLevelRoute(6))">
+        <button
+          type="button"
+          class="sim-btn sim-btn--ghost sim-btn--sm"
+          @click="router.push(buildMainLevelRoute(6))"
+        >
           前往主线第 6 关配置
         </button>
       </div>
 
-      <p v-else-if="sutEntry?.key === 'dbConnected' && paymentConfigArtifact" class="sut-mode__config-hint">
+      <p
+        v-else-if="sutEntry?.key === 'dbConnected' && paymentConfigArtifact"
+        class="sut-mode__config-hint"
+      >
         主线已保存配置 · 支付 App 可验证连通
       </p>
 
@@ -1019,7 +1005,14 @@ function goBack() {
           class="level-detail__hint-btn"
           @click="revealHint"
         >
-          💡 {{ levelStatus === 'completed' ? '冲星提示' : sessionHintUsed ? '再看提示' : '提示（影响星级）' }}
+          💡
+          {{
+            levelStatus === 'completed'
+              ? '冲星提示'
+              : sessionHintUsed
+                ? '再看提示'
+                : '提示（影响星级）'
+          }}
         </button>
       </div>
 

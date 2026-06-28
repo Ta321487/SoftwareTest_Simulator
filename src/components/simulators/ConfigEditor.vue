@@ -85,7 +85,10 @@ defineExpose({ reset })
         type="text"
         class="sim-field__input config-editor__input"
         placeholder="填写测试环境的真实地址"
-        @input="saved = false; testResult = null"
+        @input="
+          saved = false
+          testResult = null
+        "
       />
     </div>
 
@@ -116,6 +119,8 @@ defineExpose({ reset })
     >
       {{ testResult.text }}
     </p>
-    <p v-else-if="!saved" class="config-editor__hint">先改地址并保存，再用「测试连接」验证；占位符 127.0.0.1 通常连不通。</p>
+    <p v-else-if="!saved" class="config-editor__hint">
+      先改地址并保存，再用「测试连接」验证；占位符 127.0.0.1 通常连不通。
+    </p>
   </div>
 </template>

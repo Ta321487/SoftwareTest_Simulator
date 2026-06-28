@@ -72,8 +72,8 @@ function showOnboarding() {
       </div>
       <div class="workbench__topbar-right">
         <span class="workbench__level-tag">
-          {{ progressStore.completedLevelIds.length }}/{{ progressStore.totalLevelCount }} 关
-          · ★ {{ progressStore.totalStars }}
+          {{ progressStore.completedLevelIds.length }}/{{ progressStore.totalLevelCount }} 关 · ★
+          {{ progressStore.totalStars }}
         </span>
         <ThemeToggle />
       </div>
@@ -96,19 +96,26 @@ function showOnboarding() {
         <PlayerDashboard compact />
 
         <section class="home-map__hero">
-          <p v-if="workBrief.chapterTitle" class="home-map__hero-tag">{{ workBrief.chapterTitle }}</p>
+          <p v-if="workBrief.chapterTitle" class="home-map__hero-tag">
+            {{ workBrief.chapterTitle }}
+          </p>
           <h2 class="home-map__hero-title">
             <template v-if="workBrief.complete">🎉 {{ workBrief.title }}</template>
             <template v-else>
               今日任务
-              <span v-if="workBrief.beatLabel" class="home-map__hero-beat">· {{ workBrief.beatLabel }}</span>
+              <span v-if="workBrief.beatLabel" class="home-map__hero-beat"
+                >· {{ workBrief.beatLabel }}</span
+              >
               ：{{ workBrief.title }}
             </template>
           </h2>
           <p class="home-map__hero-desc">{{ workBrief.desc }}</p>
           <p v-if="reinforcementHint" class="home-map__hero-reinforce">
             有空可重温
-            <router-link :to="`/level/${reinforcementHint.levelId}`" class="home-map__hero-reinforce-link">
+            <router-link
+              :to="`/level/${reinforcementHint.levelId}`"
+              class="home-map__hero-reinforce-link"
+            >
               #{{ reinforcementHint.levelId }} {{ reinforcementHint.title }}
             </router-link>
             <span class="home-map__hero-reinforce-reason">（{{ reinforcementHint.reason }}）</span>

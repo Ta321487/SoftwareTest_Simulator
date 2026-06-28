@@ -125,7 +125,9 @@
   background: transparent;
   cursor: pointer;
   color: var(--text-secondary);
-  transition: background var(--transition), border-color var(--transition);
+  transition:
+    background var(--transition),
+    border-color var(--transition);
 }
 
 .workbench__dock-item:hover:not(.workbench__dock-item--locked) {

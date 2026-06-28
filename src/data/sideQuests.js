@@ -14,7 +14,7 @@ export const sideLevels = [
       { id: 'a', label: '输入 <script> 标签是否被转义/过滤' },
       { id: 'b', label: '提交 onerror= 等事件属性是否被拦截' },
       { id: 'c', label: '评论列表页按钮 hover 颜色' },
-      { id: 'd', label: 'SQL 注入：评论内容含 \' OR 1=1--' },
+      { id: 'd', label: "SQL 注入：评论内容含 ' OR 1=1--" },
       { id: 'e', label: '存储型 XSS：恶意脚本能否在其他用户页面执行' },
       { id: 'f', label: '评论字数统计字体大小' },
     ],

@@ -107,7 +107,9 @@ export const achievements = [
     title: '工单达人',
     desc: '任意 Jira 关以「优秀」质量提交',
     check: (s) =>
-      [3, 8, 22].some((id) => s.completedLevelIds.includes(id) && s.levelMeta[id]?.jiraTier === 'excellent'),
+      [3, 8, 22].some(
+        (id) => s.completedLevelIds.includes(id) && s.levelMeta[id]?.jiraTier === 'excellent'
+      ),
   },
   {
     id: 'repro_first',

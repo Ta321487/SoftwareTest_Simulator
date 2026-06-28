@@ -25,7 +25,13 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['callback-miss', 'pay-error-reproduced', 'pay-verified', 'pay-success', 'pay-attempt'])
+const emit = defineEmits([
+  'callback-miss',
+  'pay-error-reproduced',
+  'pay-verified',
+  'pay-success',
+  'pay-attempt',
+])
 
 const paying = ref(false)
 const orderStatus = ref('待支付')
@@ -119,13 +125,14 @@ async function handlePay() {
           :class="{
             'payment-app-mock__notify--miss':
               scenario === 'callback-bug' && lastPayResult === 'success',
-            'payment-app-mock__notify--ok':
-              scenario === 'fixed' && lastPayResult === 'success',
+            'payment-app-mock__notify--ok': scenario === 'fixed' && lastPayResult === 'success',
             'payment-app-mock__notify--error': lastPayResult === 'error',
           }"
         >
           <template v-if="scenario === 'no-db'">到账通知：— 需先连通沙箱</template>
-          <template v-else-if="lastPayResult === 'error'">到账通知：× 支付失败，未发起回调</template>
+          <template v-else-if="lastPayResult === 'error'"
+            >到账通知：× 支付失败，未发起回调</template
+          >
           <template v-else-if="scenario === 'callback-bug' && lastPayResult === 'success'">
             到账通知：× 未收到（支付已成功）
           </template>
@@ -160,7 +167,10 @@ async function handlePay() {
     >
       ✓ 已复现：支付网关 500 —— 可以补全 Jira 了
     </p>
-    <p v-if="payVerified && scenario === 'fixed'" class="payment-app-mock__status payment-app-mock__status--ok">
+    <p
+      v-if="payVerified && scenario === 'fixed'"
+      class="payment-app-mock__status payment-app-mock__status--ok"
+    >
       ✓ 验证通过：支付与到账通知均正常
     </p>
   </div>

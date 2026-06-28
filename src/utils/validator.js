@@ -1,4 +1,9 @@
-import { validateJiraMinimum, scoreJiraTier, jiraTierMessage, jiraTierStarCap } from './jiraValidation'
+import {
+  validateJiraMinimum,
+  scoreJiraTier,
+  jiraTierMessage,
+  jiraTierStarCap,
+} from './jiraValidation'
 import { validateChatStructure } from './chatValidation'
 import { validateTemplateSubmission } from './templateValidation'
 import { validateTerminalCommand } from './terminalValidation'
@@ -6,7 +11,9 @@ import { validateTerminalCommand } from './terminalValidation'
 function arraysEqual(a, b) {
   const sortedA = [...a].sort()
   const sortedB = [...b].sort()
-  return sortedA.length === sortedB.length && sortedA.every((value, index) => value === sortedB[index])
+  return (
+    sortedA.length === sortedB.length && sortedA.every((value, index) => value === sortedB[index])
+  )
 }
 
 function normalizeCommand(command) {

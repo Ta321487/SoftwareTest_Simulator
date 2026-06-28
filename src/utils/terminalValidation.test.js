@@ -12,7 +12,9 @@ describe('validateTerminalCommand', () => {
   })
 
   it('accepts exact tail command', () => {
-    expect(validateTerminalCommand('tail -n 100 /var/log/app/error.log', tailLevel).isPass).toBe(true)
+    expect(validateTerminalCommand('tail -n 100 /var/log/app/error.log', tailLevel).isPass).toBe(
+      true
+    )
   })
 
   it('accepts tail shorthand line count', () => {
@@ -38,11 +40,15 @@ describe('validateTerminalCommand', () => {
   })
 
   it('accepts grep with keyword and path', () => {
-    expect(validateTerminalCommand('grep ERROR /var/log/app/error.log', grepLevel).isPass).toBe(true)
+    expect(validateTerminalCommand('grep ERROR /var/log/app/error.log', grepLevel).isPass).toBe(
+      true
+    )
   })
 
   it('accepts grep case-insensitively normalized', () => {
-    expect(validateTerminalCommand('grep error /var/log/app/error.log', grepLevel).isPass).toBe(true)
+    expect(validateTerminalCommand('grep error /var/log/app/error.log', grepLevel).isPass).toBe(
+      true
+    )
   })
 
   it('rejects grep with wrong keyword', () => {

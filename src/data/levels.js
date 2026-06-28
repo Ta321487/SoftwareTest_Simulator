@@ -86,7 +86,7 @@ export const levels = [
     projectId: 'login-module',
     projectDay: 3,
     description:
-      "【备考 · 第3关】模拟练习：执行用例时发现点击「获取验证码」后倒计时显示 -1 秒。按企业规范写一份 Bug 单，工单将关联 TEST-1003。",
+      '【备考 · 第3关】模拟练习：执行用例时发现点击「获取验证码」后倒计时显示 -1 秒。按企业规范写一份 Bug 单，工单将关联 TEST-1003。',
     simType: 'jira',
     content: '请填写以下Jira工单所有字段：',
     jiraFields: {
@@ -136,7 +136,13 @@ export const levels = [
     storyRef: 'TEST-1003',
     reportItems: [
       { id: 'a', title: '手机号+密码正常登录', status: 'pass', risk: 'high' },
-      { id: 'b', title: '获取验证码倒计时显示', status: 'fail', risk: 'high', linkedIssue: 'TEST-1003' },
+      {
+        id: 'b',
+        title: '获取验证码倒计时显示',
+        status: 'fail',
+        risk: 'high',
+        linkedIssue: 'TEST-1003',
+      },
       { id: 'c', title: '密码错误 5 次账号锁定', status: 'fail', risk: 'high' },
       { id: 'd', title: '记住密码功能', status: 'pass', risk: 'medium' },
       { id: 'e', title: '登录页背景图加载', status: 'pass', risk: 'low' },
@@ -223,7 +229,7 @@ export const levels = [
     projectId: 'payment-module',
     projectDay: 3,
     description:
-      "【笔试 · 工单纠错题】笔试第二题：新人提交的 Bug 标题「支付失败了」、内容「点支付就报错」，无法复现。请补全为规范工单 TEST-1008。",
+      '【笔试 · 工单纠错题】笔试第二题：新人提交的 Bug 标题「支付失败了」、内容「点支付就报错」，无法复现。请补全为规范工单 TEST-1008。',
     simType: 'jira',
     content: '请帮新人补全这份支付 Bug 单的缺失字段：',
     storyRef: 'TEST-1008',
@@ -249,8 +255,18 @@ export const levels = [
         required: true,
         rows: 4,
       },
-      expected: { label: '预期结果', placeholder: '支付成功后订单状态变为已支付', required: true, rows: 2 },
-      actual: { label: '实际结果', placeholder: '描述实际观察到的支付失败现象', required: true, rows: 2 },
+      expected: {
+        label: '预期结果',
+        placeholder: '支付成功后订单状态变为已支付',
+        required: true,
+        rows: 2,
+      },
+      actual: {
+        label: '实际结果',
+        placeholder: '描述实际观察到的支付失败现象',
+        required: true,
+        rows: 2,
+      },
     },
     hint: '标题要具体（什么支付方式+什么现象）；模块选支付；步骤写清下单→支付→报错。',
     xpReward: 25,
@@ -289,9 +305,27 @@ export const levels = [
     storyRef: 'TEST-1008',
     templateMinLength: 12,
     templateFields: [
-      { field: 'progress', label: '📌 今日进展', placeholder: '概括支付模块测试完成情况…', rows: 2, fieldKeywords: ['用例', '测试', '支付', '执行', '完成'] },
-      { field: 'problem', label: '🚨 遇到的问题', placeholder: '说明支付相关风险或遗留问题…', rows: 2, fieldKeywords: ['TEST', '1008', 'Bug', '问题', '风险', '阻塞'] },
-      { field: 'plan', label: '📅 明日计划', placeholder: '说明后续支付/回归安排…', rows: 2, fieldKeywords: ['回归', '计划', '明日', '支付', '测试'] },
+      {
+        field: 'progress',
+        label: '📌 今日进展',
+        placeholder: '概括支付模块测试完成情况…',
+        rows: 2,
+        fieldKeywords: ['用例', '测试', '支付', '执行', '完成'],
+      },
+      {
+        field: 'problem',
+        label: '🚨 遇到的问题',
+        placeholder: '说明支付相关风险或遗留问题…',
+        rows: 2,
+        fieldKeywords: ['TEST', '1008', 'Bug', '问题', '风险', '阻塞'],
+      },
+      {
+        field: 'plan',
+        label: '📅 明日计划',
+        placeholder: '说明后续支付/回归安排…',
+        rows: 2,
+        fieldKeywords: ['回归', '计划', '明日', '支付', '测试'],
+      },
     ],
     xpReward: 30,
   },
@@ -383,9 +417,60 @@ export const levels = [
     content: '请写出 3 条针对此次订单事故的改进措施：',
     templateMinLength: 12,
     templateFields: [
-      { field: 'measure1', label: '改进措施 1', placeholder: '用一句话描述改进措施…', rows: 2, fieldKeywords: ['缓存', '限流', '连接池', '监控', '告警', '熔断', '降级', '预热', '索引', 'SQL'] },
-      { field: 'measure2', label: '改进措施 2', placeholder: '用一句话描述改进措施…', rows: 2, fieldKeywords: ['缓存', '限流', '连接池', '监控', '告警', '熔断', '降级', '预热', '索引', 'SQL'] },
-      { field: 'measure3', label: '改进措施 3', placeholder: '用一句话描述改进措施…', rows: 2, fieldKeywords: ['缓存', '限流', '连接池', '监控', '告警', '熔断', '降级', '预热', '索引', 'SQL'] },
+      {
+        field: 'measure1',
+        label: '改进措施 1',
+        placeholder: '用一句话描述改进措施…',
+        rows: 2,
+        fieldKeywords: [
+          '缓存',
+          '限流',
+          '连接池',
+          '监控',
+          '告警',
+          '熔断',
+          '降级',
+          '预热',
+          '索引',
+          'SQL',
+        ],
+      },
+      {
+        field: 'measure2',
+        label: '改进措施 2',
+        placeholder: '用一句话描述改进措施…',
+        rows: 2,
+        fieldKeywords: [
+          '缓存',
+          '限流',
+          '连接池',
+          '监控',
+          '告警',
+          '熔断',
+          '降级',
+          '预热',
+          '索引',
+          'SQL',
+        ],
+      },
+      {
+        field: 'measure3',
+        label: '改进措施 3',
+        placeholder: '用一句话描述改进措施…',
+        rows: 2,
+        fieldKeywords: [
+          '缓存',
+          '限流',
+          '连接池',
+          '监控',
+          '告警',
+          '熔断',
+          '降级',
+          '预热',
+          '索引',
+          'SQL',
+        ],
+      },
     ],
     hint: '写可落地的技术/流程措施：缓存雪崩→限流/预热/熔断；连接池→扩容/超时/监控。别写「加强测试」。',
     xpReward: 35,
@@ -544,7 +629,11 @@ export const levels = [
     content: '请填写线上 Bug 工单所有字段：',
     storyRef: 'TEST-1022',
     jiraFields: {
-      summary: { label: 'Bug标题', placeholder: '概括现象与影响（如：4G 下登录超时）', required: true },
+      summary: {
+        label: 'Bug标题',
+        placeholder: '概括现象与影响（如：4G 下登录超时）',
+        required: true,
+      },
       severity: {
         label: '严重程度',
         options: ['Blocker', 'Critical', 'Major', 'Trivial'],
@@ -630,9 +719,27 @@ export const levels = [
     content: '填写入职满月总结（三项必填）：',
     templateMinLength: 12,
     templateFields: [
-      { field: 'result', label: '📌 本月成果', placeholder: '完成了哪些模块/用例/问题…', rows: 2, fieldKeywords: ['模块', '用例', 'Bug', '完成', '测试', '登录', '支付', '订单'] },
-      { field: 'lesson', label: '💡 踩坑与收获', placeholder: '印象最深的一次问题或成长…', rows: 2, fieldKeywords: ['学到', '收获', '问题', '排查', '日志', '经验', '坑'] },
-      { field: 'plan', label: '📅 下月计划', placeholder: '接下来要推进的工作…', rows: 2, fieldKeywords: ['计划', '下月', '推进', '自动化', '回归', '模块'] },
+      {
+        field: 'result',
+        label: '📌 本月成果',
+        placeholder: '完成了哪些模块/用例/问题…',
+        rows: 2,
+        fieldKeywords: ['模块', '用例', 'Bug', '完成', '测试', '登录', '支付', '订单'],
+      },
+      {
+        field: 'lesson',
+        label: '💡 踩坑与收获',
+        placeholder: '印象最深的一次问题或成长…',
+        rows: 2,
+        fieldKeywords: ['学到', '收获', '问题', '排查', '日志', '经验', '坑'],
+      },
+      {
+        field: 'plan',
+        label: '📅 下月计划',
+        placeholder: '接下来要推进的工作…',
+        rows: 2,
+        fieldKeywords: ['计划', '下月', '推进', '自动化', '回归', '模块'],
+      },
     ],
     xpReward: 35,
   },
@@ -649,7 +756,8 @@ export const levels = [
     apiUrl: '/api/login',
     apiRequestBody: '{\n  "username": "testuser",\n  "password": "wrong_pass"\n}',
     content: '根据每条响应样本，填写测试断言应覆盖的内容：',
-    requirement: '成功：HTTP 200 + token；密码错：HTTP 401 + 错误提示；缺参：HTTP 400 + 明确 message',
+    requirement:
+      '成功：HTTP 200 + token；密码错：HTTP 401 + 错误提示；缺参：HTTP 400 + 明确 message',
     fillHint: '写清 HTTP 状态码 + 响应体关键字段（如 code、message、token），不要只写「失败」',
     templateMinLength: 10,
     templateFields: [
@@ -662,7 +770,8 @@ export const levels = [
       },
       {
         field: 'case2',
-        scenario: '样本 B · 缺少 username\nHTTP/1.1 400\n{"code":400,"message":"username is required"}',
+        scenario:
+          '样本 B · 缺少 username\nHTTP/1.1 400\n{"code":400,"message":"username is required"}',
         placeholder: '应断言：status=? body 中哪些字段？',
         validationHint: '缺参应对应 400，message 应点明缺哪个参数。',
         fieldKeywords: ['400'],
@@ -820,8 +929,7 @@ export const levels = [
     season: 'platinum',
     projectId: 'season2-lead',
     projectDay: 5,
-    description:
-      '【进阶 · 第5关】安全组联合审计用户中心。你是测试代表——圈出必须参与验证的安全项。',
+    description: '【进阶 · 第5关】安全组联合审计用户中心。你是测试代表——圈出必须参与验证的安全项。',
     simType: 'checklist',
     content: '勾选联合审计中【测试必须覆盖】的项：',
     checklistItems: [
@@ -859,11 +967,7 @@ export const levels = [
 
 /** 闯关顺序：项目剧本优先连续，独立关插入阶段间隙；28+ 为进阶线（需先通 27 关） */
 export const levelOrder = [
-  1, 2, 3, 4, 5,
-  16, 26, 17,
-  6, 18, 19,
-  7, 8, 9, 10, 20, 27, 21,
-  11, 12, 13, 14, 15, 22, 23, 24, 25,
+  1, 2, 3, 4, 5, 16, 26, 17, 6, 18, 19, 7, 8, 9, 10, 20, 27, 21, 11, 12, 13, 14, 15, 22, 23, 24, 25,
   28, 29, 30, 31, 32, 33,
 ]
 

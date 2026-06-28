@@ -129,7 +129,12 @@ const showTierPreview = computed(
         <template v-else-if="view === 'list'">
           <div class="jira-form__list-header">
             <h3>问题列表</h3>
-            <button v-if="jiraMode === 'create'" type="button" class="sim-btn sim-btn--primary sim-btn--sm" @click="view = 'create'">
+            <button
+              v-if="jiraMode === 'create'"
+              type="button"
+              class="sim-btn sim-btn--primary sim-btn--sm"
+              @click="view = 'create'"
+            >
               + 创建问题
             </button>
           </div>
@@ -153,7 +158,9 @@ const showTierPreview = computed(
                 <td>{{ issue.key }}</td>
                 <td>{{ issue.summary }}</td>
                 <td>{{ issue.module }}</td>
-                <td><span class="jira-form__status">{{ issue.status }}</span></td>
+                <td>
+                  <span class="jira-form__status">{{ issue.status }}</span>
+                </td>
                 <td>{{ issue.assignee }}</td>
               </tr>
             </tbody>

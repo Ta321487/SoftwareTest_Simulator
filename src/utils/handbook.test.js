@@ -42,9 +42,13 @@ describe('handbook', () => {
   it('finds black-box and classic design methods', () => {
     const blackBox = glossaryTerms.find((t) => t.id === 'black-box')
     expect(matchesGlossarySearch(blackBox, '黑盒')).toBe(true)
-    expect(filterGlossaryTerms(glossaryTerms, { query: '等价类' }).some((t) => t.id === 'equivalence-class')).toBe(
-      true
-    )
-    expect(filterGlossaryTerms(glossaryTerms, { query: '判定表' }).some((t) => t.id === 'decision-table')).toBe(true)
+    expect(
+      filterGlossaryTerms(glossaryTerms, { query: '等价类' }).some(
+        (t) => t.id === 'equivalence-class'
+      )
+    ).toBe(true)
+    expect(
+      filterGlossaryTerms(glossaryTerms, { query: '判定表' }).some((t) => t.id === 'decision-table')
+    ).toBe(true)
   })
 })

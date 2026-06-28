@@ -53,11 +53,10 @@ export function getStoryContext(levelId, projectStore, progressStore = null) {
     })
   }
 
-  const jiraBacklog = patchJiraBacklog(
-    levelId,
-    buildJiraBacklog(levelId, projectStore),
-    { progressStore, projectStore }
-  )
+  const jiraBacklog = patchJiraBacklog(levelId, buildJiraBacklog(levelId, projectStore), {
+    progressStore,
+    projectStore,
+  })
 
   const merged = mergeStoryConsequences(
     levelId,
@@ -81,8 +80,20 @@ export function getStoryContext(levelId, projectStore, progressStore = null) {
 
 function buildJiraBacklog(levelId, projectStore) {
   const base = [
-    { key: 'TEST-1001', summary: '登录页偶发 502', status: 'Done', module: '登录', assignee: '王工' },
-    { key: 'TEST-1002', summary: '记住密码明文存储风险', status: 'Open', module: '登录', assignee: '待分配' },
+    {
+      key: 'TEST-1001',
+      summary: '登录页偶发 502',
+      status: 'Done',
+      module: '登录',
+      assignee: '王工',
+    },
+    {
+      key: 'TEST-1002',
+      summary: '记住密码明文存储风险',
+      status: 'Open',
+      module: '登录',
+      assignee: '待分配',
+    },
   ]
 
   if (projectStore.hasArtifact('login-module', 3)) {
@@ -265,9 +276,7 @@ const STORY_BY_LEVEL = {
         read: false,
       },
     ],
-    envStatus: [
-      { label: '待处理工单', value: 'TEST-1008', tone: 'warn' },
-    ],
+    envStatus: [{ label: '待处理工单', value: 'TEST-1008', tone: 'warn' }],
   },
   9: {
     clickVariant: 'git',

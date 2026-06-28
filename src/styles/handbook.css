@@ -23,7 +23,10 @@
   background: var(--surface-muted);
   color: var(--text-secondary);
   cursor: pointer;
-  transition: background var(--transition), border-color var(--transition), color var(--transition);
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    color var(--transition);
 }
 
 .handbook__view-tab:hover {
@@ -64,7 +67,9 @@
   background: var(--surface-muted);
   color: var(--text-secondary);
   cursor: pointer;
-  transition: background var(--transition), border-color var(--transition);
+  transition:
+    background var(--transition),
+    border-color var(--transition);
 }
 
 .handbook__tab:hover {
@@ -94,7 +99,9 @@
   border-radius: var(--radius-sm);
   padding: 14px 16px;
   cursor: pointer;
-  transition: border-color var(--transition), background var(--transition);
+  transition:
+    border-color var(--transition),
+    background var(--transition);
   min-height: 0;
   height: 100%;
   box-sizing: border-box;
@@ -280,7 +287,9 @@
   background: var(--surface-muted);
   color: var(--accent-cyan);
   cursor: pointer;
-  transition: border-color var(--transition), background var(--transition);
+  transition:
+    border-color var(--transition),
+    background var(--transition);
 }
 
 .handbook-modal__link-chip:hover {

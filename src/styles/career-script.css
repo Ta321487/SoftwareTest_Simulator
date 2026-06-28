@@ -133,7 +133,9 @@
   background: var(--surface-muted);
   cursor: pointer;
   text-align: left;
-  transition: border-color var(--transition), transform var(--transition);
+  transition:
+    border-color var(--transition),
+    transform var(--transition);
   position: relative;
 }
 
@@ -292,7 +294,9 @@
   border-radius: 10px;
   background: var(--surface-muted);
   cursor: pointer;
-  transition: border-color var(--transition), transform var(--transition);
+  transition:
+    border-color var(--transition),
+    transform var(--transition);
 }
 
 .script-task-list__item--available {

@@ -227,8 +227,7 @@ export function syncDbConnectedStep(entry, projectStore, projectId, progressStor
   if (!entry || entry.key !== 'dbConnected') return
   const sut = getSutState(projectStore, projectId)
   const level6Done =
-    progressStore?.completedLevelIds?.includes(6) ||
-    projectStore?.hasArtifact?.(projectId, 6)
+    progressStore?.completedLevelIds?.includes(6) || projectStore?.hasArtifact?.(projectId, 6)
   const configReady = Boolean(sut.dbConnected || level6Done)
   if (!configReady) return
   const current = getCompletedStepCount(entry, projectStore, projectId)

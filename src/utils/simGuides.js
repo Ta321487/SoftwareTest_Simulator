@@ -43,7 +43,11 @@ const simGuideContent = {
   },
   packet: {
     action: '点击最可疑的请求，然后确认提交',
-    steps: ['查看每条请求的 method、URL、status', '对照业务链路找异常（如回调 404、Host 错环境）', '点击选中后确认'],
+    steps: [
+      '查看每条请求的 method、URL、status',
+      '对照业务链路找异常（如回调 404、Host 错环境）',
+      '点击选中后确认',
+    ],
   },
 }
 

@@ -79,9 +79,7 @@ const showAlerts = computed(
     props.jiraTier
 )
 
-const showHighlights = computed(
-  () => props.newAchievements.length > 0 || Boolean(props.rankUp)
-)
+const showHighlights = computed(() => props.newAchievements.length > 0 || Boolean(props.rankUp))
 </script>
 
 <template>
@@ -99,7 +97,8 @@ const showHighlights = computed(
               :key="i"
               class="debrief-panel__star"
               :class="{ 'debrief-panel__star--filled': i <= stars }"
-            >★</span>
+              >★</span
+            >
           </span>
           <span class="debrief-panel__xp">
             +{{ xpReward }} XP
@@ -136,9 +135,7 @@ const showHighlights = computed(
         <div v-if="newAchievements.length" class="debrief-panel__achievements">
           <p class="debrief-panel__achievements-title">🏆 解锁成就</p>
           <ul>
-            <li v-for="item in newAchievements" :key="item.id">
-              {{ item.icon }} {{ item.title }}
-            </li>
+            <li v-for="item in newAchievements" :key="item.id">{{ item.icon }} {{ item.title }}</li>
           </ul>
         </div>
         <div v-if="rankUp" class="debrief-panel__rank-up">

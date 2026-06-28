@@ -109,7 +109,9 @@
   border: 1px solid var(--border-subtle);
   background: var(--surface-muted);
   cursor: pointer;
-  transition: transform var(--transition), border-color var(--transition);
+  transition:
+    transform var(--transition),
+    border-color var(--transition);
   min-height: 130px;
 }
 

@@ -36,7 +36,11 @@ export function matchesGlossarySearch(term, query, categoryName = '') {
   )
 }
 
-export function filterGlossaryTerms(terms, { query = '', categoryId = 'all' } = {}, getCategoryName) {
+export function filterGlossaryTerms(
+  terms,
+  { query = '', categoryId = 'all' } = {},
+  getCategoryName
+) {
   const q = query.trim()
   return terms.filter((term) => {
     const categoryName = getCategoryName?.(term.category) || term.category || ''

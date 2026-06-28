@@ -40,7 +40,10 @@ function runInstall(label, downloadHost) {
 }
 
 let result = useCn
-  ? runInstall('国内镜像', process.env.PLAYWRIGHT_DOWNLOAD_HOST || 'https://cdn.npmmirror.com/binaries/playwright')
+  ? runInstall(
+      '国内镜像',
+      process.env.PLAYWRIGHT_DOWNLOAD_HOST || 'https://cdn.npmmirror.com/binaries/playwright'
+    )
   : runInstall('官方 CDN', null)
 
 if (result.status !== 0 && useCn && fallback) {

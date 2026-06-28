@@ -1,7 +1,7 @@
 {
   "name": "softwaretest-simulator",
   "private": true,
-  "version": "1.6.1",
+  "version": "1.6.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,7 +12,11 @@
     "test:e2e:bundled": "npm run playwright:install && playwright test",
     "playwright:install": "node scripts/playwright-install.mjs",
     "playwright:install:cn": "node scripts/playwright-install.mjs --cn --fallback",
-    "test:e2e:cn": "npm run playwright:install:cn && playwright test"
+    "test:e2e:cn": "npm run playwright:install:cn && playwright test",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "pinia": "^3.0.4",
@@ -20,8 +24,14 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@playwright/test": "^1.52.0",
     "@vitejs/plugin-vue": "^5.2.4",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.9.2",
+    "globals": "^17.7.0",
+    "prettier": "^3.9.1",
     "vite": "^6.4.3",
     "vitest": "^3.2.4"
   }

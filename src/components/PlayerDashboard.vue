@@ -87,11 +87,15 @@ async function handleShare() {
 
     <div class="player-dashboard__grid">
       <div class="player-dashboard__stat">
-        <span class="player-dashboard__stat-value">{{ progressStore.mainCompletedCount }}/{{ progressStore.totalLevelCount }}</span>
+        <span class="player-dashboard__stat-value"
+          >{{ progressStore.mainCompletedCount }}/{{ progressStore.totalLevelCount }}</span
+        >
         <span class="player-dashboard__stat-label">主线</span>
       </div>
       <div class="player-dashboard__stat">
-        <span class="player-dashboard__stat-value">{{ progressStore.sideCompletedCount }}/{{ sideLevels.length }}</span>
+        <span class="player-dashboard__stat-value"
+          >{{ progressStore.sideCompletedCount }}/{{ sideLevels.length }}</span
+        >
         <span class="player-dashboard__stat-label">番外</span>
       </div>
       <div class="player-dashboard__stat">
@@ -99,7 +103,9 @@ async function handleShare() {
         <span class="player-dashboard__stat-label">每日连续</span>
       </div>
       <div class="player-dashboard__stat">
-        <span class="player-dashboard__stat-value">{{ progressStore.achievements.length }}/{{ achievements.length }}</span>
+        <span class="player-dashboard__stat-value"
+          >{{ progressStore.achievements.length }}/{{ achievements.length }}</span
+        >
         <span class="player-dashboard__stat-label">成就</span>
       </div>
     </div>

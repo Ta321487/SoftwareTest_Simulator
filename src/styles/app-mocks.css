@@ -131,7 +131,9 @@
 }
 
 @keyframes login-countdown-pulse {
-  50% { opacity: 0.65; }
+  50% {
+    opacity: 0.65;
+  }
 }
 
 .login-app-mock__submit {

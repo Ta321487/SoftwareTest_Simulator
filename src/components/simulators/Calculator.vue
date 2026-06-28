@@ -68,7 +68,9 @@ defineExpose({ reset })
       <p v-else class="calculator__formula-text">
         公式：总用例量 ÷ 每小时执行数 ÷ 日有效工时 = 所需天数
       </p>
-      <p class="calculator__formula-note">请自行计算，下方填写结果（保留两位小数，如 3.33 或 4.00）</p>
+      <p class="calculator__formula-note">
+        请自行计算，下方填写结果（保留两位小数，如 3.33 或 4.00）
+      </p>
     </div>
 
     <div class="sim-field calculator__answer">

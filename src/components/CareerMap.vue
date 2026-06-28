@@ -32,8 +32,7 @@ const tabs = computed(() =>
   phaseOrder.map((id) => {
     const phase = phases[id]
     const { done, total } = getPhaseProgress(phase, progressStore.completedLevelIds)
-    const locked =
-      id === 'lead' && progressStore.getStatus(LEAD_UNLOCK_LEVEL) === 'locked'
+    const locked = id === 'lead' && progressStore.getStatus(LEAD_UNLOCK_LEVEL) === 'locked'
     return { id, icon: phase.icon, name: phase.name, done, total, locked }
   })
 )

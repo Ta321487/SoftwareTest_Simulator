@@ -11,9 +11,9 @@ describe('chatValidation', () => {
 
   it('validateChatStructure requires action and request for collaboration', () => {
     expect(validateChatStructure(collabLevel, '好的收到').ok).toBe(false)
-    expect(
-      validateChatStructure(collabLevel, '我先核对测试环境回调地址，麻烦配合看日志').ok
-    ).toBe(true)
+    expect(validateChatStructure(collabLevel, '我先核对测试环境回调地址，麻烦配合看日志').ok).toBe(
+      true
+    )
   })
 
   it('getChatComposePreview tips for weak reply', () => {

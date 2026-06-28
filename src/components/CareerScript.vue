@@ -54,7 +54,9 @@ const chapters = computed(() =>
         <div class="career-script__chapter-meta">
           <span class="career-script__chapter-num">第 {{ chapter.chapter }} 章</span>
           <span class="career-script__chapter-badge">{{ chapter.badge }}</span>
-          <span v-if="chapter.period" class="career-script__chapter-period">{{ chapter.period }}</span>
+          <span v-if="chapter.period" class="career-script__chapter-period">{{
+            chapter.period
+          }}</span>
         </div>
         <div class="career-script__chapter-row">
           <h3 class="career-script__chapter-title">{{ chapter.title }}</h3>

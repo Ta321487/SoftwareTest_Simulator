@@ -43,7 +43,9 @@ function handleSubmit() {
         <span>{{ item.label }}</span>
       </label>
 
-      <button type="button" class="sim-btn sim-btn--primary" @click="handleSubmit">✓ 确认勾选</button>
+      <button type="button" class="sim-btn sim-btn--primary" @click="handleSubmit">
+        ✓ 确认勾选
+      </button>
     </div>
   </div>
 </template>

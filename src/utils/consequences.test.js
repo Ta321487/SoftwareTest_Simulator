@@ -21,7 +21,10 @@ describe('consequences', () => {
 
   it('level 5 gets regression inbox when level 4 had mistakes', () => {
     const progressStore = { getLevelMistakes: (id) => (id === 4 ? 2 : 0) }
-    const { inbox } = applyConsequences(5, { progressStore, projectStore: { hasArtifact: () => false } })
+    const { inbox } = applyConsequences(5, {
+      progressStore,
+      projectStore: { hasArtifact: () => false },
+    })
     expect(inbox.some((m) => m.id === 'regression-miss')).toBe(true)
   })
 

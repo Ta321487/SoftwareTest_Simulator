@@ -26,7 +26,10 @@ export const PROGRESS_SEED = {
   completedLevelIds: [1, 2],
 }
 
-export async function seedAppStorage(page, { skipOnboarding = true, progress = PROGRESS_SEED } = {}) {
+export async function seedAppStorage(
+  page,
+  { skipOnboarding = true, progress = PROGRESS_SEED } = {}
+) {
   await page.addInitScript(
     ({ progressKey, onboardingKey, progressData, dismissOnboarding }) => {
       localStorage.setItem(progressKey, JSON.stringify(progressData))

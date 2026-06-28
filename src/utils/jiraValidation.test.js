@@ -118,7 +118,15 @@ describe('getJiraTierPreview', () => {
   })
 
   it('maps star cap from tier', () => {
-    expect(getJiraTierPreview(3, { ...loginBugValues, summary: '短', steps: '一步', expected: 'a', actual: 'b' }).starCap).toBe(1)
+    expect(
+      getJiraTierPreview(3, {
+        ...loginBugValues,
+        summary: '短',
+        steps: '一步',
+        expected: 'a',
+        actual: 'b',
+      }).starCap
+    ).toBe(1)
   })
 })
 

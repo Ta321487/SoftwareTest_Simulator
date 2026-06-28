@@ -58,7 +58,8 @@ function defaultState() {
     levelMistakes: sanitizeRecord(saved.levelMistakes),
     levelSubmissions: sanitizeRecord(saved.levelSubmissions),
     achievements: Array.isArray(saved.achievements) ? saved.achievements : [],
-    dailyCompletedDate: typeof saved.dailyCompletedDate === 'string' ? saved.dailyCompletedDate : null,
+    dailyCompletedDate:
+      typeof saved.dailyCompletedDate === 'string' ? saved.dailyCompletedDate : null,
     dailyStreak: typeof saved.dailyStreak === 'number' ? saved.dailyStreak : 0,
     lastDailyDate: typeof saved.lastDailyDate === 'string' ? saved.lastDailyDate : null,
     loginBugReproduced: Boolean(saved.loginBugReproduced),

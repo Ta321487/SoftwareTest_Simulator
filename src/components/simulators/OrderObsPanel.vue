@@ -50,7 +50,18 @@ function selectNode(id) {
   <div class="order-obs sim-card">
     <header class="order-obs__header">
       <div>
-        <p class="order-obs__brand">订单可观测 · {{ mode === 'apm' ? 'APM' : mode === 'monitor' ? '灰度监控' : mode === 'incident' ? '事故时间线' : '项目概览' }}</p>
+        <p class="order-obs__brand">
+          订单可观测 ·
+          {{
+            mode === 'apm'
+              ? 'APM'
+              : mode === 'monitor'
+                ? '灰度监控'
+                : mode === 'incident'
+                  ? '事故时间线'
+                  : '项目概览'
+          }}
+        </p>
         <p class="order-obs__version">order-module · v3.0 灰度</p>
       </div>
       <span class="order-obs__env">测试 / 灰度</span>

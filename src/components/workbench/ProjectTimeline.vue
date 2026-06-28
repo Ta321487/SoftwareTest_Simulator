@@ -32,9 +32,7 @@ const project = computed(() => projects[props.projectId])
 const immersion = computed(() => getProjectImmersion(props.projectId, projectStore))
 
 const days = computed(() => {
-  const filter = props.levelIds?.length
-    ? new Set(props.levelIds)
-    : null
+  const filter = props.levelIds?.length ? new Set(props.levelIds) : null
   return project.value.days
     .filter((day) => !filter || filter.has(day.levelId))
     .map((day) => ({
@@ -43,9 +41,7 @@ const days = computed(() => {
     }))
 })
 
-const completedCount = computed(
-  () => days.value.filter((d) => d.status === 'completed').length
-)
+const completedCount = computed(() => days.value.filter((d) => d.status === 'completed').length)
 
 function openImmersion(item) {
   const status = progressStore.getStatus(item.levelId)
@@ -98,7 +94,11 @@ function immersionLocked(item) {
             'project-timeline__immersion-btn--locked': immersionLocked(item),
           }"
           :disabled="immersionLocked(item)"
-          :title="immersionLocked(item) ? `先解锁主线第 ${item.levelId} 关` : `进入上机实操：${item.label}`"
+          :title="
+            immersionLocked(item)
+              ? `先解锁主线第 ${item.levelId} 关`
+              : `进入上机实操：${item.label}`
+          "
           :data-lock-hint="immersionLocked(item) ? `需先通主线 #${item.levelId}` : ''"
           @click="openImmersion(item)"
         >

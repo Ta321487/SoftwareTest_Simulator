@@ -57,7 +57,9 @@
   background: var(--surface-muted);
   cursor: pointer;
   text-align: left;
-  transition: border-color var(--transition), transform var(--transition);
+  transition:
+    border-color var(--transition),
+    transform var(--transition);
   position: relative;
 }
 

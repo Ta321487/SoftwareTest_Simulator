@@ -351,6 +351,7 @@ export function mergeStoryConsequences(levelId, story, { progressStore, projectS
 /** 通关复盘时的一句「职场余波」—— 纯叙事，不影响奖励 */
 export function getPassDebriefNote(levelId, progressStore, projectStore = null) {
   const m4 = mistakes(progressStore, 4)
+  const m8 = mistakes(progressStore, 8)
   const m9 = mistakes(progressStore, 9)
   const loginSut = projectStore?.getLoginSut?.('login-module') || {}
 

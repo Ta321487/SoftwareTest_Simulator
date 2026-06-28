@@ -125,12 +125,7 @@ defineExpose({ markSuccess, markError, reset })
     </div>
 
     <div v-if="!sent" class="chat-box__compose">
-      <textarea
-        v-model="message"
-        class="chat-box__input"
-        rows="3"
-        :placeholder="placeholder"
-      />
+      <textarea v-model="message" class="chat-box__input" rows="3" :placeholder="placeholder" />
       <div
         v-if="composePreview.hasPreview"
         class="chat-box__preview"
