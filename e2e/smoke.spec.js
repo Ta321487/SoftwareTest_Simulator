@@ -1,44 +1,5 @@
 import { test, expect } from '@playwright/test'
-
-const PROGRESS_KEY = 'app_progress_user_progress'
-const ONBOARDING_KEY = 'app_progress_onboarding_v1'
-
-const PROGRESS_SEED = {
-  completedLevelIds: [1, 2],
-  levelMeta: {},
-  attemptCounts: {},
-  hintsUsed: {},
-  levelMistakes: {},
-  levelSubmissions: {},
-  achievements: [],
-  dailyCompletedDate: null,
-  dailyStreak: 0,
-  lastDailyDate: null,
-  loginBugReproduced: false,
-  loginFixVerified: false,
-  paymentCallbackMiss: false,
-  paymentErrorReproduced: false,
-  orderBottleneckIdentified: false,
-  prodSlowReproduced: false,
-  logReviewed: false,
-}
-
-async function seedAppStorage(page, { skipOnboarding = true, progress = PROGRESS_SEED } = {}) {
-  await page.addInitScript(
-    ({ progressKey, onboardingKey, progressData, dismissOnboarding }) => {
-      localStorage.setItem(progressKey, JSON.stringify(progressData))
-      if (dismissOnboarding) {
-        localStorage.setItem(onboardingKey, JSON.stringify(true))
-      }
-    },
-    {
-      progressKey: PROGRESS_KEY,
-      onboardingKey: ONBOARDING_KEY,
-      progressData: progress,
-      dismissOnboarding: skipOnboarding,
-    }
-  )
-}
+import { seedAppStorage } from './helpers.js'
 
 test('home page loads with continue challenge', async ({ page }) => {
   await seedAppStorage(page)

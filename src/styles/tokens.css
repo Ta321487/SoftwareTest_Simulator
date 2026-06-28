@@ -1,6 +1,7 @@
 /* ===== Theme tokens ===== */
 :root,
 [data-theme='dark'] {
+  color-scheme: dark;
   --bg-primary: #0a0e17;
   --bg-card: #111827;
   --bg-card-hover: #1a2332;
@@ -88,6 +89,7 @@ html::-webkit-scrollbar-track {
 }
 
 [data-theme='light'] {
+  color-scheme: light;
   --bg-primary: #f1f5f9;
   --bg-card: #ffffff;
   --bg-card-hover: #f8fafc;

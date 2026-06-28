@@ -866,6 +866,18 @@ body {
   box-shadow: var(--shadow-input);
 }
 
+select.sim-field__input,
+.api-client__method {
+  background: var(--input-bg);
+  cursor: pointer;
+}
+
+select.sim-field__input option,
+.api-client__method option {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+
 .sim-field--error .sim-field__input,
 .sim-field--error .sim-field__textarea,
 .sim-field--error select {
