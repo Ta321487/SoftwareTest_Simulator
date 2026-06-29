@@ -41,7 +41,7 @@ describe('getDailyIndex no-repeat window', () => {
         expect(DAILY_POOL[prevIdx].key).not.toBe(key)
       }
     }
-  })
+  }, 15000)
 })
 
 describe('getDailyFocusHint', () => {

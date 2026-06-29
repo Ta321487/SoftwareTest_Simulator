@@ -135,8 +135,7 @@ export const careerChapters = [
     title: '测试 Lead 线',
     period: '进阶',
     badge: 'Lead',
-    scene:
-      '第一季全通后解锁。带新人 Review 用例、排大版本、抓包、跨团队审计、大促 Go/No-Go。',
+    scene: '第一季全通后解锁。带新人 Review 用例、排大版本、抓包、跨团队审计、大促 Go/No-Go。',
     goal: '从「自己测好」到「帮团队测好」——带人、排期、跨团队决策。',
     mentor: {
       from: '测试总监 · 周总',

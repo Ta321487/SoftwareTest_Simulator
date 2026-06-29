@@ -53,7 +53,11 @@ export function matchesPlaybookSearch(playbook, query, categoryName = '') {
   )
 }
 
-export function filterPlaybooks(playbooks, { query = '', categoryId = 'all' } = {}, getCategoryName) {
+export function filterPlaybooks(
+  playbooks,
+  { query = '', categoryId = 'all' } = {},
+  getCategoryName
+) {
   const q = query.trim()
   return playbooks.filter((pb) => {
     const categoryName = getCategoryName?.(pb.category) || pb.category || ''

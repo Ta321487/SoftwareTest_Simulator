@@ -514,7 +514,8 @@ export const glossaryTerms = [
     term: '幂等性',
     aliases: ['幂等', 'idempotent'],
     category: 'api',
-    definition: '同一操作重复执行多次，结果与执行一次相同。支付回调、下单等异步场景必须测重复通知。',
+    definition:
+      '同一操作重复执行多次，结果与执行一次相同。支付回调、下单等异步场景必须测重复通知。',
     example: '重复支付回调不应让订单状态从「已支付」变成「重复支付」或重复扣款。',
     relatedLevelIds: [42, 111, 113],
     seeAlso: ['callback', 'api-test'],

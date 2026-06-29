@@ -129,7 +129,9 @@ function onPhaseToggle(tab, event) {
         <div v-if="!tab.locked" class="career-map__phase-body">
           <PhaseTimeline :phase-id="tab.id" compact :next-focus="isMobile" />
         </div>
-        <p v-else class="career-map__phase-locked-hint">第一季 {{ SEASON1_LEVEL_COUNT }} 关全通后解锁进阶线</p>
+        <p v-else class="career-map__phase-locked-hint">
+          第一季 {{ SEASON1_LEVEL_COUNT }} 关全通后解锁进阶线
+        </p>
       </details>
     </div>
   </section>

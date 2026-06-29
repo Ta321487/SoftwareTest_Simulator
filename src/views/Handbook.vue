@@ -228,9 +228,7 @@ const domainOverview = computed(() =>
 
 const activeDomain = computed(() => getHandbookDomain(activeDomainId.value))
 
-const domainPlaybooks = computed(() =>
-  filterPlaybooksByDomain(playbooks, activeDomainId.value)
-)
+const domainPlaybooks = computed(() => filterPlaybooksByDomain(playbooks, activeDomainId.value))
 
 const domainTerms = computed(() => filterTermsByDomain(glossaryTerms, activeDomainId.value))
 
@@ -716,9 +714,7 @@ watch(allEntries, () => {
 
         <template v-else-if="viewMode === 'domains'">
           <header v-if="activeDomain" class="handbook__domain-head">
-            <h2 class="handbook__domain-title">
-              {{ activeDomain.icon }} {{ activeDomain.name }}
-            </h2>
+            <h2 class="handbook__domain-title">{{ activeDomain.icon }} {{ activeDomain.name }}</h2>
             <p class="handbook__domain-tagline">{{ activeDomain.tagline }}</p>
             <p class="handbook__domain-stats">
               {{ domainNotes.length }} 条笔记 · {{ domainTerms.length }} 条术语 ·
@@ -791,7 +787,9 @@ watch(allEntries, () => {
                 :class="`handbook__card--${entry.phaseId}`"
                 @click="openEntry(entry)"
               >
-                <span class="handbook__card-phase">{{ entry.phaseIcon }} {{ entry.phaseName }}</span>
+                <span class="handbook__card-phase"
+                  >{{ entry.phaseIcon }} {{ entry.phaseName }}</span
+                >
                 <span class="handbook__card-id">#{{ entry.levelId }}</span>
                 <h3 class="handbook__card-title">{{ entry.title }}</h3>
                 <p class="handbook__card-summary">{{ getHandbookBlurb(entry) }}</p>
@@ -817,7 +815,9 @@ watch(allEntries, () => {
         </template>
 
         <template v-else-if="viewMode === 'daily'">
-          <p class="handbook__daily-hint">来自每日特训题库，按主题归档便于复习（与当天轮换题目一致）。</p>
+          <p class="handbook__daily-hint">
+            来自每日特训题库，按主题归档便于复习（与当天轮换题目一致）。
+          </p>
           <div class="handbook__grid">
             <button
               v-for="entry in visibleDaily"
@@ -1083,9 +1083,16 @@ watch(allEntries, () => {
                 {{ getPlaybookCat(selectedPlaybook)?.icon }}
                 {{ getPlaybookCat(selectedPlaybook)?.name }}
               </span>
-              <h2 class="handbook-modal__title">{{ selectedPlaybook.icon }} {{ selectedPlaybook.title }}</h2>
+              <h2 class="handbook-modal__title">
+                {{ selectedPlaybook.icon }} {{ selectedPlaybook.title }}
+              </h2>
             </div>
-            <button type="button" class="handbook-modal__close" aria-label="关闭" @click="closeModal">
+            <button
+              type="button"
+              class="handbook-modal__close"
+              aria-label="关闭"
+              @click="closeModal"
+            >
               ×
             </button>
           </header>
@@ -1147,7 +1154,12 @@ watch(allEntries, () => {
               <span class="handbook-modal__phase">📅 每日特训精选</span>
               <h2 class="handbook-modal__title">{{ selectedDaily.title }}</h2>
             </div>
-            <button type="button" class="handbook-modal__close" aria-label="关闭" @click="closeModal">
+            <button
+              type="button"
+              class="handbook-modal__close"
+              aria-label="关闭"
+              @click="closeModal"
+            >
               ×
             </button>
           </header>

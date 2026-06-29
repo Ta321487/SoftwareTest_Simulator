@@ -614,9 +614,7 @@ function buildSimEpilogue(simType, submitData) {
       return {
         kind: 'quote',
         label: '命令结果',
-        text:
-          lv.terminalSuccessMsg ||
-          '日志已加载，发现多条 ERROR，建议结合业务现象继续排查。',
+        text: lv.terminalSuccessMsg || '日志已加载，发现多条 ERROR，建议结合业务现象继续排查。',
       }
     case 'jira': {
       const values = submitData?.values

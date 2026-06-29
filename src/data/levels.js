@@ -1095,7 +1095,7 @@ export const levels = [
     simType: 'checklist',
     content: '勾选登录接口【安全测试必须覆盖】的验证项：',
     checklistItems: [
-      { id: 'a', label: 'SQL 注入尝试（如 username=\' OR 1=1--）' },
+      { id: 'a', label: "SQL 注入尝试（如 username=' OR 1=1--）" },
       { id: 'b', label: '暴力破解：连续错误密码是否有频率限制' },
       { id: 'c', label: 'HTTPS 传输（生产环境禁止明文 HTTP）' },
       { id: 'd', label: '登录按钮 hover 动画时长' },

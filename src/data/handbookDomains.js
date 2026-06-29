@@ -128,9 +128,7 @@ export function filterTermsByDomain(terms, domainId) {
 }
 
 export function filterEntriesByDomain(entries, domainId) {
-  return entries.filter((entry) =>
-    itemMatchesDomain(getLevelDomains(entry.levelId), domainId)
-  )
+  return entries.filter((entry) => itemMatchesDomain(getLevelDomains(entry.levelId), domainId))
 }
 
 export function getDomainCounts({ entries, terms, playbooks }) {

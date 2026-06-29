@@ -77,7 +77,14 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['close', 'next', 'retry', 'handbook', 'handbook-term', 'handbook-playbook'])
+const emit = defineEmits([
+  'close',
+  'next',
+  'retry',
+  'handbook',
+  'handbook-term',
+  'handbook-playbook',
+])
 
 const showRetryStars = computed(
   () => props.sessionStars > 0 && props.sessionStars < 3 && props.stars < 3
@@ -170,10 +177,7 @@ const showHighlights = computed(() => props.newAchievements.length > 0 || Boolea
       </div>
 
       <div class="debrief-panel__body">
-        <section
-          v-if="simEpilogue?.kind === 'quote'"
-          class="debrief-section debrief-section--chat"
-        >
+        <section v-if="simEpilogue?.kind === 'quote'" class="debrief-section debrief-section--chat">
           <h3 class="debrief-section__label">{{ simEpilogue.label }}</h3>
           <p class="debrief-panel__chat-reply">{{ simEpilogue.text }}</p>
         </section>
@@ -227,7 +231,9 @@ const showHighlights = computed(() => props.newAchievements.length > 0 || Boolea
         </section>
 
         <section
-          v-if="handbookLinks?.terms?.length || handbookLinks?.playbooks?.length || handbookNoteLevelId"
+          v-if="
+            handbookLinks?.terms?.length || handbookLinks?.playbooks?.length || handbookNoteLevelId
+          "
           class="debrief-section debrief-section--handbook"
         >
           <h3 class="debrief-section__label">手札延伸阅读</h3>
