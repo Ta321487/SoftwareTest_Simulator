@@ -1,6 +1,11 @@
 import { achievements } from '../data/achievements'
 import { sideLevels } from '../data/sideQuests'
-import { SEASON1_LEVEL_IDS } from '../data/mainlineMeta'
+import { SEASON1_LEVEL_IDS, SEASON2_LEVEL_IDS } from '../data/mainlineMeta'
+import { phases } from '../data/phases'
+
+const PREPARE_LEVEL_IDS = phases.prepare.levelIds
+const LOGIN_PROJECT_IDS = [1, 2, 3, 4, 5, 34, 35]
+const ONCALL_LEVEL_IDS = [22, 23, 24, 25, 45, 46]
 
 function sideCompletedCount(completedLevelIds) {
   if (!Array.isArray(completedLevelIds)) return 0
@@ -25,7 +30,7 @@ export function measureAchievementProgress(achievement, state) {
     case 'first_step':
       return { current: Math.min(ids.length, 1), target: 1 }
     case 'login_arc':
-      return countLevels(ids, [1, 2, 3, 4, 5])
+      return countLevels(ids, LOGIN_PROJECT_IDS)
     case 'first_perfect': {
       const hasPerfect = Object.values(meta).some((m) => m.stars >= 3)
       return { current: hasPerfect ? 1 : 0, target: 1 }
@@ -33,13 +38,13 @@ export function measureAchievementProgress(achievement, state) {
     case 'star_collector':
       return { current: totalStars(ids, meta), target: 60 }
     case 'prepare_done':
-      return countLevels(ids, [1, 2, 3, 4, 5, 16, 26, 17])
+      return countLevels(ids, PREPARE_LEVEL_IDS)
     case 'veteran':
       return countLevels(ids, SEASON1_LEVEL_IDS)
     case 'jira_tracker':
       return countLevels(ids, [3, 8, 22])
     case 'firefighter':
-      return countLevels(ids, [22, 23, 24, 25])
+      return countLevels(ids, ONCALL_LEVEL_IDS)
     case 'side_explorer':
       return { current: Math.min(sideCompletedCount(ids), 1), target: 1 }
     case 'side_master':
@@ -52,7 +57,7 @@ export function measureAchievementProgress(achievement, state) {
       return { current: loginDone && clean ? 1 : 0, target: 1 }
     }
     case 'lead_graduate':
-      return countLevels(ids, [28, 29, 30, 31, 32, 33])
+      return countLevels(ids, SEASON2_LEVEL_IDS)
     case 'packet_pro': {
       const packet = [113, 31].filter((id) => ids.includes(id)).length
       return { current: Math.min(packet, 1), target: 1 }

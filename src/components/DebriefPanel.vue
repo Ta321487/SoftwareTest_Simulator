@@ -63,6 +63,10 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  simEpilogue: {
+    type: Object,
+    default: null,
+  },
 })
 
 const emit = defineEmits(['close', 'next', 'retry'])
@@ -158,6 +162,32 @@ const showHighlights = computed(() => props.newAchievements.length > 0 || Boolea
       </div>
 
       <div class="debrief-panel__body">
+        <section
+          v-if="simEpilogue?.kind === 'quote'"
+          class="debrief-section debrief-section--chat"
+        >
+          <h3 class="debrief-section__label">{{ simEpilogue.label }}</h3>
+          <p class="debrief-panel__chat-reply">{{ simEpilogue.text }}</p>
+        </section>
+
+        <section
+          v-else-if="simEpilogue?.kind === 'list'"
+          class="debrief-section debrief-section--chat"
+        >
+          <h3 class="debrief-section__label">
+            {{ simEpilogue.label }}
+            <span v-if="simEpilogue.badge" class="debrief-panel__epilogue-badge">{{
+              simEpilogue.badge
+            }}</span>
+          </h3>
+          <dl class="debrief-reference debrief-reference--compact">
+            <template v-for="(item, idx) in simEpilogue.items" :key="idx">
+              <dt>{{ item.title }}</dt>
+              <dd>{{ item.text }}</dd>
+            </template>
+          </dl>
+        </section>
+
         <section class="debrief-section">
           <h3 class="debrief-section__label">本次要点</h3>
           <p>{{ debrief.summary }}</p>

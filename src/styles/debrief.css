@@ -257,6 +257,38 @@
   border-color: var(--cyan-border);
 }
 
+.debrief-section--chat {
+  border-color: rgba(52, 211, 153, 0.25);
+  background: rgba(52, 211, 153, 0.06);
+}
+
+.debrief-panel__chat-reply {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.debrief-panel__epilogue-badge {
+  margin-left: 8px;
+  padding: 2px 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--accent-cyan);
+  background: rgba(34, 211, 238, 0.1);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  border-radius: 999px;
+}
+
+.debrief-reference--compact dt {
+  margin-top: 8px;
+}
+
+.debrief-reference--compact dt:first-child {
+  margin-top: 0;
+}
+
 .debrief-section__label {
   font-family: var(--font-mono);
   font-size: 0.68rem;

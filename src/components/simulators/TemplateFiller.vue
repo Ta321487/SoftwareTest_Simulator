@@ -68,6 +68,14 @@ function getLabel(field) {
 function handleSubmit() {
   emit('submit', { values: { ...values } })
 }
+
+function reset() {
+  props.templateFields.forEach((field) => {
+    values[field.field] = ''
+  })
+}
+
+defineExpose({ reset })
 </script>
 
 <template>

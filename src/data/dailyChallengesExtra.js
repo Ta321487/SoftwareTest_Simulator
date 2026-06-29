@@ -430,7 +430,7 @@ export const DAILY_POOL_EXTRA = [
         fieldRejectKeywords: ['允许', '成功'],
       },
     ],
-    hint: '位数不足与非数字都应拒绝并提示。',
+    hint: '对照格式与位数要求，写清是否接受及用户可见提示。',
     xpReward: 12,
   },
   {
@@ -449,7 +449,7 @@ export const DAILY_POOL_EXTRA = [
         fieldRejectKeywords: ['允许', '成功'],
       },
     ],
-    hint: '分隔符不对应拒绝，并提示正确格式。',
+    hint: '对照格式要求，写清是否接受及提示信息。',
     xpReward: 10,
   },
   {

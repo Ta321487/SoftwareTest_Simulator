@@ -108,19 +108,19 @@ export const DAILY_POOL = [
       {
         field: 'case1',
         scenario: '面额 = 0',
-        validationHint: '对照下界，0 是否合法？',
+        validationHint: '对照合法范围，判断该值是否合规，并写清系统反应。',
         fieldKeywords: ['不允许', '拒绝', '0', '错误', '范围'],
         fieldRejectKeywords: ['允许', '成功'],
       },
       {
         field: 'case2',
         scenario: '面额 = 501',
-        validationHint: '对照上界，501 是否合法？',
+        validationHint: '对照合法范围，判断该值是否合规，并写清系统反应。',
         fieldKeywords: ['不允许', '拒绝', '501', '超', '错误'],
         fieldRejectKeywords: ['允许', '成功'],
       },
     ],
-    hint: '0 和 501 都应拒绝；写清提示或报错。',
+    hint: '对照合法范围判断边界值，写清是否接受及提示。',
     xpReward: 12,
   },
   {
@@ -204,10 +204,10 @@ export const DAILY_POOL = [
   {
     key: 'token-assert',
     title: '今日：登录成功断言',
-    description: '【每日特训】POST /api/login 成功响应 200 + token。写出应断言要点。',
+    description: '【每日特训】POST /api/login 返回成功响应。写出应断言要点。',
     simType: 'template',
     content: '填写成功登录时测试应断言的内容：',
-    requirement: 'HTTP 200；body 含 token；token 非空',
+    requirement: '对照响应样本，写出应断言的 HTTP status 与 body 关键字段。',
     templateMinLength: 10,
     templateFields: [
       {
@@ -217,7 +217,7 @@ export const DAILY_POOL = [
         fieldKeywords: ['200', 'token'],
       },
     ],
-    hint: '成功登录断言 status 200 + token 字段存在且非空。',
+    hint: '对照样本写清 status 与 body 要点，不要只写「成功」。',
     xpReward: 12,
   },
   {

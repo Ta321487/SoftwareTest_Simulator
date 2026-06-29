@@ -30,6 +30,12 @@ watch(
 function handleSubmit() {
   emit('submit', { selected: [...selected.value] })
 }
+
+function reset() {
+  selected.value = []
+}
+
+defineExpose({ reset })
 </script>
 
 <template>

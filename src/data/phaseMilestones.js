@@ -19,7 +19,7 @@ const MILESTONES = {
   onboard: {
     title: '入职第一季完结',
     icon: '💼',
-    message: '订单模块与线上值班都经历了。27 关全通后可解锁进阶线。',
+    message: '订单模块与线上值班都经历了。第一季全通后可解锁进阶线。',
   },
   lead: {
     title: '进阶线结业',

@@ -11,15 +11,15 @@ import {
 import { SEASON1_LEVEL_IDS } from './mainlineMeta.js'
 
 describe('careerScript', () => {
-  it('covers all 33 mainline levels across chapters', () => {
+  it('covers all 48 mainline levels across chapters', () => {
     const ids = careerChapters.flatMap(getChapterLevelIds)
-    expect(ids).toHaveLength(33)
-    expect(new Set(ids).size).toBe(33)
+    expect(ids).toHaveLength(48)
+    expect(new Set(ids).size).toBe(48)
   })
 
   it('tracks chapter progress', () => {
     const ch1 = careerChapters[0]
-    expect(getChapterProgress(ch1, [1, 2])).toEqual({ done: 2, total: 5 })
+    expect(getChapterProgress(ch1, [1, 2])).toEqual({ done: 2, total: 7 })
   })
 
   it('finds chapter for interlude levels', () => {

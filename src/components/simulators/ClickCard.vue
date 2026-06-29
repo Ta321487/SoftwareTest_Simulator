@@ -38,6 +38,12 @@ function select(id) {
 function handleSubmit() {
   emit('submit', { selected: selected.value })
 }
+
+function reset() {
+  selected.value = null
+}
+
+defineExpose({ reset })
 </script>
 
 <template>

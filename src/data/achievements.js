@@ -1,5 +1,10 @@
 import { sideLevels } from './sideQuests'
-import { isSeason1Complete } from './mainlineMeta'
+import { isSeason1Complete, SEASON2_LEVEL_IDS } from './mainlineMeta'
+import { phases } from './phases'
+
+const PREPARE_LEVEL_IDS = phases.prepare.levelIds
+const ONCALL_LEVEL_IDS = [22, 23, 24, 25, 45, 46]
+const LOGIN_PROJECT_IDS = [1, 2, 3, 4, 5, 34, 35]
 
 function sideCompletedCount(completedLevelIds) {
   if (!Array.isArray(completedLevelIds)) return 0
@@ -18,8 +23,8 @@ export const achievements = [
     id: 'login_arc',
     icon: '🔐',
     title: '登录项目通关',
-    desc: '完成登录模块 Day 1–5',
-    check: (s) => [1, 2, 3, 4, 5].every((id) => s.completedLevelIds.includes(id)),
+    desc: '完成登录模块全部 7 天任务',
+    check: (s) => LOGIN_PROJECT_IDS.every((id) => s.completedLevelIds.includes(id)),
   },
   {
     id: 'first_perfect',
@@ -40,14 +45,14 @@ export const achievements = [
     id: 'prepare_done',
     icon: '📚',
     title: '备考结业',
-    desc: '完成备考阶段全部 8 关',
-    check: (s) => [1, 2, 3, 4, 5, 16, 26, 17].every((id) => s.completedLevelIds.includes(id)),
+    desc: `完成备考阶段全部 ${PREPARE_LEVEL_IDS.length} 关`,
+    check: (s) => PREPARE_LEVEL_IDS.every((id) => s.completedLevelIds.includes(id)),
   },
   {
     id: 'veteran',
     icon: '🏅',
     title: '测试老兵',
-    desc: '完成第一季 27 关（进阶线解锁前）',
+    desc: '完成第一季全部关卡（进阶线解锁前）',
     check: (s) => isSeason1Complete(s.completedLevelIds),
   },
   {
@@ -61,8 +66,8 @@ export const achievements = [
     id: 'firefighter',
     icon: '🚒',
     title: '线上救火',
-    desc: '完成线上值班项目（关 22–25）',
-    check: (s) => [22, 23, 24, 25].every((id) => s.completedLevelIds.includes(id)),
+    desc: '完成线上值班项目全部任务',
+    check: (s) => ONCALL_LEVEL_IDS.every((id) => s.completedLevelIds.includes(id)),
   },
   {
     id: 'side_explorer',
@@ -157,8 +162,8 @@ export const achievements = [
     id: 'lead_graduate',
     icon: '🚀',
     title: '进阶结业',
-    desc: '完成进阶线全部 6 关',
-    check: (s) => [28, 29, 30, 31, 32, 33].every((id) => s.completedLevelIds.includes(id)),
+    desc: `完成进阶线全部 ${SEASON2_LEVEL_IDS.length} 关`,
+    check: (s) => SEASON2_LEVEL_IDS.every((id) => s.completedLevelIds.includes(id)),
   },
   {
     id: 'packet_pro',

@@ -81,34 +81,42 @@ function getFieldKeywords(field, level) {
   return field.fieldKeywords || level?.templateKeywords || []
 }
 
-function getFieldHint(field, level) {
-  if (field.validationHint) return field.validationHint
-  if (level?.requirement) {
-    return `请结合需求规则（${level.requirement}）描述系统在该场景下的反应。`
-  }
-  return '请描述系统在该场景下的反应：是否允许、界面或提示如何。'
-}
-
-function validateField(field, text, level, defaultMinLength) {
+/** 提交前预览 / 提交失败反馈：不展示 validationHint，避免透答案 */
+function getPreviewFieldHint(field, text, level, defaultMinLength) {
   const name = getFieldName(field)
   const minLength = field.minLength ?? defaultMinLength
-
-  if (!text) {
-    return { ok: false, message: `「${name}」还未填写。${getFieldHint(field, level)}` }
-  }
+  if (!text) return `「${name}」还未填写。`
   if (minLength > 0 && text.length < minLength) {
-    return {
-      ok: false,
-      message: `「${name}」描述过短（至少 ${minLength} 字）。${getFieldHint(field, level)}`,
-    }
+    return `「${name}」描述过短（至少 ${minLength} 字）。`
   }
   const rejectKeywords = field.fieldRejectKeywords || []
   if (rejectKeywords.length && includesReject(text, rejectKeywords)) {
-    return { ok: false, message: `「${name}」判断可能有误。${getFieldHint(field, level)}` }
+    return `「${name}」判断可能有误，请重新对照场景分析。`
   }
   const keywords = getFieldKeywords(field, level)
   if (keywords.length && !includesAccept(text, keywords)) {
-    return { ok: false, message: `「${name}」描述不够完整。${getFieldHint(field, level)}` }
+    return `「${name}」描述不够完整，请补充关键判断点。`
+  }
+  return ''
+}
+
+function validateField(field, text, level, defaultMinLength) {
+  const trimmed = (text || '').trim()
+  const minLength = field.minLength ?? defaultMinLength
+
+  if (!trimmed) {
+    return { ok: false, message: getPreviewFieldHint(field, trimmed, level, defaultMinLength) }
+  }
+  if (minLength > 0 && trimmed.length < minLength) {
+    return { ok: false, message: getPreviewFieldHint(field, trimmed, level, defaultMinLength) }
+  }
+  const rejectKeywords = field.fieldRejectKeywords || []
+  if (rejectKeywords.length && includesReject(trimmed, rejectKeywords)) {
+    return { ok: false, message: getPreviewFieldHint(field, trimmed, level, defaultMinLength) }
+  }
+  const keywords = getFieldKeywords(field, level)
+  if (keywords.length && !includesAccept(trimmed, keywords)) {
+    return { ok: false, message: getPreviewFieldHint(field, trimmed, level, defaultMinLength) }
   }
   return { ok: true }
 }
@@ -147,7 +155,8 @@ export function getTemplateComposePreview(level, values) {
     if (result.ok) {
       okCount += 1
     } else if (tips.length < 3) {
-      tips.push(result.message)
+      const hint = getPreviewFieldHint(field, text, level, defaultMinLength)
+      if (hint) tips.push(hint)
     }
   }
 

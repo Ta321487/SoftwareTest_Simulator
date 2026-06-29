@@ -20,6 +20,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  terminalSuccessMsg: {
+    type: String,
+    default: '日志已加载，发现多条 ERROR，建议结合业务现象继续排查。',
+  },
 })
 
 const emit = defineEmits(['submit'])
@@ -197,8 +201,6 @@ defineExpose({ markSuccess, markError, reset })
     </div>
 
     <p v-if="terminalHint && !success" class="terminal__hint">{{ terminalHint }}</p>
-    <p v-if="success" class="terminal__success-msg">
-      日志已加载，发现多条 ERROR，建议结合业务现象继续排查。
-    </p>
+    <p v-if="success" class="terminal__success-msg">{{ terminalSuccessMsg }}</p>
   </div>
 </template>

@@ -9,11 +9,11 @@ import {
 } from './mainlineMeta.js'
 
 describe('mainlineMeta', () => {
-  it('defines 27 season1 and 6 season2 levels totaling 33', () => {
-    expect(SEASON1_LEVEL_IDS).toHaveLength(27)
-    expect(SEASON2_LEVEL_IDS).toHaveLength(6)
+  it('defines 40 season1 and 8 season2 levels totaling 48', () => {
+    expect(SEASON1_LEVEL_IDS).toHaveLength(40)
+    expect(SEASON2_LEVEL_IDS).toHaveLength(8)
     expect(SEASON2_LEVEL_IDS[0]).toBe(28)
-    expect(TOTAL_MAIN_LEVELS).toBe(33)
+    expect(TOTAL_MAIN_LEVELS).toBe(48)
   })
 
   it('counts only levelOrder ids as mainline completed', () => {
@@ -21,9 +21,9 @@ describe('mainlineMeta', () => {
     expect(countMainlineCompleted([1, 2, 99])).toBe(2)
   })
 
-  it('detects season1 complete when all 27 ids done', () => {
+  it('detects season1 complete when all season1 ids done', () => {
     expect(isSeason1Complete(SEASON1_LEVEL_IDS)).toBe(true)
-    expect(isSeason1Complete(SEASON1_LEVEL_IDS.slice(0, 26))).toBe(false)
+    expect(isSeason1Complete(SEASON1_LEVEL_IDS.slice(0, 39))).toBe(false)
   })
 
   it('detects season2 complete', () => {

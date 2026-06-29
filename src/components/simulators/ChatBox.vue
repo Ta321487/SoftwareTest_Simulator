@@ -76,9 +76,10 @@ function handleSubmit() {
 function markSuccess(reply) {
   sent.value = true
   if (reply) {
+    const lastOther = [...thread.value].reverse().find((m) => m.role === 'other')
     thread.value.push({
-      sender: '李工',
-      avatar: '👨‍💻',
+      sender: lastOther?.sender || '对方',
+      avatar: lastOther?.avatar || '👨‍💻',
       role: 'other',
       text: reply,
       time: '刚刚',

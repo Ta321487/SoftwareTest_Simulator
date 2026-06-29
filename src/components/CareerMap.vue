@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { phaseOrder, phases, getPhaseProgress } from '../data/phases'
+import { TOTAL_MAIN_LEVELS, SEASON1_LEVEL_COUNT } from '../data/mainlineMeta'
 import { useProgressStore } from '../stores/progressStore'
 import { useMobileLayout } from '../composables/useMobileLayout'
 import PhaseTimeline from './workbench/PhaseTimeline.vue'
@@ -79,7 +80,7 @@ function onPhaseToggle(tab, event) {
   <section class="career-map">
     <header class="career-map__head">
       <h2 class="career-map__title">主线关卡</h2>
-      <p class="career-map__hint">按阶段分类浏览全部 33 关，方便查漏补缺</p>
+      <p class="career-map__hint">按阶段分类浏览全部 {{ TOTAL_MAIN_LEVELS }} 关，方便查漏补缺</p>
     </header>
 
     <template v-if="!isMobile">
@@ -128,7 +129,7 @@ function onPhaseToggle(tab, event) {
         <div v-if="!tab.locked" class="career-map__phase-body">
           <PhaseTimeline :phase-id="tab.id" compact :next-focus="isMobile" />
         </div>
-        <p v-else class="career-map__phase-locked-hint">第一季 27 关全通后解锁进阶线</p>
+        <p v-else class="career-map__phase-locked-hint">第一季 {{ SEASON1_LEVEL_COUNT }} 关全通后解锁进阶线</p>
       </details>
     </div>
   </section>

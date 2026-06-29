@@ -98,6 +98,8 @@ const isSubmitting = ref(false)
 const jiraInvalidFields = ref([])
 const jiraPreview = ref(null)
 const simRef = ref(null)
+const simSessionKey = ref(0)
+const freshRetrySession = ref(false)
 const activeDockLevelId = ref(1)
 const xpBeforeLevel = ref(0)
 const rankBeforeLevel = ref(null)
@@ -108,6 +110,7 @@ const sessionHintUsed = ref(false)
 const passDebriefNote = ref(null)
 const sessionJiraTier = ref(null)
 const phaseMilestone = ref(null)
+const passSimEpilogue = ref(null)
 const sutToast = ref('')
 const submitFlash = ref('')
 const taskReturnFlash = ref('')
@@ -158,6 +161,7 @@ const previousSubmission = computed(() =>
 )
 
 const submissionInitialValues = computed(() => {
+  if (freshRetrySession.value) return null
   const sub = previousSubmission.value
   if (!sub?.data) return null
   if (sub.simType === 'template' || sub.simType === 'apiclient') {
@@ -167,6 +171,7 @@ const submissionInitialValues = computed(() => {
 })
 
 const submissionInitialSelected = computed(() => {
+  if (freshRetrySession.value) return null
   const sub = previousSubmission.value
   if (!sub?.data?.selected) return null
   if (sub.simType === 'checklist' || sub.simType === 'apiclient') {
@@ -480,6 +485,7 @@ const simProps = computed(() => {
     case 'terminal':
       return {
         terminalHint: lv.terminalHint,
+        terminalSuccessMsg: lv.terminalSuccessMsg,
         logPath: '/var/log/app/error.log',
         storyLogs: lv.storyLogs,
         correctCommand: lv.correctCommand,
@@ -574,7 +580,82 @@ function resetState() {
   sessionHintUsed.value = false
   passDebriefNote.value = null
   sessionJiraTier.value = null
+  passSimEpilogue.value = null
   simRef.value?.reset?.()
+}
+
+function getChatEpilogue() {
+  const ctx = storyContext.value
+  if (!ctx.chatReply) return null
+  const history = ctx.chatHistory || []
+  const lastOther = [...history].reverse().find((m) => m.role === 'other') || history[0]
+  return {
+    sender: lastOther?.sender || '对方',
+    text: ctx.chatReply,
+  }
+}
+
+function buildSimEpilogue(simType, submitData) {
+  const lv = level.value
+  if (!lv) return null
+
+  switch (simType) {
+    case 'chat': {
+      const epilogue = getChatEpilogue()
+      if (!epilogue) return null
+      return { kind: 'quote', label: `${epilogue.sender} · 回应`, text: epilogue.text }
+    }
+    case 'terminal':
+      return {
+        kind: 'quote',
+        label: '命令结果',
+        text:
+          lv.terminalSuccessMsg ||
+          '日志已加载，发现多条 ERROR，建议结合业务现象继续排查。',
+      }
+    case 'jira': {
+      const values = submitData?.values
+      if (!values) return null
+      const fields = lv.jiraFields || {}
+      const items = Object.entries(fields).map(([key, config]) => ({
+        title: config.label,
+        text: values[key] || '—',
+      }))
+      return {
+        kind: 'list',
+        label: '工单已提交',
+        badge: `TEST-${1000 + lv.id}`,
+        items,
+      }
+    }
+    case 'config': {
+      const value = submitData?.value
+      if (value == null || value === '') return null
+      const key = lv.configKey || 'DB_HOST'
+      return {
+        kind: 'quote',
+        label: '环境检测',
+        text: `✓ 连接成功 — ${key}=${value}，数据库连通正常。`,
+      }
+    }
+    default:
+      return null
+  }
+}
+
+function getDebriefDelay(simType) {
+  switch (simType) {
+    case 'jira':
+      return 1400
+    case 'chat':
+      return 1800
+    case 'terminal':
+      return 1400
+    case 'config':
+      return 1200
+    default:
+      return 700
+  }
 }
 
 function revealHint() {
@@ -625,6 +706,7 @@ watch(
       activeDockLevelId.value = currentLevel.id
     }
 
+    freshRetrySession.value = false
     resetState()
     setupSutSession()
   },
@@ -811,19 +893,13 @@ function handlePass(submitData) {
   failureHint.value = ''
   isSubmitting.value = true
   submitFlash.value = `✓ 通过 +${level.value.xpReward} XP`
+  passSimEpilogue.value = buildSimEpilogue(level.value.simType, submitData)
 
-  if (level.value.simType === 'jira') {
-    setTimeout(() => {
-      submitFlash.value = ''
-      showDebrief.value = true
-    }, 800)
-    return
-  }
-
+  const debriefDelay = getDebriefDelay(level.value.simType)
   setTimeout(() => {
     submitFlash.value = ''
     showDebrief.value = true
-  }, 500)
+  }, debriefDelay)
 }
 
 function handleFail(data, result) {
@@ -892,6 +968,8 @@ function goToNextLevel() {
 }
 
 function retryFromDebrief() {
+  freshRetrySession.value = true
+  simSessionKey.value += 1
   resetState()
 }
 
@@ -1131,6 +1209,7 @@ onUnmounted(() => {
       <component
         :is="simComponent"
         v-if="simComponent"
+        :key="`${levelId}-${simSessionKey}`"
         ref="simRef"
         v-bind="simProps"
         @submit="handleSimSubmit"
@@ -1164,6 +1243,7 @@ onUnmounted(() => {
       :rank-up="rankUp"
       :phase-milestone="phaseMilestone"
       :next-level="nextLevelAfterPass"
+      :sim-epilogue="passSimEpilogue"
       @close="closeDebrief"
       @next="goToNextLevel"
       @retry="retryFromDebrief"

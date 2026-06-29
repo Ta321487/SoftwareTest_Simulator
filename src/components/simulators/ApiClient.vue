@@ -136,9 +136,9 @@ function handleSubmit() {
 
 function reset() {
   props.templateFields.forEach((field) => {
-    values[field.field] = props.initialValues?.[field.field] || ''
+    values[field.field] = ''
   })
-  selected.value = props.initialSelected ? [...props.initialSelected] : []
+  selected.value = []
   activeTab.value = 0
   lastStatus.value = null
 }
@@ -233,9 +233,6 @@ defineExpose({ reset })
           rows="3"
           :placeholder="activeScenario.field.placeholder"
         />
-        <p v-if="activeScenario.field.validationHint" class="api-client__field-hint">
-          {{ activeScenario.field.validationHint }}
-        </p>
       </div>
 
       <div

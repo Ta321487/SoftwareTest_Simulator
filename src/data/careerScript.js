@@ -12,7 +12,7 @@ export const careerChapters = [
     badge: '培训期',
     scene:
       '你刚参加完测试培训班，进了「星云科技」新人营。带教给你第一个模块——登录，从读 PRD 到上线排障，按天交作业。',
-    goal: '5 天内独立完成登录模块从需求到上线的完整测试闭环。',
+    goal: '7 天内独立完成登录模块从需求到上线的完整测试闭环。',
     mentor: {
       from: '带教 · 小陈',
       avatar: '👩‍🏫',
@@ -36,8 +36,15 @@ export const careerChapters = [
     beats: [
       {
         type: 'levels',
-        levelIds: [16, 26, 17],
-        labels: { 16: '加练 1', 26: '加练 2', 17: '加练 3' },
+        levelIds: [16, 26, 17, 36, 37, 38],
+        labels: {
+          16: '加练 1',
+          26: '加练 2',
+          17: '加练 3',
+          36: '加练 4',
+          37: '加练 5',
+          38: '加练 6',
+        },
       },
     ],
   },
@@ -57,8 +64,15 @@ export const careerChapters = [
     beats: [
       {
         type: 'levels',
-        levelIds: [6, 18, 19],
-        labels: { 6: '终面上机', 18: 'HR 面', 19: '技术面' },
+        levelIds: [6, 18, 19, 39, 40, 41],
+        labels: {
+          6: '终面上机',
+          18: 'HR 面',
+          19: '技术面',
+          39: '开场自我介绍',
+          40: '黑盒白盒',
+          41: '冒烟策略',
+        },
       },
     ],
   },
@@ -79,8 +93,8 @@ export const careerChapters = [
       { type: 'project', projectId: 'payment-module', levelIds: [7, 8, 9, 10] },
       {
         type: 'levels',
-        levelIds: [20, 27, 21],
-        labels: { 20: '笔试加试 1', 27: '笔试加试 2', 21: '笔试加试 3' },
+        levelIds: [20, 27, 21, 42],
+        labels: { 20: '笔试加试 1', 27: '笔试加试 2', 21: '笔试加试 3', 42: '笔试加试 4' },
       },
     ],
   },
@@ -122,7 +136,7 @@ export const careerChapters = [
     period: '进阶',
     badge: 'Lead',
     scene:
-      '第一季 27 关全通后解锁。带新人 Review 用例、排大版本、抓包、跨团队审计、大促 Go/No-Go。',
+      '第一季全通后解锁。带新人 Review 用例、排大版本、抓包、跨团队审计、大促 Go/No-Go。',
     goal: '从「自己测好」到「帮团队测好」——带人、排期、跨团队决策。',
     mentor: {
       from: '测试总监 · 周总',
