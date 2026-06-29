@@ -61,6 +61,7 @@
   --tag-low-bg: rgba(255, 255, 255, 0.04);
   --theme-toggle-bg: rgba(17, 24, 39, 0.9);
   --theme-toggle-border: rgba(34, 211, 238, 0.25);
+  --dock-shadow: 0 -8px 32px rgba(0, 0, 0, 0.22);
   --font-sans: Inter, 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-mono: 'Cascadia Code', 'Fira Code', Consolas, monospace;
   --radius: 8px;
@@ -147,4 +148,5 @@ html::-webkit-scrollbar-track {
   --tag-low-bg: #f1f5f9;
   --theme-toggle-bg: rgba(255, 255, 255, 0.95);
   --theme-toggle-border: #cbd5e1;
+  --dock-shadow: 0 -4px 20px rgba(15, 23, 42, 0.1);
 }

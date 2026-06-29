@@ -241,92 +241,14 @@ body {
     z-index: 200;
   }
 
-  /* 首页：底部导航 */
-  .home-map .workbench__body {
-    flex-direction: column;
-  }
-
-  .home-map .workbench__dock {
-    order: 2;
-    width: 100%;
-    flex-direction: row;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px 16px;
-    padding-bottom: max(10px, env(safe-area-inset-bottom));
-    border-right: none;
-    border-top: 1px solid var(--border-subtle);
-    position: sticky;
-    bottom: 0;
-    z-index: 30;
-    background: var(--bg-card);
-  }
-
-  .home-map .workbench__dock-label {
-    display: none;
-  }
-
-  .home-map .workbench__dock-item {
-    flex-direction: row;
-    gap: 8px;
-    padding: 10px 18px;
-    min-height: 44px;
-  }
-
-  .home-map .workbench__dock-text {
-    display: inline;
-    font-size: 0.75rem;
-  }
-
-  .home-map .workbench__main {
-    order: 1;
-    padding: 12px 14px 24px;
+  /* 手机底栏留白（Tab 栏 + 关卡 Day 横条） */
+  .home-map .workbench__main,
+  .handbook .workbench__main {
     padding-bottom: calc(72px + env(safe-area-inset-bottom));
   }
 
-  /* 关卡页：底部 Dock 横滑 */
-  .workbench:not(.home-map) .workbench__body {
-    flex-direction: column;
-  }
-
-  .workbench:not(.home-map) .workbench__dock {
-    order: 2;
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    gap: 6px;
-    padding: 8px 10px;
-    padding-bottom: max(8px, env(safe-area-inset-bottom));
-    border-right: none;
-    border-top: 1px solid var(--border-subtle);
-    position: sticky;
-    bottom: 0;
-    z-index: 30;
-    background: var(--bg-card);
-  }
-
-  .workbench:not(.home-map) .workbench__dock::-webkit-scrollbar {
-    display: none;
-  }
-
-  .workbench:not(.home-map) .workbench__dock-label {
-    display: none;
-  }
-
-  .workbench:not(.home-map) .workbench__dock-item {
-    flex-shrink: 0;
-    min-width: 56px;
-    min-height: 48px;
-    padding: 8px 10px;
-  }
-
-  .workbench:not(.home-map) .workbench__main {
-    order: 1;
-    padding: 12px 14px 16px;
-    padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  .workbench--level .workbench__main {
+    padding-bottom: calc(120px + env(safe-area-inset-bottom));
   }
 
   /* 首页内容 */

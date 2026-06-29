@@ -20,6 +20,7 @@ import { getNextAchievementHint } from '../utils/achievementProgress'
 import ThemeToggle from '../components/ThemeToggle.vue'
 import AppNavDock from '../components/AppNavDock.vue'
 import { useMobileLayout } from '../composables/useMobileLayout'
+import { scrollToHomeHash } from '../utils/homeScroll'
 
 const router = useRouter()
 const route = useRoute()
@@ -97,16 +98,8 @@ function showOnboarding() {
   onboardingRef.value?.reopen?.()
 }
 
-function scrollToHomeHash() {
-  const id = route.hash?.replace('#', '')
-  if (!id) return
-  requestAnimationFrame(() => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  })
-}
-
-onMounted(scrollToHomeHash)
-watch(() => route.hash, scrollToHomeHash)
+onMounted(() => scrollToHomeHash(route.hash))
+watch(() => route.hash, (hash) => scrollToHomeHash(hash))
 </script>
 
 <template>
@@ -133,13 +126,17 @@ watch(() => route.hash, scrollToHomeHash)
 
       <main class="workbench__main home-map__main">
         <section class="home-map__hero">
-          <p class="home-map__hero-rank">
-            <span>{{ rank.icon }} {{ rank.title }}</span>
-            <span class="home-map__hero-rank-meta">
+          <div class="home-map__hero-head">
+            <div class="home-map__hero-rank-pill">
+              <span class="home-map__hero-rank-icon" aria-hidden="true">{{ rank.icon }}</span>
+              <span>{{ rank.title }}</span>
+            </div>
+            <p class="home-map__hero-rank-meta">
               XP {{ progressStore.totalXp }} · ★ {{ progressStore.totalStars }} · 主线
               {{ progressStore.mainCompletedCount }}/{{ progressStore.totalLevelCount }}
-            </span>
-          </p>
+            </p>
+          </div>
+
           <p v-if="workBrief.chapterTitle" class="home-map__hero-tag">
             {{ workBrief.chapterTitle }}
           </p>
@@ -154,40 +151,65 @@ watch(() => route.hash, scrollToHomeHash)
             </template>
           </h2>
           <p class="home-map__hero-desc">{{ workBrief.desc }}</p>
-          <div v-if="rankProgress.next" class="home-map__hero-xp">
-            <div class="home-map__hero-xp-head">
-              <span>升职进度</span>
-              <span class="home-map__hero-xp-target">
-                → {{ rankProgress.next.icon }} {{ rankProgress.next.title }}
-                <span class="home-map__hero-xp-need">还差 {{ rankProgress.xpToNext }} XP</span>
-              </span>
+
+          <div class="home-map__hero-foot">
+            <div class="home-map__hero-metrics">
+              <div v-if="rankProgress.next" class="home-map__hero-xp">
+                <div class="home-map__hero-xp-head">
+                  <span>升职进度</span>
+                  <span class="home-map__hero-xp-target">
+                    {{ rankProgress.next.icon }} {{ rankProgress.next.title }}
+                  </span>
+                </div>
+                <div
+                  class="home-map__hero-xp-bar"
+                  role="progressbar"
+                  :aria-valuenow="rankProgress.percent"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  <div
+                    class="home-map__hero-xp-fill"
+                    :style="{ width: `${Math.max(rankProgress.percent, 2)}%` }"
+                  />
+                </div>
+                <p class="home-map__hero-xp-meta">
+                  <span>{{ progressStore.totalXp }} / {{ rankProgress.next.minXp }} XP</span>
+                  <span class="home-map__hero-xp-need">还差 {{ rankProgress.xpToNext }} XP</span>
+                </p>
+              </div>
+              <p v-else class="home-map__hero-xp-max">🛡️ 已达最高职级 · 质量 Owner</p>
+
+              <div v-if="nextAchievement" class="home-map__hero-achievement">
+                <div class="home-map__hero-achievement-head">
+                  <span>🏆 {{ nextAchievement.icon }} {{ nextAchievement.title }}</span>
+                  <span class="home-map__hero-achievement-meta"
+                    >{{ nextAchievement.current }}/{{ nextAchievement.target }}</span
+                  >
+                </div>
+                <div class="home-map__hero-achievement-bar">
+                  <div
+                    class="home-map__hero-achievement-fill"
+                    :style="{ width: `${Math.max(nextAchievement.percent, 2)}%` }"
+                  />
+                </div>
+                <p class="home-map__hero-achievement-desc">{{ nextAchievement.desc }}</p>
+              </div>
             </div>
-            <div
-              class="home-map__hero-xp-bar"
-              role="progressbar"
-              :aria-valuenow="rankProgress.percent"
-              aria-valuemin="0"
-              aria-valuemax="100"
-            >
-              <div class="home-map__hero-xp-fill" :style="{ width: `${rankProgress.percent}%` }" />
-            </div>
-          </div>
-          <p v-else class="home-map__hero-xp-max">🛡️ 已达最高职级 · 质量 Owner</p>
-          <div v-if="nextAchievement" class="home-map__hero-achievement">
-            <div class="home-map__hero-achievement-head">
-              <span>🏆 下一成就 · {{ nextAchievement.icon }} {{ nextAchievement.title }}</span>
-              <span class="home-map__hero-achievement-meta"
-                >{{ nextAchievement.current }}/{{ nextAchievement.target }}</span
+
+            <div v-if="!allCompleted && progressStore.firstAvailableLevelId" class="home-map__hero-cta">
+              <button
+                type="button"
+                class="level-map__btn level-map__btn--primary home-map__hero-cta-btn"
+                @click="continueChallenge"
               >
+                开始今日任务
+                <span v-if="nextLevelXp" class="home-map__action-xp">+{{ nextLevelXp }} XP</span>
+                →
+              </button>
             </div>
-            <div class="home-map__hero-achievement-bar">
-              <div
-                class="home-map__hero-achievement-fill"
-                :style="{ width: `${nextAchievement.percent}%` }"
-              />
-            </div>
-            <p class="home-map__hero-achievement-desc">{{ nextAchievement.desc }}</p>
           </div>
+
           <p v-if="reinforcementHint" class="home-map__hero-reinforce">
             有空可重温
             <router-link
@@ -205,7 +227,7 @@ watch(() => route.hash, scrollToHomeHash)
             <button
               v-if="!allCompleted && progressStore.firstAvailableLevelId"
               type="button"
-              class="level-map__btn level-map__btn--primary"
+              class="level-map__btn level-map__btn--primary home-map__action-primary--mobile"
               @click="continueChallenge"
             >
               开始今日任务
@@ -291,6 +313,7 @@ watch(() => route.hash, scrollToHomeHash)
         </details>
 
         <details
+          id="home-career"
           class="home-fold home-fold--mobile-collapsible home-fold--career"
           :open="isMobile ? undefined : true"
         >

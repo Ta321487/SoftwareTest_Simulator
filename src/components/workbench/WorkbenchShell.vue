@@ -1,16 +1,14 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { dockApps } from '../../data/projects'
 import ThemeToggle from '../ThemeToggle.vue'
+import AppSidebar from '../AppSidebar.vue'
 import WorkInbox from './WorkInbox.vue'
 import WorkStatusBar from './WorkStatusBar.vue'
 import RankBadge from '../RankBadge.vue'
 import { useProgressStore } from '../../stores/progressStore'
-import { useMobileLayout } from '../../composables/useMobileLayout'
 
 const progressStore = useProgressStore()
-const { isMobile } = useMobileLayout()
-const dockExpanded = ref(false)
 
 const props = defineProps({
   project: {
@@ -71,34 +69,6 @@ const activeArchiveItem = computed(() =>
   props.dockItems.find((d) => d.levelId === props.activeDockLevelId)
 )
 
-const sortedDockItems = computed(() => {
-  const current = props.dockItems.find((d) => d.levelId === props.level.id)
-  const rest = props.dockItems.filter((d) => d.levelId !== props.level.id)
-  return current ? [current, ...rest] : [...props.dockItems]
-})
-
-const MOBILE_DOCK_VISIBLE = 4
-
-const visibleDockItems = computed(() => {
-  if (
-    !isMobile.value ||
-    dockExpanded.value ||
-    sortedDockItems.value.length <= MOBILE_DOCK_VISIBLE
-  ) {
-    return sortedDockItems.value
-  }
-  return sortedDockItems.value.slice(0, MOBILE_DOCK_VISIBLE - 1)
-})
-
-const hiddenDockCount = computed(() => {
-  if (!isMobile.value || dockExpanded.value) return 0
-  return Math.max(0, sortedDockItems.value.length - visibleDockItems.value.length)
-})
-
-function toggleDockExpanded() {
-  dockExpanded.value = !dockExpanded.value
-}
-
 const headerTitle = computed(() => {
   if (props.viewMode === 'sut') {
     return `🎮 上机实操${props.project ? ` · ${props.project.name}` : ''}`
@@ -125,7 +95,7 @@ const headerSubtitle = computed(() => {
   <div class="workbench" :class="{ 'workbench--level': levelPage }">
     <header class="workbench__topbar">
       <div class="workbench__topbar-left">
-        <button type="button" class="workbench__back" @click="$emit('back')">← 地图</button>
+        <button type="button" class="workbench__back" @click="$emit('back')">← 任务台</button>
         <div class="workbench__title-block">
           <h1 class="workbench__title">{{ headerTitle }}</h1>
           <p v-if="headerSubtitle" class="workbench__subtitle">{{ headerSubtitle }}</p>
@@ -144,49 +114,15 @@ const headerSubtitle = computed(() => {
     <WorkStatusBar :items="envStatus" class="workbench__status-bar" />
 
     <div class="workbench__body" :class="{ 'workbench__body--sut': viewMode === 'sut' }">
-      <aside v-if="viewMode === 'main'" class="workbench__dock">
-        <p class="workbench__dock-label">工作台</p>
-        <button
-          v-for="item in visibleDockItems"
-          :key="item.levelId"
-          type="button"
-          class="workbench__dock-item"
-          :class="{
-            'workbench__dock-item--active': activeDockLevelId === item.levelId,
-            'workbench__dock-item--task': item.levelId === level.id,
-            'workbench__dock-item--locked': item.locked,
-          }"
-          :title="item.locked ? item.lockReason : dockApps[item.simType]?.label"
-          @click="!item.locked && $emit('dock-change', item.levelId)"
-        >
-          <span class="workbench__dock-icon">{{ dockApps[item.simType]?.icon }}</span>
-          <span class="workbench__dock-text">{{
-            item.shortLabel || dockApps[item.simType]?.shortLabel
-          }}</span>
-          <span v-if="item.levelId === level.id" class="workbench__dock-dot" />
-          <span v-if="item.hasArtifact && item.levelId !== level.id" class="workbench__dock-check"
-            >✓</span
-          >
-        </button>
-        <button
-          v-if="hiddenDockCount > 0"
-          type="button"
-          class="workbench__dock-item workbench__dock-item--more"
-          @click="toggleDockExpanded"
-        >
-          <span class="workbench__dock-icon">⋯</span>
-          <span class="workbench__dock-text">更多 +{{ hiddenDockCount }}</span>
-        </button>
-        <button
-          v-else-if="dockExpanded && sortedDockItems.length > MOBILE_DOCK_VISIBLE"
-          type="button"
-          class="workbench__dock-item workbench__dock-item--more"
-          @click="toggleDockExpanded"
-        >
-          <span class="workbench__dock-icon">↑</span>
-          <span class="workbench__dock-text">收起</span>
-        </button>
-      </aside>
+      <AppSidebar
+        v-if="viewMode === 'main'"
+        current="level"
+        :active-level-id="activeDockLevelId"
+        :task-level-id="level.id"
+        :project-name="project?.name"
+        :project-items="dockItems"
+        @dock-change="$emit('dock-change', $event)"
+      />
 
       <main
         class="workbench__main"

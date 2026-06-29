@@ -231,6 +231,60 @@ body {
   border-bottom: 1px solid var(--border-subtle);
 }
 
+.home-map__hero-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 10px;
+}
+
+.home-map__hero-rank-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.home-map__hero-rank-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.home-map__hero-rank-meta {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.home-map__hero-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.home-map__hero-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.home-map__hero-cta {
+  display: none;
+}
+
+.home-map__hero-cta-btn {
+  width: 100%;
+  justify-content: center;
+}
+
 .home-map__hero-tag {
   font-family: var(--font-mono);
   font-size: 0.72rem;
@@ -254,8 +308,8 @@ body {
 }
 
 .home-map__hero-xp {
-  margin-top: 14px;
-  max-width: 480px;
+  margin-top: 0;
+  max-width: none;
 }
 
 .home-map__hero-xp-head {
@@ -273,6 +327,16 @@ body {
   font-weight: 600;
 }
 
+.home-map__hero-xp-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 6px 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
 .home-map__hero-xp-need {
   font-family: var(--font-mono);
   color: var(--accent-cyan);
@@ -280,7 +344,7 @@ body {
 }
 
 .home-map__hero-xp-bar {
-  height: 8px;
+  height: 10px;
   border-radius: 999px;
   background: var(--border-subtle);
   overflow: hidden;
@@ -318,8 +382,8 @@ body {
 }
 
 .home-map__hero-achievement {
-  margin-top: 12px;
-  max-width: 480px;
+  margin-top: 0;
+  max-width: none;
   padding: 10px 12px;
   border-radius: 10px;
   background: var(--surface-muted);
@@ -1013,13 +1077,17 @@ body {
 }
 
 select.sim-field__input,
-.api-client__method {
+.api-client__method,
+.handbook__filter-select {
   background: var(--input-bg);
+  color: var(--text-primary);
+  color-scheme: light dark;
   cursor: pointer;
 }
 
 select.sim-field__input option,
-.api-client__method option {
+.api-client__method option,
+.handbook__filter-select option {
   background-color: var(--bg-card);
   color: var(--text-primary);
 }

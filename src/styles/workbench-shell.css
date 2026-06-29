@@ -150,8 +150,9 @@
 }
 
 .workbench__dock-item--locked {
-  opacity: 0.35;
+  opacity: 0.52;
   cursor: not-allowed;
+  color: var(--text-muted);
 }
 
 .workbench__dock-icon {

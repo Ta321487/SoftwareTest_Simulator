@@ -261,7 +261,7 @@ watch(
           </nav>
 
           <nav
-            v-if="!isSearching && viewMode === 'glossary' && !isMobile"
+            v-if="!isSearching && viewMode === 'glossary'"
             class="handbook__tabs"
             aria-label="术语分类"
           >
@@ -285,21 +285,8 @@ watch(
             </button>
           </nav>
 
-          <label
-            v-if="!isSearching && viewMode === 'glossary' && isMobile"
-            class="handbook__filter"
-          >
-            <span class="handbook__filter-label">术语分类</span>
-            <select v-model="activeGlossaryCategory" class="handbook__filter-select">
-              <option value="all">全部</option>
-              <option v-for="cat in glossaryCategories" :key="cat.id" :value="cat.id">
-                {{ cat.icon }} {{ cat.name }}
-              </option>
-            </select>
-          </label>
-
           <nav
-            v-if="!isSearching && viewMode === 'notes' && !isMobile"
+            v-if="!isSearching && viewMode === 'notes'"
             class="handbook__tabs"
             aria-label="阶段筛选"
           >
@@ -330,17 +317,6 @@ watch(
               🎬 番外
             </button>
           </nav>
-
-          <label v-if="!isSearching && viewMode === 'notes' && isMobile" class="handbook__filter">
-            <span class="handbook__filter-label">笔记分类</span>
-            <select v-model="activePhase" class="handbook__filter-select">
-              <option value="all">全部</option>
-              <option v-for="phaseId in phaseOrder" :key="phaseId" :value="phaseId">
-                {{ phases[phaseId].icon }} {{ phases[phaseId].name }}
-              </option>
-              <option value="extra">🎬 番外</option>
-            </select>
-          </label>
         </div>
 
         <section v-if="!isSearching && recentTerms.length" class="handbook__recent">

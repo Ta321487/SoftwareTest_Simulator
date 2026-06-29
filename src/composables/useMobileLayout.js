@@ -3,7 +3,9 @@ import { onMounted, onUnmounted, ref } from 'vue'
 const MOBILE_MQ = '(max-width: 768px)'
 
 export function useMobileLayout() {
-  const isMobile = ref(typeof window !== 'undefined' ? window.matchMedia(MOBILE_MQ).matches : false)
+  const query =
+    typeof window !== 'undefined' ? window.matchMedia(MOBILE_MQ) : null
+  const isMobile = ref(query?.matches ?? false)
   let mq = null
   let handler = null
 
