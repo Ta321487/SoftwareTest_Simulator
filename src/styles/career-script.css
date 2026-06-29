@@ -399,6 +399,45 @@
   }
 }
 
+.script-task-list__more,
+.phase-timeline__more {
+  margin-top: 8px;
+}
+
+.script-task-list__more-summary,
+.phase-timeline__more-summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 6px 0;
+}
+
+.script-task-list__more-summary::-webkit-details-marker,
+.phase-timeline__more-summary::-webkit-details-marker {
+  display: none;
+}
+
+.script-task-list__more-summary::before,
+.phase-timeline__more-summary::before {
+  content: '▸ ';
+  font-size: 0.7rem;
+}
+
+.script-task-list__more[open] > .script-task-list__more-summary::before,
+.phase-timeline__more[open] > .phase-timeline__more-summary::before {
+  content: '▾ ';
+}
+
+.script-task-list--nested {
+  margin-top: 6px;
+}
+
+.phase-timeline__track--nested {
+  margin-top: 6px;
+}
+
 @media (min-width: 769px) {
   .career-script__chapter-fold > .career-script__chapter-summary {
     display: none;

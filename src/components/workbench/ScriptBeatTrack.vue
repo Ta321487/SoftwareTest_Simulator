@@ -15,6 +15,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  nextFocus: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const items = computed(() =>
@@ -28,5 +32,5 @@ const items = computed(() =>
 </script>
 
 <template>
-  <ScriptTaskList :items="items" />
+  <ScriptTaskList :items="items" :next-focus="nextFocus" />
 </template>

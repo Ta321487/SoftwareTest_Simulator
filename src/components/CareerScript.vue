@@ -119,12 +119,14 @@ function onChapterToggle(chapter, event) {
               :project-id="beat.projectId"
               :level-ids="beat.levelIds"
               embedded
+              :next-focus="isMobile"
             />
             <ScriptBeatTrack
               v-else-if="beat.type === 'levels'"
               :level-ids="beat.levelIds"
               :labels="beat.labels"
               :label-prefix="beat.labelPrefix"
+              :next-focus="isMobile"
             />
           </template>
         </div>

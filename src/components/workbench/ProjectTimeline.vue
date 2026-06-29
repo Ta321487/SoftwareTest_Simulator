@@ -21,6 +21,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  nextFocus: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const router = useRouter()
@@ -110,6 +114,7 @@ function immersionLocked(item) {
     <ScriptTaskList
       v-if="embedded"
       :items="days.map((d) => ({ levelId: d.levelId, label: d.label }))"
+      :next-focus="nextFocus"
     />
 
     <div v-else class="project-timeline__track">

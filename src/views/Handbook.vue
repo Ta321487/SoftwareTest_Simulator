@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { phaseOrder, phases, getLevelTitle } from '../data/phases'
 import { debriefs } from '../data/debriefs'
@@ -12,6 +12,7 @@ import {
   getGlossaryTerm,
 } from '../data/glossary'
 import ThemeToggle from '../components/ThemeToggle.vue'
+import { useMobileLayout } from '../composables/useMobileLayout'
 import {
   getHandbookBlurb,
   getGlossaryBlurb,
@@ -22,6 +23,7 @@ import { getRecentTermIds, recordRecentTerm } from '../utils/handbookRecent'
 
 const router = useRouter()
 const route = useRoute()
+const { isMobile } = useMobileLayout()
 
 const viewMode = ref('notes')
 const activePhase = ref('all')
@@ -32,24 +34,9 @@ const searchQuery = ref('')
 
 const LIST_BATCH = 15
 const listLimit = ref(LIST_BATCH)
-const isMobileList = ref(false)
-let mobileListMq = null
-let syncMobileList = null
 
-onMounted(() => {
-  mobileListMq = window.matchMedia('(max-width: 768px)')
-  syncMobileList = () => {
-    isMobileList.value = mobileListMq.matches
-    if (!mobileListMq.matches) listLimit.value = LIST_BATCH
-  }
-  syncMobileList()
-  mobileListMq.addEventListener('change', syncMobileList)
-})
-
-onUnmounted(() => {
-  if (mobileListMq && syncMobileList) {
-    mobileListMq.removeEventListener('change', syncMobileList)
-  }
+watch(isMobile, (mobile) => {
+  if (!mobile) listLimit.value = LIST_BATCH
 })
 
 const listScopeKey = computed(() => {
@@ -64,12 +51,12 @@ watch(listScopeKey, () => {
 })
 
 function limitedList(list) {
-  if (!isMobileList.value) return list
+  if (!isMobile.value) return list
   return list.slice(0, listLimit.value)
 }
 
 function remainingCount(list) {
-  if (!isMobileList.value) return 0
+  if (!isMobile.value) return 0
   return Math.max(0, list.length - listLimit.value)
 }
 
@@ -287,7 +274,7 @@ watch(
           </nav>
 
           <nav
-            v-if="!isSearching && viewMode === 'glossary'"
+            v-if="!isSearching && viewMode === 'glossary' && !isMobile"
             class="handbook__tabs"
             aria-label="术语分类"
           >
@@ -311,7 +298,20 @@ watch(
             </button>
           </nav>
 
-          <nav v-if="!isSearching && viewMode === 'notes'" class="handbook__tabs" aria-label="阶段筛选">
+          <label
+            v-if="!isSearching && viewMode === 'glossary' && isMobile"
+            class="handbook__filter"
+          >
+            <span class="handbook__filter-label">术语分类</span>
+            <select v-model="activeGlossaryCategory" class="handbook__filter-select">
+              <option value="all">全部</option>
+              <option v-for="cat in glossaryCategories" :key="cat.id" :value="cat.id">
+                {{ cat.icon }} {{ cat.name }}
+              </option>
+            </select>
+          </label>
+
+          <nav v-if="!isSearching && viewMode === 'notes' && !isMobile" class="handbook__tabs" aria-label="阶段筛选">
             <button
               type="button"
               class="handbook__tab"
@@ -339,6 +339,20 @@ watch(
               🎬 番外
             </button>
           </nav>
+
+          <label
+            v-if="!isSearching && viewMode === 'notes' && isMobile"
+            class="handbook__filter"
+          >
+            <span class="handbook__filter-label">笔记分类</span>
+            <select v-model="activePhase" class="handbook__filter-select">
+              <option value="all">全部</option>
+              <option v-for="phaseId in phaseOrder" :key="phaseId" :value="phaseId">
+                {{ phases[phaseId].icon }} {{ phases[phaseId].name }}
+              </option>
+              <option value="extra">🎬 番外</option>
+            </select>
+          </label>
         </div>
 
         <section v-if="!isSearching && recentTerms.length" class="handbook__recent">

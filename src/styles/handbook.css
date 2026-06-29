@@ -22,6 +22,29 @@
   margin-bottom: 0;
 }
 
+.handbook__filter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 0;
+}
+
+.handbook__filter-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.handbook__filter-select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: var(--input-bg, var(--surface-muted));
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
 .handbook__load-more {
   display: block;
   width: 100%;

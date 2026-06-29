@@ -13,6 +13,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  nextFocus: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const router = useRouter()
@@ -36,6 +40,25 @@ const steps = computed(() =>
 const progress = computed(() => {
   const done = steps.value.filter((s) => s.status === 'completed').length
   return { done, total: steps.value.length }
+})
+
+const focusStepId = computed(() => {
+  if (!props.nextFocus || !steps.value.length) return null
+  const available = steps.value.find((s) => s.status === 'available')
+  if (available) return available.levelId
+  const incomplete = steps.value.find((s) => s.status !== 'completed' && s.status !== 'locked')
+  if (incomplete) return incomplete.levelId
+  return steps.value[0].levelId
+})
+
+const focusSteps = computed(() => {
+  if (!props.nextFocus || !focusStepId.value) return steps.value
+  return steps.value.filter((s) => s.levelId === focusStepId.value)
+})
+
+const moreStepCount = computed(() => {
+  if (!props.nextFocus) return 0
+  return Math.max(0, steps.value.length - focusSteps.value.length)
 })
 
 function goToLevel(levelId) {
@@ -78,13 +101,13 @@ function starDisplay(n) {
 
     <div class="phase-timeline__track">
       <button
-        v-for="(step, index) in steps"
+        v-for="(step, index) in focusSteps"
         :key="step.levelId"
         type="button"
         class="phase-timeline__step"
         :class="[
           `phase-timeline__step--${step.status}`,
-          { 'phase-timeline__step--last': index === steps.length - 1 },
+          { 'phase-timeline__step--last': index === focusSteps.length - 1 && moreStepCount === 0 },
         ]"
         :disabled="step.status === 'locked'"
         @click="goToLevel(step.levelId)"
@@ -101,5 +124,31 @@ function starDisplay(n) {
         </span>
       </button>
     </div>
+
+    <details v-if="moreStepCount > 0" class="phase-timeline__more">
+      <summary class="phase-timeline__more-summary">全部 {{ steps.length }} 关</summary>
+      <div class="phase-timeline__track phase-timeline__track--nested">
+        <button
+          v-for="(step, index) in steps"
+          :key="`all-${step.levelId}`"
+          type="button"
+          class="phase-timeline__step"
+          :class="[
+            `phase-timeline__step--${step.status}`,
+            { 'phase-timeline__step--last': index === steps.length - 1 },
+          ]"
+          :disabled="step.status === 'locked'"
+          @click="goToLevel(step.levelId)"
+        >
+          <span class="phase-timeline__step-label">{{ step.label }}</span>
+          <span class="phase-timeline__step-title">{{ step.title }}</span>
+          <span class="phase-timeline__step-meta">
+            <span class="phase-timeline__step-status">
+              {{ step.status === 'completed' ? '✓' : step.status === 'available' ? '▶' : '🔒' }}
+            </span>
+          </span>
+        </button>
+      </div>
+    </details>
   </section>
 </template>
