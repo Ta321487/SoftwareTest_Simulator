@@ -27,6 +27,19 @@ export function getValidationCriteria(level) {
       return '按公式自行计算，在结果框填写数字（建议两位小数），参数无需修改。'
     case 'packet':
       return '点击最可疑的 HTTP 请求（关注 status、Host/URL 是否与测试环境一致），然后确认提交。'
+    case 'sqlclient':
+      return '编写 SELECT 只读查询，WHERE 条件需包含题目要求的表名与关键字。'
+    case 'redis':
+      return '输入 GET / TTL / KEYS 命令，键名与题目一致后按 Enter。'
+    case 'cipipeline':
+      return '点击失败阶段查看日志；若有归因题，结合日志关键字选择原因。'
+    case 'mockserver':
+      return '配置 path、status、body（及 delay），测试 Mock 通过后再提交。'
+    case 'apmtrace':
+    case 'gitrelease':
+      return '结合场景数据与环境背景，选择最合理的一项。'
+    case 'mqinbox':
+      return '选中目标 MQ 消息，或从短信列表填写正确验证码。'
     default:
       return '完成操作后提交。'
   }

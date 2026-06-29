@@ -1,4 +1,7 @@
 /** 番外关卡（ID 101+），不影响主线 levelOrder */
+import { toolQuestLevels, toolQuestArcs } from './toolQuestLevels.js'
+import { enrichSideArcs } from './sideQuestChapters.js'
+
 export const sideLevels = [
   {
     id: 101,
@@ -883,9 +886,10 @@ export const sideLevels = [
     xpReward: 18,
     unlock: { type: 'sideLevel', sideLevelId: 135 },
   },
+  ...toolQuestLevels,
 ]
 
-export const sideArcs = [
+export const sideArcs = enrichSideArcs([
   {
     id: 'security',
     name: '安全线',
@@ -900,15 +904,15 @@ export const sideArcs = [
   },
   {
     id: 'pipeline',
-    name: '流水线',
+    name: 'CI 门禁 · 选修',
     icon: '🔄',
-    tagline: 'CI/CD 里测试站哪一步',
+    tagline: '概念判断：测试在流水线哪一步介入',
   },
   {
     id: 'collab',
     name: '协作进阶',
     icon: '🤝',
-    tagline: 'Mock、沙箱、降级——真实项目的妥协',
+    tagline: 'Mock 策略 · 沙箱降级——概念选修（实操见 Mock 配置线）',
   },
   {
     id: 'compat',
@@ -930,9 +934,9 @@ export const sideArcs = [
   },
   {
     id: 'monitor',
-    name: '监控线',
+    name: '监控告警 · 选修',
     icon: '📡',
-    tagline: '告警谁优先——值班第一课',
+    tagline: '概念判断：告警谁优先（实操见 APM 下钻线）',
   },
   {
     id: 'automation',
@@ -948,11 +952,14 @@ export const sideArcs = [
   },
   {
     id: 'linux',
-    name: 'Linux 值班线',
+    name: 'Linux 值班 · 实操',
     icon: '💻',
     tagline: 'tail / grep / curl——测试排障常用命令',
   },
-]
+  ...toolQuestArcs,
+])
+
+export { sideChapters, TOOLCHAIN_ARC_IDS, isToolchainArc, getToolchainProgress, getNextToolchainLevel } from './sideQuestChapters.js'
 
 export const sideLevelIds = sideLevels.map((l) => l.id)
 

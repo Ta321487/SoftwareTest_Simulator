@@ -360,7 +360,8 @@
     color: var(--accent-cyan);
   }
 
-  .app-mobile-dock__chip--locked {
+  .app-mobile-dock__chip--locked,
+  .app-mobile-dock__chip[aria-disabled='true'] {
     opacity: 0.45;
     cursor: not-allowed;
   }

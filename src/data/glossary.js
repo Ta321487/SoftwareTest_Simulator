@@ -527,8 +527,85 @@ export const glossaryTerms = [
     category: 'ops',
     definition: '线上紧急问题的小范围修复，通常走独立分支快速发布。测试范围应绑定 diff，冒烟优先。',
     example: '支付回调 URL 热修复——1 小时内冒烟：回调/支付必测，无关模块写清暂缓。',
-    relatedLevelIds: [117, 121],
-    seeAlso: ['smoke', 'regression', 'cicd'],
+    relatedLevelIds: [117, 121, 147, 148],
+    seeAlso: ['smoke', 'regression', 'cicd', 'git-release'],
+  },
+  {
+    id: 'redis-cache',
+    term: 'Redis 缓存',
+    aliases: ['Redis', '缓存', 'Session 缓存'],
+    category: 'ops',
+    definition:
+      '内存键值存储，常用于 Session、验证码 TTL、限流计数。测试排查用 GET/TTL 对照页面现象。',
+    example: '验证码显示 -1 秒：TTL sms:code:138xxxx 应与 UI 倒计时一致。',
+    relatedLevelIds: [139, 140],
+    seeAlso: ['gray-box', 'callback'],
+  },
+  {
+    id: 'mock-server',
+    term: 'Mock 服务',
+    aliases: ['Mock', 'WireMock', '桩服务'],
+    category: 'api',
+    definition:
+      '模拟第三方或下游响应的测试替身。沙箱不稳定时用 Mock 保进度，但 body/status 要符合真实契约。',
+    example: '支付沙箱挂了：Mock /callback 返回 200 + success，再跑一条端到端。',
+    relatedLevelIds: [104, 143, 144],
+    seeAlso: ['callback', 'api-test'],
+  },
+  {
+    id: 'message-queue',
+    term: '消息队列',
+    aliases: ['MQ', 'RabbitMQ', 'Kafka', '异步队列'],
+    category: 'api',
+    definition:
+      '异步传递业务消息（如支付回调）。测试可查队列 payload 的 orderId、status 是否与 DB 一致。',
+    example: '支付成功但订单待支付：在 pay-callback 队列找 SUCCESS + orderId=8821。',
+    relatedLevelIds: [149, 150, 113],
+    seeAlso: ['callback', 'idempotent'],
+  },
+  {
+    id: 'sql-verify',
+    term: 'SQL 灰盒查库',
+    aliases: ['查库', 'SELECT 验证', '落库核对'],
+    category: 'technique',
+    definition:
+      '接口或 UI 看起来正常时，用只读 SELECT 核对数据库中的 status、金额、时间等是否与预期一致。',
+    example: '支付接口 200 但订单仍 PENDING：SELECT * FROM orders WHERE order_id=8821。',
+    relatedLevelIds: [137, 138],
+    seeAlso: ['gray-box', 'callback'],
+  },
+  {
+    id: 'integration-gate',
+    term: '集成测试门禁',
+    aliases: ['集成阶段', 'Integration', '回归门禁'],
+    category: 'ops',
+    definition:
+      'CI 流水线中跑自动化回归/冒烟的阶段。此阶段失败时测试通常应优先介入读日志、判环境或用例。',
+    example: 'Integration 红 + Connection refused → 先查 staging DB 地址，不是怪用例写错。',
+    relatedLevelIds: [103, 141, 142],
+    seeAlso: ['cicd', 'smoke'],
+  },
+  {
+    id: 'git-release',
+    term: 'Git 发布分支',
+    aliases: ['release 分支', 'hotfix 分支', '部署分支'],
+    category: 'ops',
+    definition:
+      '发布与 hotfix 所依据的 Git 分支。应与生产 tag 一致，部署前核对 commit 是否含修复单号。',
+    example: '生产 v2.3.0 事故：hotfix 从 release/v2.3.0 切，别从 main 或 feature 直接上。',
+    relatedLevelIds: [9, 147, 148],
+    seeAlso: ['cicd', 'hotfix'],
+  },
+  {
+    id: 'toolchain-triage',
+    term: '排查工具链',
+    aliases: ['值班工具链', 'on-call toolchain'],
+    category: 'ops',
+    definition:
+      '测试线上/联调问题的常用工具组合：APM → 日志 → SQL → Redis → MQ/Mock，按现象选入口。',
+    example: '告警 → APM 看 P99 → grep ERROR → SELECT 落库 → GET session。',
+    relatedLevelIds: [124, 137, 139, 145, 149],
+    seeAlso: ['gray-box', 'apm', 'callback'],
   },
 ]
 

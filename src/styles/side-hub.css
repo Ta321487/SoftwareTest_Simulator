@@ -221,6 +221,180 @@
   font-weight: 600;
 }
 
+/* ── 番外大章 ── */
+.side-hub__chapter {
+  margin-bottom: 16px;
+}
+
+.side-hub__chapter-fold {
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--surface-muted);
+  padding: 0 14px;
+}
+
+.side-hub__chapter--recommended > .side-hub__chapter-fold {
+  border-color: var(--cyan-border);
+}
+
+.side-hub__chapter-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+  cursor: pointer;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.side-hub__chapter-summary::-webkit-details-marker {
+  display: none;
+}
+
+.side-hub__chapter-summary::before {
+  content: '▸ ';
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.side-hub__chapter-fold[open] > .side-hub__chapter-summary::before {
+  content: '▾ ';
+}
+
+.side-hub__chapter-icon {
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+
+.side-hub__chapter-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.side-hub__chapter-badge {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  background: color-mix(in srgb, var(--accent-purple) 12%, transparent);
+  color: var(--accent-purple);
+}
+
+.side-hub__chapter--recommended .side-hub__chapter-badge {
+  background: color-mix(in srgb, var(--accent-cyan) 14%, transparent);
+  color: var(--accent-cyan);
+}
+
+.side-hub__chapter-progress {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.side-hub__chapter-body {
+  padding-bottom: 14px;
+}
+
+.side-hub__chapter-tagline {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0 0 12px;
+}
+
+.side-hub__route-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent-cyan) 8%, transparent);
+  border: 1px dashed var(--cyan-border);
+}
+
+.side-hub__route-text strong {
+  display: block;
+  font-size: 0.875rem;
+  margin-bottom: 2px;
+}
+
+.side-hub__route-text span {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--accent-cyan);
+}
+
+.side-hub__route-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 6px 0 0;
+}
+
+.side-hub__route-btn {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  padding: 8px 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--accent-cyan);
+  color: var(--btn-primary-text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.side-hub__route-done {
+  font-size: 0.8125rem;
+  color: var(--accent-green, #22c55e);
+  font-weight: 600;
+}
+
+.side-hub__chapter-arcs {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.side-hub__arc-section {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 14px;
+}
+
+.side-hub__arc-section:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.side-hub__arc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.side-hub__arc-head-meta {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.side-hub__card-badge {
+  font-size: 0.6rem;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--surface-hover);
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
 .side-hub__arc-fold {
   margin-bottom: 8px;
   border: 1px solid var(--border-subtle);

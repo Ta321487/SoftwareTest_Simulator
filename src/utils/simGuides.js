@@ -53,6 +53,34 @@ const simGuideContent = {
       '点击选中后确认',
     ],
   },
+  sqlclient: {
+    action: '编写 SELECT 查询并执行',
+    steps: ['阅读表结构与业务现象', '写 SELECT … FROM … WHERE …', '执行查询核对落库数据'],
+  },
+  redis: {
+    action: '输入 Redis 命令，按 Enter 执行',
+    steps: ['确认要查的键名/场景', '输入 GET / TTL / KEYS 命令', '对照输出与接口/页面现象'],
+  },
+  cipipeline: {
+    action: '查看流水线阶段与日志，确认判断',
+    steps: ['点击各 CI 阶段查看状态', '失败阶段展开日志片段', '选择失败阶段或原因后提交'],
+  },
+  mockserver: {
+    action: '配置 Mock 规则 → 测试 → 提交',
+    steps: ['填写 path / status / body', '点击测试 Mock', '通过后保存提交'],
+  },
+  apmtrace: {
+    action: '点击链路节点或告警指标，确认提交',
+    steps: ['阅读 P99/告警背景', '点选最慢环节或优先指标', '确认选择'],
+  },
+  gitrelease: {
+    action: '选择正确的分支或 commit',
+    steps: ['阅读发布/hotfix 背景', '对照分支或 commit 信息', '确认选择'],
+  },
+  mqinbox: {
+    action: '选中 MQ 消息或填写验证码',
+    steps: ['阅读异步/短信场景', '在列表中定位目标消息或验证码', '确认提交'],
+  },
 }
 
 export function getSimGuide(simType) {

@@ -41,9 +41,27 @@ const lines = computed(() => {
       return [{ label: '回归项', text: (d.selected || []).join(', ') }]
     case 'terminal':
       return [{ label: '命令', text: d.command || '' }]
+    case 'sqlclient':
+      return [{ label: 'SQL', text: d.query || '' }]
+    case 'redis':
+      return [{ label: '命令', text: d.command || '' }]
+    case 'cipipeline':
+      return [
+        { label: '阶段', text: d.selectedStage || '' },
+        { label: '原因', text: d.selectedCause || '' },
+      ]
+    case 'mockserver': {
+      const r = d.rules || {}
+      return [{ label: 'Mock', text: `${r.path} → ${r.status}` }]
+    }
+    case 'mqinbox':
+      if (d.code) return [{ label: '验证码', text: d.code }]
+      return [{ label: '消息', text: d.selectedMessageId || '' }]
     case 'config':
       return [{ label: '配置值', text: d.value || '' }]
     case 'clickcard':
+    case 'apmtrace':
+    case 'gitrelease':
       return [{ label: '选择', text: d.selected || '' }]
     case 'calculator':
       return [{ label: '结果', text: d.result || '' }]

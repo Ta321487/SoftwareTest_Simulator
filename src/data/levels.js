@@ -1352,4 +1352,11 @@ export const simTypeLabels = {
   template: '文档模板',
   apiclient: 'API 调试',
   packet: '抓包面板',
+  sqlclient: 'SQL 客户端',
+  redis: 'Redis CLI',
+  cipipeline: 'CI 流水线',
+  mockserver: 'Mock 服务',
+  apmtrace: 'APM 链路',
+  gitrelease: 'Git 发布',
+  mqinbox: '消息收件箱',
 }

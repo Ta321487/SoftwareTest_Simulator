@@ -2,7 +2,6 @@ import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useProgressStore } from '../stores/progressStore'
 import { DAILY_LEVEL_ID } from '../data/dailyChallenges'
-import { scrollToHomeSection } from '../utils/homeScroll'
 
 export function useAppNav() {
   const router = useRouter()
@@ -15,7 +14,11 @@ export function useAppNav() {
   const dailyDone = computed(() => dailyStatus.value === 'completed')
 
   function goHome() {
-    if (route.path !== '/') router.push('/')
+    if (route.path !== '/') {
+      router.push('/')
+      return
+    }
+    if (route.hash) router.replace({ hash: '' })
   }
 
   function goMain() {
@@ -31,11 +34,12 @@ export function useAppNav() {
   }
 
   function goHomeSection(id) {
+    const hash = '#' + id
     if (route.path !== '/') {
-      router.push({ path: '/', hash: '#' + id })
+      router.push({ path: '/', hash })
       return
     }
-    scrollToHomeSection(id)
+    router.replace({ hash })
   }
 
   return {

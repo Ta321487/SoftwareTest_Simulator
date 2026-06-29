@@ -1,17 +1,34 @@
 <script setup>
 import { computed, ref, watch, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { sideLevels, sideArcs, getUnlockHint } from '../data/sideQuests'
+import {
+  sideLevels,
+  sideArcs,
+  getUnlockHint,
+  sideChapters,
+} from '../data/sideQuests'
 import { DAILY_LEVEL_ID, getTodayDailyChallenge, getDailyFocusHint } from '../data/dailyChallenges'
 import { useProgressStore } from '../stores/progressStore'
 import { useMobileLayout } from '../composables/useMobileLayout'
+import ToolchainSkillTree from './workbench/ToolchainSkillTree.vue'
+import QuestPathMap from './workbench/QuestPathMap.vue'
+
+defineProps({
+  compact: {
+    type: Boolean,
+    default: false,
+  },
+})
 
 const router = useRouter()
 const progressStore = useProgressStore()
 const { isMobile } = useMobileLayout()
-const expandedArcIds = ref(new Set())
+const expandedChapterIds = ref(new Set(['toolchain']))
+const selectedMindsetArcId = ref(null)
 const arcToast = ref('')
 let arcToastTimer = null
+
+const dailyStatus = computed(() => progressStore.getDailyStatus())
 
 const dailyXp = computed(() => getTodayDailyChallenge().xpReward ?? 0)
 const todayDaily = computed(() => getTodayDailyChallenge())
@@ -44,8 +61,6 @@ const sideProgress = computed(() => {
   return { done, total: sideCards.value.length }
 })
 
-const dailyStatus = computed(() => progressStore.getDailyStatus())
-
 const activeArcId = computed(() => {
   for (const arc of sideArcs) {
     const levels = sideCards.value.filter((c) => c.sideArc === arc.id)
@@ -72,24 +87,68 @@ const arcsWithLevels = computed(() =>
   })
 )
 
-function starLine(n) {
-  if (!n) return ''
-  return '★'.repeat(n) + '☆'.repeat(3 - n)
-}
+const mindsetArcs = computed(() =>
+  arcsWithLevels.value.filter((a) => a.parentChapter === 'mindset')
+)
+
+const activeMindsetArcId = computed(() => {
+  for (const arc of mindsetArcs.value) {
+    if (arc.active) return arc.id
+  }
+  const available = mindsetArcs.value.find((a) => a.levels.some((l) => l.status === 'available'))
+  return available?.id ?? mindsetArcs.value[0]?.id
+})
+
+const currentMindsetArc = computed(() => {
+  const id = selectedMindsetArcId.value || activeMindsetArcId.value
+  return mindsetArcs.value.find((a) => a.id === id)
+})
+
+const mindsetPathNodes = computed(() =>
+  (currentMindsetArc.value?.levels || []).map((card) => ({
+    levelId: card.id,
+    label: `EX-${card.id - 100}`,
+    title: card.title,
+    status: card.status,
+  }))
+)
+
+watch(activeMindsetArcId, (id) => {
+  if (id && !selectedMindsetArcId.value) selectedMindsetArcId.value = id
+})
+
+const chaptersWithArcs = computed(() =>
+  sideChapters.map((chapter) => {
+    const arcs = arcsWithLevels.value.filter((a) => a.parentChapter === chapter.id)
+    const done = arcs.reduce((sum, a) => sum + a.done, 0)
+    const total = arcs.reduce((sum, a) => sum + a.total, 0)
+    const complete = total > 0 && done >= total
+    const active = arcs.some((a) => a.active)
+    return {
+      ...chapter,
+      arcs,
+      done,
+      total,
+      complete,
+      active,
+    }
+  })
+)
 
 function goLevel(id) {
   router.push('/level/' + id)
 }
 
-function arcOpen(arc) {
-  if (!isMobile.value) return true
-  return arc.active || expandedArcIds.value.has(arc.id)
+function chapterOpen(chapter) {
+  if (!isMobile.value) {
+    return chapter.recommended || expandedChapterIds.value.has(chapter.id)
+  }
+  return chapter.active || chapter.recommended || expandedChapterIds.value.has(chapter.id)
 }
 
-function onArcToggle(arc, event) {
-  if (!isMobile.value) return
-  if (event.target.open) expandedArcIds.value.add(arc.id)
-  else expandedArcIds.value.delete(arc.id)
+function onChapterToggle(chapter, event) {
+  if (event.target.open) expandedChapterIds.value.add(chapter.id)
+  else expandedChapterIds.value.delete(chapter.id)
 }
 
 watch(
@@ -100,7 +159,7 @@ watch(
       if (!arc.complete) continue
       const was = prev.find((a) => a.id === arc.id)
       if (was && !was.complete) {
-        arcToast.value = `🎉 ${arc.icon} ${arc.name} 番外线通关！`
+        arcToast.value = `🎉 ${arc.icon} ${arc.name} 通关！`
         if (arcToastTimer) clearTimeout(arcToastTimer)
         arcToastTimer = setTimeout(() => {
           arcToast.value = ''
@@ -118,21 +177,23 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="side-hub">
-    <header class="side-hub__header">
+  <section class="side-hub" :class="{ 'side-hub--compact': compact }">
+    <header v-if="!compact" class="side-hub__header">
       <div>
         <h2 class="side-hub__title">
           <span class="side-hub__icon">🎬</span>
           番外 & 特训
         </h2>
         <p class="side-hub__subtitle">
-          主线之外的真实场景——安全、性能、流水线、兼容性。完成主线里程碑解锁，不影响职级晋升。
+          主线之外两条线：<strong>排查工具链</strong>（推荐 27 关实操）与
+          <strong>测试思维选修</strong>（场景判断）。另有每日特训，不影响职级晋升。
         </p>
       </div>
       <span class="side-hub__progress">{{ sideProgress.done }}/{{ sideProgress.total }} 番外</span>
     </header>
 
     <article
+      v-if="!compact"
       class="side-hub__daily"
       :class="[
         `side-hub__daily--${dailyStatus}`,
@@ -140,7 +201,7 @@ onUnmounted(() => {
       ]"
     >
       <div class="side-hub__daily-body">
-        <span class="side-hub__daily-badge">每日特训</span>
+        <span class="side-hub__daily-badge">第三章 · 每日特训</span>
         <h3 class="side-hub__daily-title">{{ dailyTitle }}</h3>
         <p v-if="dailyFocus" class="side-hub__daily-focus">{{ dailyFocus }}</p>
         <p v-if="dailyStatus !== 'locked'" class="side-hub__daily-meta">
@@ -163,85 +224,62 @@ onUnmounted(() => {
       </button>
     </article>
 
-    <div v-if="!isMobile" class="side-hub__grid">
-      <button
-        v-for="card in sideCards"
-        :key="card.id"
-        type="button"
-        class="side-hub__card"
-        :class="[`side-hub__card--${card.status}`, `side-hub__card--arc-${card.sideArc}`]"
-        :disabled="card.status === 'locked'"
-        @click="goLevel(card.id)"
-      >
-        <span class="side-hub__card-arc">{{ card.arc?.icon }} {{ card.arc?.name }}</span>
-        <span class="side-hub__card-id">EX-{{ card.id - 100 }}</span>
-        <h3 class="side-hub__card-title">{{ card.title }}</h3>
-        <p class="side-hub__card-tagline">{{ card.arc?.tagline }}</p>
-        <div class="side-hub__card-foot">
-          <span v-if="card.xpReward && card.status === 'available'" class="side-hub__card-xp"
-            >+{{ card.xpReward }} XP</span
-          >
-          <span v-else-if="card.stars" class="side-hub__card-stars">{{
-            starLine(card.stars)
-          }}</span>
-          <span class="side-hub__card-status">
-            {{ card.status === 'completed' ? '✓' : card.status === 'available' ? '▶' : '🔒' }}
-          </span>
-        </div>
-        <p v-if="card.status === 'locked'" class="side-hub__card-lock">{{ card.unlockHint }}</p>
-      </button>
-    </div>
-
-    <div v-else class="side-hub__arcs">
+    <div
+      v-for="chapter in chaptersWithArcs"
+      :key="chapter.id"
+      class="side-hub__chapter"
+      :class="{
+        'side-hub__chapter--recommended': chapter.recommended,
+        'side-hub__chapter--elective': chapter.elective,
+        'side-hub__chapter--done': chapter.complete,
+      }"
+    >
       <details
-        v-for="arc in arcsWithLevels"
-        :key="arc.id"
-        class="side-hub__arc-fold"
-        :class="{
-          'side-hub__arc-fold--active': arc.active,
-          'side-hub__arc-fold--done': arc.complete,
-        }"
-        :open="arcOpen(arc)"
-        @toggle="onArcToggle(arc, $event)"
+        class="side-hub__chapter-fold"
+        :open="chapterOpen(chapter)"
+        @toggle="onChapterToggle(chapter, $event)"
       >
-        <summary class="side-hub__arc-summary">
-          <span class="side-hub__arc-summary-icon">{{ arc.icon }}</span>
-          <span class="side-hub__arc-summary-name">{{ arc.name }}</span>
-          <span class="side-hub__arc-summary-meta">
-            <span v-if="arc.complete" class="side-hub__arc-badge">通关</span>
-            <span class="side-hub__arc-progress">{{ arc.done }}/{{ arc.total }}</span>
-          </span>
+        <summary class="side-hub__chapter-summary">
+          <span class="side-hub__chapter-icon">{{ chapter.icon }}</span>
+          <span class="side-hub__chapter-name">{{ chapter.name }}</span>
+          <span class="side-hub__chapter-badge">{{ chapter.badge }}</span>
+          <span class="side-hub__chapter-progress">{{ chapter.done }}/{{ chapter.total }}</span>
         </summary>
-        <div class="side-hub__arc-body">
-          <p class="side-hub__arc-tagline">{{ arc.tagline }}</p>
-          <div class="side-hub__arc-grid">
-            <button
-              v-for="card in arc.levels"
-              :key="card.id"
-              type="button"
-              class="side-hub__card side-hub__card--compact"
-              :class="[`side-hub__card--${card.status}`, `side-hub__card--arc-${card.sideArc}`]"
-              :disabled="card.status === 'locked'"
-              @click="goLevel(card.id)"
-            >
-              <span class="side-hub__card-id">EX-{{ card.id - 100 }}</span>
-              <h3 class="side-hub__card-title">{{ card.title }}</h3>
-              <div class="side-hub__card-foot">
-                <span v-if="card.xpReward && card.status === 'available'" class="side-hub__card-xp"
-                  >+{{ card.xpReward }} XP</span
-                >
-                <span v-else-if="card.stars" class="side-hub__card-stars">{{
-                  starLine(card.stars)
-                }}</span>
-                <span class="side-hub__card-status">
-                  {{ card.status === 'completed' ? '✓' : card.status === 'available' ? '▶' : '🔒' }}
-                </span>
-              </div>
-            </button>
-          </div>
+
+        <div class="side-hub__chapter-body">
+          <p v-if="!chapter.recommended" class="side-hub__chapter-tagline">{{ chapter.tagline }}</p>
+
+          <ToolchainSkillTree v-if="chapter.recommended" />
+
+          <template v-else>
+            <div class="skill-tree__arcs side-hub__mindset-arcs" role="tablist">
+              <button
+                v-for="(arc, index) in mindsetArcs"
+                :key="arc.id"
+                type="button"
+                role="tab"
+                class="skill-tree__arc"
+                :class="{
+                  'skill-tree__arc--active': (selectedMindsetArcId || activeMindsetArcId) === arc.id,
+                  'skill-tree__arc--available': arc.active,
+                  'skill-tree__arc--done': arc.complete,
+                  'skill-tree__arc--last': index === mindsetArcs.length - 1,
+                }"
+                :aria-selected="(selectedMindsetArcId || activeMindsetArcId) === arc.id"
+                @click="selectedMindsetArcId = arc.id"
+              >
+                <span class="skill-tree__arc-icon">{{ arc.icon }}</span>
+                <span class="skill-tree__arc-name">{{ arc.name.replace(/线$/, '') }}</span>
+                <span class="skill-tree__arc-progress">{{ arc.done }}/{{ arc.total }}</span>
+              </button>
+            </div>
+            <p v-if="currentMindsetArc" class="skill-tree__arc-tagline">{{ currentMindsetArc.tagline }}</p>
+            <QuestPathMap v-if="mindsetPathNodes.length" :nodes="mindsetPathNodes" size="sm" />
+          </template>
         </div>
       </details>
     </div>
+
     <p v-if="arcToast" class="side-hub__toast">{{ arcToast }}</p>
   </section>
 </template>

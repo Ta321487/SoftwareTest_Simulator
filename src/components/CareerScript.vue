@@ -1,14 +1,24 @@
 <script setup>
-import { computed, ref } from 'vue'
-import { careerChapters, getChapterProgress, isChapterLocked } from '../data/careerScript'
+import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import {
+  careerChapters,
+  getChapterProgress,
+  isChapterLocked,
+  getBeatLevelIds,
+  findActiveChapter,
+} from '../data/careerScript'
+import { projects } from '../data/projects'
+import { getLevelById } from '../utils/levelRegistry'
 import { useProgressStore } from '../stores/progressStore'
-import { useMobileLayout } from '../composables/useMobileLayout'
-import ProjectTimeline from './workbench/ProjectTimeline.vue'
-import ScriptBeatTrack from './workbench/ScriptBeatTrack.vue'
+import { useProjectStore } from '../stores/projectStore'
+import { getProjectImmersion } from '../utils/projectImmersion'
+import { buildSutRoute } from '../utils/sutImmersion'
+import QuestPathMap from './workbench/QuestPathMap.vue'
 
+const router = useRouter()
 const progressStore = useProgressStore()
-const { isMobile } = useMobileLayout()
-const expandedChapterIds = ref(new Set())
+const projectStore = useProjectStore()
 
 const chapters = computed(() =>
   careerChapters.map((chapter) => {
@@ -17,12 +27,7 @@ const chapters = computed(() =>
     const active =
       !locked &&
       progress.done < progress.total &&
-      careerChapters.find(
-        (ch) =>
-          !isChapterLocked(ch, progressStore.completedLevelIds) &&
-          getChapterProgress(ch, progressStore.completedLevelIds).done <
-            getChapterProgress(ch, progressStore.completedLevelIds).total
-      )?.id === chapter.id
+      findActiveChapter(progressStore.completedLevelIds)?.id === chapter.id
     return {
       ...chapter,
       locked,
@@ -33,106 +38,147 @@ const chapters = computed(() =>
   })
 )
 
-function chapterOpen(chapter) {
-  if (!isMobile.value) return true
-  return chapter.active || expandedChapterIds.value.has(chapter.id)
+const activeChapterId = computed(() => findActiveChapter(progressStore.completedLevelIds)?.id)
+const selectedChapterId = ref(activeChapterId.value || careerChapters[0]?.id)
+
+watch(activeChapterId, (id) => {
+  if (id) selectedChapterId.value = id
+})
+
+const selectedChapter = computed(
+  () => chapters.value.find((c) => c.id === selectedChapterId.value) || chapters.value[0]
+)
+
+function selectChapter(chapter) {
+  if (chapter.locked) return
+  selectedChapterId.value = chapter.id
 }
 
-function onChapterToggle(chapter, event) {
-  if (!isMobile.value) return
-  if (event.target.open) expandedChapterIds.value.add(chapter.id)
-  else expandedChapterIds.value.delete(chapter.id)
+function beatNodes(beat) {
+  const ids = getBeatLevelIds(beat)
+  if (beat.type === 'project') {
+    const project = projects[beat.projectId]
+    return ids.map((levelId) => {
+      const day = project?.days?.find((d) => d.levelId === levelId)
+      const level = getLevelById(levelId)
+      return {
+        levelId,
+        label: day?.label || `#${levelId}`,
+        title: day?.title || level?.title || '',
+      }
+    })
+  }
+  return ids.map((levelId) => {
+    const level = getLevelById(levelId)
+    return {
+      levelId,
+      label: beat.labels?.[levelId] || `#${levelId}`,
+      title: level?.title || '',
+    }
+  })
+}
+
+function immersionForBeat(beat) {
+  if (beat.type !== 'project') return null
+  return getProjectImmersion(beat.projectId, projectStore)
+}
+
+function openImmersion(item, levelId) {
+  if (progressStore.getStatus(levelId) === 'locked') return
+  router.push(buildSutRoute(levelId, item.dock))
 }
 </script>
 
 <template>
-  <section class="career-script" aria-label="职场全流程剧本">
-    <header class="career-script__intro">
-      <h2 class="career-script__title">职场剧本</h2>
-      <p class="career-script__desc">
-        假设你在一家软件公司的测试部上班——从新人营、求职、入职到值班与带团队，按章节推进即可。
-      </p>
-    </header>
-
-    <details
-      v-for="chapter in chapters"
-      :key="chapter.id"
-      class="career-script__chapter career-script__chapter-fold"
-      :class="{
-        'career-script__chapter--active': chapter.active,
-        'career-script__chapter--done': chapter.done,
-        'career-script__chapter--locked': chapter.locked,
-      }"
-      :open="chapterOpen(chapter)"
-      @toggle="onChapterToggle(chapter, $event)"
-    >
-      <summary class="career-script__chapter-summary">
-        <span class="career-script__summary-num">第 {{ chapter.chapter }} 章</span>
-        <span class="career-script__summary-title">{{ chapter.title }}</span>
-        <span class="career-script__summary-meta">
-          <span v-if="chapter.locked" class="career-script__chapter-lock">🔒</span>
-          <span v-else class="career-script__chapter-progress">
-            {{ chapter.progress.done }}/{{ chapter.progress.total }}
-          </span>
+  <section class="career-script career-script--compact" aria-label="职场全流程剧本">
+    <nav class="chapter-strip" aria-label="章节选择">
+      <button
+        v-for="(chapter, index) in chapters"
+        :key="chapter.id"
+        type="button"
+        class="chapter-strip__node"
+        :class="{
+          'chapter-strip__node--active': chapter.active,
+          'chapter-strip__node--done': chapter.done,
+          'chapter-strip__node--locked': chapter.locked,
+          'chapter-strip__node--selected': selectedChapterId === chapter.id,
+          'chapter-strip__node--last': index === chapters.length - 1,
+        }"
+        :aria-disabled="chapter.locked || undefined"
+        :title="chapter.title"
+        @click="selectChapter(chapter)"
+      >
+        <span class="chapter-strip__dot">
+          <template v-if="chapter.locked">🔒</template>
+          <template v-else-if="chapter.done">✓</template>
+          <template v-else>{{ chapter.chapter }}</template>
         </span>
-      </summary>
+        <span class="chapter-strip__num">第{{ chapter.chapter }}章</span>
+        <span class="chapter-strip__name">{{ chapter.title }}</span>
+      </button>
+    </nav>
 
-      <div class="career-script__chapter-body">
-        <header class="career-script__chapter-head">
-          <div class="career-script__chapter-meta">
-            <span class="career-script__chapter-num">第 {{ chapter.chapter }} 章</span>
-            <span class="career-script__chapter-badge">{{ chapter.badge }}</span>
-            <span v-if="chapter.period" class="career-script__chapter-period">{{
-              chapter.period
-            }}</span>
-          </div>
-          <div class="career-script__chapter-row">
-            <h3 class="career-script__chapter-title">{{ chapter.title }}</h3>
-            <span v-if="chapter.locked" class="career-script__chapter-lock"
-              >🔒 第一季结业后解锁</span
-            >
-            <span v-else class="career-script__chapter-progress">
-              {{ chapter.progress.done }}/{{ chapter.progress.total }}
-            </span>
-          </div>
-        </header>
+    <article
+      v-if="selectedChapter"
+      class="career-script__panel"
+      :class="{ 'career-script__panel--active': selectedChapter.active }"
+    >
+      <header class="career-script__panel-head">
+        <h3 class="career-script__panel-title">
+          第 {{ selectedChapter.chapter }} 章 · {{ selectedChapter.title }}
+        </h3>
+        <span v-if="selectedChapter.locked" class="career-script__panel-meta">🔒 第一季结业后解锁</span>
+        <span v-else class="career-script__panel-meta">
+          {{ selectedChapter.progress.done }}/{{ selectedChapter.progress.total }} ·
+          {{ selectedChapter.badge }}
+        </span>
+      </header>
 
-        <details class="career-script__lore" :open="isMobile ? undefined : true">
-          <summary class="career-script__lore-summary">背景 · 目标 · 带教</summary>
-          <div class="career-script__lore-body">
-            <p class="career-script__chapter-scene">{{ chapter.scene }}</p>
-            <p v-if="chapter.goal" class="career-script__chapter-goal">
-              <strong>本章目标</strong> {{ chapter.goal }}
-            </p>
-            <blockquote v-if="chapter.mentor" class="career-script__mentor">
-              <span class="career-script__mentor-avatar">{{ chapter.mentor.avatar }}</span>
-              <div class="career-script__mentor-body">
-                <cite class="career-script__mentor-from">{{ chapter.mentor.from }}</cite>
-                <p>{{ chapter.mentor.text }}</p>
-              </div>
-            </blockquote>
-          </div>
-        </details>
-
-        <div v-if="!chapter.locked" class="career-script__beats">
-          <template v-for="(beat, index) in chapter.beats" :key="`${chapter.id}-${index}`">
-            <ProjectTimeline
-              v-if="beat.type === 'project'"
-              :project-id="beat.projectId"
-              :level-ids="beat.levelIds"
-              embedded
-              :next-focus="isMobile"
-            />
-            <ScriptBeatTrack
-              v-else-if="beat.type === 'levels'"
-              :level-ids="beat.levelIds"
-              :labels="beat.labels"
-              :label-prefix="beat.labelPrefix"
-              :next-focus="isMobile"
-            />
-          </template>
+      <details class="career-script__lore">
+        <summary class="career-script__lore-summary">背景与带教</summary>
+        <div class="career-script__lore-body">
+          <p class="career-script__chapter-scene">{{ selectedChapter.scene }}</p>
+          <p v-if="selectedChapter.goal" class="career-script__chapter-goal">
+            <strong>目标</strong> {{ selectedChapter.goal }}
+          </p>
+          <blockquote v-if="selectedChapter.mentor" class="career-script__mentor">
+            <span class="career-script__mentor-avatar">{{ selectedChapter.mentor.avatar }}</span>
+            <div class="career-script__mentor-body">
+              <cite class="career-script__mentor-from">{{ selectedChapter.mentor.from }}</cite>
+              <p>{{ selectedChapter.mentor.text }}</p>
+            </div>
+          </blockquote>
         </div>
+      </details>
+
+      <div v-if="!selectedChapter.locked" class="career-script__beats">
+        <template v-for="(beat, index) in selectedChapter.beats" :key="`${selectedChapter.id}-${index}`">
+          <p v-if="beat.type === 'project'" class="career-script__beat-label">
+            {{ projects[beat.projectId]?.name }}
+          </p>
+          <div
+            v-if="beat.type === 'project' && immersionForBeat(beat)?.total"
+            class="career-script__immersion-row"
+          >
+            <button
+              v-for="item in immersionForBeat(beat).items"
+              :key="item.key"
+              type="button"
+              class="career-script__immersion-chip"
+              :class="{
+                'career-script__immersion-chip--done': item.done,
+                'career-script__immersion-chip--locked':
+                  progressStore.getStatus(item.levelId) === 'locked',
+              }"
+              :aria-disabled="progressStore.getStatus(item.levelId) === 'locked' || undefined"
+              @click="openImmersion(item, item.levelId)"
+            >
+              {{ item.done ? '✓' : '▶' }} {{ item.label }}
+            </button>
+          </div>
+          <QuestPathMap :nodes="beatNodes(beat)" size="sm" />
+        </template>
       </div>
-    </details>
+    </article>
   </section>
 </template>

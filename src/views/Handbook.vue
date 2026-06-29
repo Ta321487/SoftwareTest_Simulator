@@ -35,9 +35,17 @@ import {
   filterPlaybooks,
 } from '../utils/handbook'
 import { getRecentTermIds, recordRecentTerm } from '../utils/handbookRecent'
+import { useProgressStore } from '../stores/progressStore'
+import {
+  isHandbookLevelLocked,
+  isPlaybookHandbookLocked,
+  isGlossaryHandbookLocked,
+  isDailyHandbookLocked,
+} from '../utils/handbookUnlock'
 
 const router = useRouter()
 const route = useRoute()
+const progressStore = useProgressStore()
 const { isMobile } = useMobileLayout()
 
 const viewMode = ref('notes')
@@ -256,22 +264,26 @@ function closeAllModals() {
 }
 
 function openEntry(entry) {
+  if (cardLocked('note', entry)) return
   closeAllModals()
   selectedEntry.value = entry
 }
 
 function openTerm(term) {
+  if (cardLocked('glossary', term)) return
   closeAllModals()
   selectedTerm.value = term
   recordRecentTerm(term.id)
 }
 
 function openPlaybook(pb) {
+  if (cardLocked('playbook', pb)) return
   closeAllModals()
   selectedPlaybook.value = pb
 }
 
 function openDaily(entry) {
+  if (cardLocked('daily', entry)) return
   closeAllModals()
   selectedDaily.value = entry
 }
@@ -287,8 +299,13 @@ function goToLevelFromEntry() {
 }
 
 function goToLevelFromTerm(levelId) {
+  if (isHandbookLevelLocked(levelId, progressStore)) return
   router.push('/level/' + levelId)
   closeModal()
+}
+
+function levelLinkLocked(levelId) {
+  return isHandbookLevelLocked(levelId, progressStore)
 }
 
 function openRelatedTerm(termId) {
@@ -307,6 +324,45 @@ function getTermCategory(term) {
 
 function getPlaybookCat(pb) {
   return getPlaybookCategory(pb?.category)
+}
+
+function cardLocked(kind, item) {
+  if (kind === 'note') return isHandbookLevelLocked(item.levelId, progressStore)
+  if (kind === 'playbook') return isPlaybookHandbookLocked(item, progressStore)
+  if (kind === 'glossary') return isGlossaryHandbookLocked(item, progressStore)
+  if (kind === 'daily') return isDailyHandbookLocked(progressStore)
+  return false
+}
+
+function onHandbookCardClick(kind, item, opener) {
+  if (cardLocked(kind, item)) return
+  opener(item)
+}
+
+function noteCardSummary(entry) {
+  if (cardLocked('note', entry)) return `通关 #${entry.levelId} 后解锁`
+  return getHandbookBlurb(entry)
+}
+
+function playbookCardSummary(pb) {
+  if (cardLocked('playbook', pb)) {
+    const id = pb.relatedLevelIds?.[0]
+    return id ? `通关 #${id} 等关联关卡后解锁` : '通关相关关卡后解锁'
+  }
+  return getPlaybookBlurb(pb)
+}
+
+function glossaryCardSummary(term) {
+  if (cardLocked('glossary', term)) {
+    const id = term.relatedLevelIds?.[0]
+    return id ? `通关 #${id} 等关联关卡后解锁` : '通关相关关卡后解锁'
+  }
+  return getGlossaryBlurb(term)
+}
+
+function dailyCardSummary(entry) {
+  if (cardLocked('daily', entry)) return '完成第 5 关「登录收官」后解锁每日特训'
+  return getHandbookBlurb(entry)
 }
 
 function openEntryByLevelId(levelId) {
@@ -567,13 +623,15 @@ watch(allEntries, () => {
                 :key="term.id"
                 type="button"
                 class="handbook__card handbook__card--glossary"
+                :class="{ 'handbook__card--locked': cardLocked('glossary', term) }"
+                :aria-disabled="cardLocked('glossary', term) || undefined"
                 @click="openTerm(term)"
               >
                 <span class="handbook__card-phase">
                   {{ getTermCategory(term)?.icon }} {{ getTermCategory(term)?.name }}
                 </span>
                 <h3 class="handbook__card-title">{{ term.term }}</h3>
-                <p class="handbook__card-summary">{{ getGlossaryBlurb(term) }}</p>
+                <p class="handbook__card-summary">{{ glossaryCardSummary(term) }}</p>
                 <span class="handbook__card-more">展开词条 →</span>
               </button>
             </div>
@@ -595,7 +653,11 @@ watch(allEntries, () => {
                 :key="entry.levelId"
                 type="button"
                 class="handbook__card"
-                :class="`handbook__card--${entry.phaseId}`"
+                :class="[
+                  `handbook__card--${entry.phaseId}`,
+                  { 'handbook__card--locked': cardLocked('note', entry) },
+                ]"
+                :aria-disabled="cardLocked('note', entry) || undefined"
                 @click="openEntry(entry)"
               >
                 <span class="handbook__card-phase"
@@ -603,7 +665,7 @@ watch(allEntries, () => {
                 >
                 <span class="handbook__card-id">#{{ entry.levelId }}</span>
                 <h3 class="handbook__card-title">{{ entry.title }}</h3>
-                <p class="handbook__card-summary">{{ getHandbookBlurb(entry) }}</p>
+                <p class="handbook__card-summary">{{ noteCardSummary(entry) }}</p>
                 <span class="handbook__card-more">展开笔记 →</span>
               </button>
             </div>
@@ -625,13 +687,15 @@ watch(allEntries, () => {
                 :key="pb.id"
                 type="button"
                 class="handbook__card handbook__card--playbook"
+                :class="{ 'handbook__card--locked': cardLocked('playbook', pb) }"
+                :aria-disabled="cardLocked('playbook', pb) || undefined"
                 @click="openPlaybook(pb)"
               >
                 <span class="handbook__card-phase">
                   {{ getPlaybookCat(pb)?.icon }} {{ getPlaybookCat(pb)?.name }}
                 </span>
                 <h3 class="handbook__card-title">{{ pb.icon }} {{ pb.title }}</h3>
-                <p class="handbook__card-summary">{{ getPlaybookBlurb(pb) }}</p>
+                <p class="handbook__card-summary">{{ playbookCardSummary(pb) }}</p>
                 <span class="handbook__card-more">展开套路 →</span>
               </button>
             </div>
@@ -653,11 +717,13 @@ watch(allEntries, () => {
                 :key="entry.key"
                 type="button"
                 class="handbook__card handbook__card--daily"
+                :class="{ 'handbook__card--locked': cardLocked('daily', entry) }"
+                :aria-disabled="cardLocked('daily', entry) || undefined"
                 @click="openDaily(entry)"
               >
                 <span class="handbook__card-phase">📅 每日特训</span>
                 <h3 class="handbook__card-title">{{ entry.title }}</h3>
-                <p class="handbook__card-summary">{{ entry.summary }}</p>
+                <p class="handbook__card-summary">{{ dailyCardSummary(entry) }}</p>
                 <span class="handbook__card-more">展开心得 →</span>
               </button>
             </div>
@@ -691,13 +757,15 @@ watch(allEntries, () => {
               :key="pb.id"
               type="button"
               class="handbook__card handbook__card--playbook"
+              :class="{ 'handbook__card--locked': cardLocked('playbook', pb) }"
+              :aria-disabled="cardLocked('playbook', pb) || undefined"
               @click="openPlaybook(pb)"
             >
               <span class="handbook__card-phase">
                 {{ getPlaybookCat(pb)?.icon }} {{ getPlaybookCat(pb)?.name }}
               </span>
               <h3 class="handbook__card-title">{{ pb.icon }} {{ pb.title }}</h3>
-              <p class="handbook__card-summary">{{ getPlaybookBlurb(pb) }}</p>
+              <p class="handbook__card-summary">{{ playbookCardSummary(pb) }}</p>
               <span class="handbook__card-more">展开套路 →</span>
             </button>
           </div>
@@ -730,11 +798,13 @@ watch(allEntries, () => {
                 :key="pb.id"
                 type="button"
                 class="handbook__card handbook__card--playbook"
+                :class="{ 'handbook__card--locked': cardLocked('playbook', pb) }"
+                :aria-disabled="cardLocked('playbook', pb) || undefined"
                 @click="openPlaybook(pb)"
               >
                 <span class="handbook__card-phase">{{ pb.icon }} 套路</span>
                 <h3 class="handbook__card-title">{{ pb.title }}</h3>
-                <p class="handbook__card-summary">{{ getPlaybookBlurb(pb) }}</p>
+                <p class="handbook__card-summary">{{ playbookCardSummary(pb) }}</p>
                 <span class="handbook__card-more">展开 →</span>
               </button>
             </div>
@@ -756,13 +826,15 @@ watch(allEntries, () => {
                 :key="term.id"
                 type="button"
                 class="handbook__card handbook__card--glossary"
+                :class="{ 'handbook__card--locked': cardLocked('glossary', term) }"
+                :aria-disabled="cardLocked('glossary', term) || undefined"
                 @click="openTerm(term)"
               >
                 <span class="handbook__card-phase">
                   {{ getTermCategory(term)?.icon }} {{ getTermCategory(term)?.name }}
                 </span>
                 <h3 class="handbook__card-title">{{ term.term }}</h3>
-                <p class="handbook__card-summary">{{ getGlossaryBlurb(term) }}</p>
+                <p class="handbook__card-summary">{{ glossaryCardSummary(term) }}</p>
                 <span class="handbook__card-more">展开词条 →</span>
               </button>
             </div>
@@ -784,7 +856,11 @@ watch(allEntries, () => {
                 :key="entry.levelId"
                 type="button"
                 class="handbook__card"
-                :class="`handbook__card--${entry.phaseId}`"
+                :class="[
+                  `handbook__card--${entry.phaseId}`,
+                  { 'handbook__card--locked': cardLocked('note', entry) },
+                ]"
+                :aria-disabled="cardLocked('note', entry) || undefined"
                 @click="openEntry(entry)"
               >
                 <span class="handbook__card-phase"
@@ -792,7 +868,7 @@ watch(allEntries, () => {
                 >
                 <span class="handbook__card-id">#{{ entry.levelId }}</span>
                 <h3 class="handbook__card-title">{{ entry.title }}</h3>
-                <p class="handbook__card-summary">{{ getHandbookBlurb(entry) }}</p>
+                <p class="handbook__card-summary">{{ noteCardSummary(entry) }}</p>
                 <span class="handbook__card-more">展开笔记 →</span>
               </button>
             </div>
@@ -824,11 +900,13 @@ watch(allEntries, () => {
               :key="entry.key"
               type="button"
               class="handbook__card handbook__card--daily"
+              :class="{ 'handbook__card--locked': cardLocked('daily', entry) }"
+              :aria-disabled="cardLocked('daily', entry) || undefined"
               @click="openDaily(entry)"
             >
               <span class="handbook__card-phase">📅 每日特训</span>
               <h3 class="handbook__card-title">{{ entry.title }}</h3>
-              <p class="handbook__card-summary">{{ entry.summary }}</p>
+              <p class="handbook__card-summary">{{ dailyCardSummary(entry) }}</p>
               <span class="handbook__card-more">展开心得 →</span>
             </button>
           </div>
@@ -849,6 +927,8 @@ watch(allEntries, () => {
               :key="term.id"
               type="button"
               class="handbook__card handbook__card--glossary"
+              :class="{ 'handbook__card--locked': cardLocked('glossary', term) }"
+              :aria-disabled="cardLocked('glossary', term) || undefined"
               @click="openTerm(term)"
             >
               <span class="handbook__card-phase">
@@ -858,7 +938,7 @@ watch(allEntries, () => {
               <p v-if="term.aliases?.length" class="handbook__card-aliases">
                 {{ term.aliases.slice(0, 3).join(' · ') }}
               </p>
-              <p class="handbook__card-summary">{{ getGlossaryBlurb(term) }}</p>
+              <p class="handbook__card-summary">{{ glossaryCardSummary(term) }}</p>
               <span class="handbook__card-more">展开词条 →</span>
             </button>
           </div>
@@ -882,13 +962,17 @@ watch(allEntries, () => {
               :key="entry.levelId"
               type="button"
               class="handbook__card"
-              :class="`handbook__card--${entry.phaseId}`"
+              :class="[
+                `handbook__card--${entry.phaseId}`,
+                { 'handbook__card--locked': cardLocked('note', entry) },
+              ]"
+              :aria-disabled="cardLocked('note', entry) || undefined"
               @click="openEntry(entry)"
             >
               <span class="handbook__card-phase">{{ entry.phaseIcon }} {{ entry.phaseName }}</span>
               <span class="handbook__card-id">#{{ entry.levelId }}</span>
               <h3 class="handbook__card-title">{{ entry.title }}</h3>
-              <p class="handbook__card-summary">{{ getHandbookBlurb(entry) }}</p>
+              <p class="handbook__card-summary">{{ noteCardSummary(entry) }}</p>
               <span class="handbook__card-more">展开笔记 →</span>
             </button>
           </div>
@@ -1043,6 +1127,8 @@ watch(allEntries, () => {
                 :key="levelId"
                 type="button"
                 class="handbook-modal__link-chip"
+                :class="{ 'handbook-modal__link-chip--locked': levelLinkLocked(levelId) }"
+                :aria-disabled="levelLinkLocked(levelId) || undefined"
                 @click="goToLevelFromTerm(levelId)"
               >
                 #{{ levelId }} {{ getLevelTitle(levelId) }}
@@ -1130,6 +1216,8 @@ watch(allEntries, () => {
                 :key="levelId"
                 type="button"
                 class="handbook-modal__link-chip"
+                :class="{ 'handbook-modal__link-chip--locked': levelLinkLocked(levelId) }"
+                :aria-disabled="levelLinkLocked(levelId) || undefined"
                 @click="goToLevelFromTerm(levelId)"
               >
                 #{{ levelId }} {{ getLevelTitle(levelId) }}

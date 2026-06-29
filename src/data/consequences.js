@@ -11,6 +11,13 @@ const MISTAKE_SIM_TYPES = new Set([
   'apiclient',
   'terminal',
   'packet',
+  'sqlclient',
+  'redis',
+  'cipipeline',
+  'mockserver',
+  'apmtrace',
+  'gitrelease',
+  'mqinbox',
 ])
 
 export function shouldRecordMistake(simType) {

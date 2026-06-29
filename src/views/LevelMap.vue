@@ -20,13 +20,22 @@ import { getNextAchievementHint } from '../utils/achievementProgress'
 import ThemeToggle from '../components/ThemeToggle.vue'
 import AppNavDock from '../components/AppNavDock.vue'
 import { useMobileLayout } from '../composables/useMobileLayout'
-import { scrollToHomeHash } from '../utils/homeScroll'
 
 const router = useRouter()
 const route = useRoute()
 const progressStore = useProgressStore()
 const onboardingRef = ref(null)
 const { isMobile } = useMobileLayout()
+const homeTab = ref('quest')
+
+const HOME_TABS = [
+  { id: 'quest', icon: '⚔️', label: '任务' },
+  { id: 'career', icon: '📖', label: '剧本' },
+  { id: 'side', icon: '🎬', label: '番外', count: () => `${progressStore.sideCompletedCount}/${sideLevels.length}` },
+  { id: 'map', icon: '🗺️', label: '关卡图' },
+  { id: 'profile', icon: '👤', label: '档案' },
+  { id: 'achievements', icon: '🏆', label: '成就' },
+]
 
 const allCompleted = computed(
   () => progressStore.completedLevelIds.length >= progressStore.totalLevelCount
@@ -98,10 +107,58 @@ function showOnboarding() {
   onboardingRef.value?.reopen?.()
 }
 
-onMounted(() => scrollToHomeHash(route.hash))
+function setHomeTab(id) {
+  homeTab.value = id
+  const hashMap = {
+    quest: '',
+    career: '#home-career',
+    side: '#home-side',
+    map: '#home-phases',
+    profile: '#home-progress',
+    achievements: '#home-achievements',
+  }
+  const hash = hashMap[id] || ''
+  if (route.hash !== hash) {
+    router.replace({ hash })
+  }
+}
+
+function sectionVisible(tabId) {
+  if (tabId === 'quest') return homeTab.value === 'quest'
+  return homeTab.value === tabId
+}
+
+onMounted(() => {
+  const hashTab = {
+    '#home-career': 'career',
+    '#home-side': 'side',
+    '#home-phases': 'map',
+    '#home-progress': 'profile',
+    '#home-achievements': 'achievements',
+  }
+  if (!route.hash) {
+    homeTab.value = 'quest'
+  } else if (hashTab[route.hash]) {
+    homeTab.value = hashTab[route.hash]
+  }
+})
+
 watch(
   () => route.hash,
-  (hash) => scrollToHomeHash(hash)
+  (hash) => {
+    const hashTab = {
+      '#home-career': 'career',
+      '#home-side': 'side',
+      '#home-phases': 'map',
+      '#home-progress': 'profile',
+      '#home-achievements': 'achievements',
+    }
+    if (!hash) {
+      homeTab.value = 'quest'
+      return
+    }
+    if (hashTab[hash]) homeTab.value = hashTab[hash]
+  }
 )
 </script>
 
@@ -128,251 +185,249 @@ watch(
       <AppNavDock current="home" />
 
       <main class="workbench__main home-map__main">
-        <section class="home-map__hero">
-          <div class="home-map__hero-head">
-            <div class="home-map__hero-rank-pill">
-              <span class="home-map__hero-rank-icon" aria-hidden="true">{{ rank.icon }}</span>
-              <span>{{ rank.title }}</span>
+        <nav class="game-tabs" role="tablist" aria-label="首页分区">
+          <button
+            v-for="tab in HOME_TABS"
+            :key="tab.id"
+            type="button"
+            role="tab"
+            class="game-tabs__btn"
+            :class="{ 'game-tabs__btn--active': homeTab === tab.id }"
+            :aria-selected="homeTab === tab.id"
+            @click="setHomeTab(tab.id)"
+          >
+            <span class="game-tabs__icon" aria-hidden="true">{{ tab.icon }}</span>
+            {{ tab.label }}
+            <span v-if="tab.count" class="game-tabs__count">{{ tab.count() }}</span>
+          </button>
+        </nav>
+
+        <div v-show="sectionVisible('quest')" class="game-section game-section--quest">
+          <section class="home-map__hero quest-panel">
+            <span class="quest-panel__badge">▸ 当前任务</span>
+
+            <div class="home-map__hero-head">
+              <div class="home-map__hero-rank-pill">
+                <span class="home-map__hero-rank-icon" aria-hidden="true">{{ rank.icon }}</span>
+                <span>{{ rank.title }}</span>
+              </div>
+              <p class="home-map__hero-rank-meta">
+                XP {{ progressStore.totalXp }} · ★ {{ progressStore.totalStars }} · 主线
+                {{ progressStore.mainCompletedCount }}/{{ progressStore.totalLevelCount }}
+              </p>
             </div>
-            <p class="home-map__hero-rank-meta">
-              XP {{ progressStore.totalXp }} · ★ {{ progressStore.totalStars }} · 主线
-              {{ progressStore.mainCompletedCount }}/{{ progressStore.totalLevelCount }}
+
+            <p v-if="workBrief.chapterTitle" class="home-map__hero-tag">
+              {{ workBrief.chapterTitle }}
             </p>
-          </div>
-
-          <p v-if="workBrief.chapterTitle" class="home-map__hero-tag">
-            {{ workBrief.chapterTitle }}
-          </p>
-          <h2 class="home-map__hero-title">
-            <template v-if="workBrief.complete">🎉 {{ workBrief.title }}</template>
-            <template v-else>
-              今日任务
-              <span v-if="workBrief.beatLabel" class="home-map__hero-beat"
-                >· {{ workBrief.beatLabel }}</span
-              >
-              ：{{ workBrief.title }}
-            </template>
-          </h2>
-          <p class="home-map__hero-desc">{{ workBrief.desc }}</p>
-
-          <div class="home-map__hero-foot">
-            <div class="home-map__hero-metrics">
-              <div v-if="rankProgress.next" class="home-map__hero-xp">
-                <div class="home-map__hero-xp-head">
-                  <span>升职进度</span>
-                  <span class="home-map__hero-xp-target">
-                    {{ rankProgress.next.icon }} {{ rankProgress.next.title }}
-                  </span>
-                </div>
-                <div
-                  class="home-map__hero-xp-bar"
-                  role="progressbar"
-                  :aria-valuenow="rankProgress.percent"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
+            <h2 class="home-map__hero-title">
+              <template v-if="workBrief.complete">🎉 {{ workBrief.title }}</template>
+              <template v-else>
+                <template v-if="progressStore.firstAvailableLevelId">
+                  #{{ progressStore.firstAvailableLevelId }}
+                </template>
+                {{ workBrief.title }}
+                <span v-if="workBrief.beatLabel" class="home-map__hero-beat"
+                  >· {{ workBrief.beatLabel }}</span
                 >
-                  <div
-                    class="home-map__hero-xp-fill"
-                    :style="{ width: `${Math.max(rankProgress.percent, 2)}%` }"
-                  />
-                </div>
-                <p class="home-map__hero-xp-meta">
-                  <span>{{ progressStore.totalXp }} / {{ rankProgress.next.minXp }} XP</span>
-                  <span class="home-map__hero-xp-need">还差 {{ rankProgress.xpToNext }} XP</span>
-                </p>
-              </div>
-              <p v-else class="home-map__hero-xp-max">🛡️ 已达最高职级 · 质量 Owner</p>
+              </template>
+            </h2>
+            <p class="home-map__hero-desc">{{ workBrief.desc }}</p>
 
-              <div v-if="nextAchievement" class="home-map__hero-achievement">
-                <div class="home-map__hero-achievement-head">
-                  <span>🏆 {{ nextAchievement.icon }} {{ nextAchievement.title }}</span>
-                  <span class="home-map__hero-achievement-meta"
-                    >{{ nextAchievement.current }}/{{ nextAchievement.target }}</span
-                  >
-                </div>
-                <div class="home-map__hero-achievement-bar">
+            <div class="home-map__hero-foot">
+              <div class="home-map__hero-metrics">
+                <div v-if="rankProgress.next" class="home-map__hero-xp">
+                  <div class="home-map__hero-xp-head">
+                    <span>升职进度</span>
+                    <span class="home-map__hero-xp-target">
+                      {{ rankProgress.next.icon }} {{ rankProgress.next.title }}
+                    </span>
+                  </div>
                   <div
-                    class="home-map__hero-achievement-fill"
-                    :style="{ width: `${Math.max(nextAchievement.percent, 2)}%` }"
-                  />
+                    class="home-map__hero-xp-bar"
+                    role="progressbar"
+                    :aria-valuenow="rankProgress.percent"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  >
+                    <div
+                      class="home-map__hero-xp-fill"
+                      :style="{ width: `${Math.max(rankProgress.percent, 2)}%` }"
+                    />
+                  </div>
+                  <p class="home-map__hero-xp-meta">
+                    <span>{{ progressStore.totalXp }} / {{ rankProgress.next.minXp }} XP</span>
+                    <span class="home-map__hero-xp-need">还差 {{ rankProgress.xpToNext }} XP</span>
+                  </p>
                 </div>
-                <p class="home-map__hero-achievement-desc">{{ nextAchievement.desc }}</p>
+                <p v-else class="home-map__hero-xp-max">🛡️ 已达最高职级 · 质量 Owner</p>
+
+                <div v-if="nextAchievement" class="home-map__hero-achievement">
+                  <div class="home-map__hero-achievement-head">
+                    <span>🏆 {{ nextAchievement.icon }} {{ nextAchievement.title }}</span>
+                    <span class="home-map__hero-achievement-meta"
+                      >{{ nextAchievement.current }}/{{ nextAchievement.target }}</span
+                    >
+                  </div>
+                  <div class="home-map__hero-achievement-bar">
+                    <div
+                      class="home-map__hero-achievement-fill"
+                      :style="{ width: `${Math.max(nextAchievement.percent, 2)}%` }"
+                    />
+                  </div>
+                  <p class="home-map__hero-achievement-desc">{{ nextAchievement.desc }}</p>
+                </div>
+              </div>
+
+              <div
+                v-if="!allCompleted && progressStore.firstAvailableLevelId"
+                class="home-map__hero-cta"
+              >
+                <button
+                  type="button"
+                  class="level-map__btn level-map__btn--primary level-map__btn--game quest-panel__play home-map__hero-cta-btn"
+                  @click="continueChallenge"
+                >
+                  开始任务
+                  <span v-if="nextLevelXp" class="home-map__action-xp">+{{ nextLevelXp }} XP</span>
+                  →
+                </button>
               </div>
             </div>
 
-            <div
-              v-if="!allCompleted && progressStore.firstAvailableLevelId"
-              class="home-map__hero-cta"
-            >
-              <button
-                type="button"
-                class="level-map__btn level-map__btn--primary home-map__hero-cta-btn"
-                @click="continueChallenge"
+            <p v-if="reinforcementHint" class="home-map__hero-reinforce">
+              有空可重温
+              <router-link
+                :to="`/level/${reinforcementHint.levelId}`"
+                class="home-map__hero-reinforce-link"
               >
-                开始今日任务
-                <span v-if="nextLevelXp" class="home-map__action-xp">+{{ nextLevelXp }} XP</span>
-                →
+                #{{ reinforcementHint.levelId }} {{ reinforcementHint.title }}
+              </router-link>
+              <span class="home-map__hero-reinforce-reason">（{{ reinforcementHint.reason }}）</span>
+            </p>
+          </section>
+
+          <div class="home-map__actions">
+            <div class="home-map__action-btns">
+              <button type="button" class="level-map__btn level-map__btn--ghost" @click="resetProgress">
+                重置进度
               </button>
             </div>
           </div>
 
-          <p v-if="reinforcementHint" class="home-map__hero-reinforce">
-            有空可重温
-            <router-link
-              :to="`/level/${reinforcementHint.levelId}`"
-              class="home-map__hero-reinforce-link"
-            >
-              #{{ reinforcementHint.levelId }} {{ reinforcementHint.title }}
-            </router-link>
-            <span class="home-map__hero-reinforce-reason">（{{ reinforcementHint.reason }}）</span>
-          </p>
-        </section>
-
-        <div class="home-map__actions">
-          <div class="home-map__action-btns">
-            <button
-              v-if="!allCompleted && progressStore.firstAvailableLevelId"
-              type="button"
-              class="level-map__btn level-map__btn--primary home-map__action-primary--mobile"
-              @click="continueChallenge"
-            >
-              开始今日任务
-              <span v-if="nextLevelXp" class="home-map__action-xp">+{{ nextLevelXp }} XP</span>
-              →
-            </button>
+          <article
+            v-if="dailyStatus !== 'locked'"
+            class="quest-daily"
+            :class="{ 'quest-daily--done': dailyStatus === 'completed' }"
+          >
+            <div class="quest-daily__body">
+              <span class="quest-daily__badge">📅 每日特训</span>
+              <h3 class="quest-daily__title">{{ dailyTitle }}</h3>
+              <p v-if="dailyFocus" class="quest-daily__meta">{{ dailyFocus }}</p>
+              <p v-else class="quest-daily__meta">
+                <span v-if="progressStore.dailyStreak">🔥 连续 {{ progressStore.dailyStreak }} 天 · </span>
+                <span v-if="dailyStatus === 'completed'">今日已完成</span>
+                <span v-else>通关 +{{ dailyXp }} XP</span>
+              </p>
+            </div>
             <button
               type="button"
-              class="level-map__btn level-map__btn--ghost"
-              @click="resetProgress"
-            >
-              重置进度
-            </button>
-          </div>
-          <div v-if="dailyStatus !== 'locked'" class="home-map__daily-wrap home-map__daily--mobile">
-            <button
-              type="button"
-              class="level-map__btn level-map__btn--ghost home-map__daily-chip"
-              :class="{ 'home-map__daily-chip--done': dailyStatus === 'completed' }"
+              class="quest-daily__btn"
               :disabled="dailyStatus === 'completed'"
               @click="router.push('/level/' + DAILY_LEVEL_ID)"
             >
-              <template v-if="dailyStatus === 'completed'">📅 今日已完成 · 明日刷新</template>
-              <template v-else>
-                📅 每日特训
-                <span class="home-map__action-xp">+{{ dailyXp }} XP</span>
-                <span v-if="progressStore.dailyStreak" class="home-map__streak"
-                  >🔥 {{ progressStore.dailyStreak }}</span
-                >
-              </template>
+              {{ dailyStatus === 'completed' ? '明日刷新' : '开始 →' }}
             </button>
-            <p v-if="dailyFocus" class="home-map__daily-focus">{{ dailyFocus }}</p>
+          </article>
+          <p v-else class="home-map__daily-locked">
+            📅 每日特训 · 完成第 5 关「登录收官」后解锁
+          </p>
+        </div>
+
+        <div
+          v-show="sectionVisible('career')"
+          id="home-career"
+          class="game-section game-section--career quest-log"
+        >
+          <header class="quest-log__head">
+            <span class="quest-log__head-icon">📖</span>
+            职场剧本
+            <span v-if="workBrief.chapterTitle" class="home-fold__summary-meta">
+              · {{ workBrief.chapterTitle }}
+            </span>
+          </header>
+          <div class="quest-log__body">
+            <CareerScript />
           </div>
         </div>
 
-        <article
-          v-if="dailyStatus !== 'locked'"
-          class="home-map__daily-banner home-map__daily--desktop"
-          :class="{ 'home-map__daily-banner--done': dailyStatus === 'completed' }"
-        >
-          <div class="home-map__daily-banner-body">
-            <span class="home-map__daily-banner-badge">每日特训</span>
-            <h3 class="home-map__daily-banner-title">{{ dailyTitle }}</h3>
-            <p v-if="dailyFocus" class="home-map__daily-banner-focus">{{ dailyFocus }}</p>
-            <p class="home-map__daily-banner-meta">
-              <span v-if="progressStore.dailyStreak" class="home-map__streak"
-                >🔥 连续 {{ progressStore.dailyStreak }} 天</span
-              >
-              <span v-if="dailyStatus === 'completed'">今日已完成 · 明日刷新</span>
-              <span v-else-if="dailyStatus === 'available'" class="home-map__xp-hint"
-                >通关 +{{ dailyXp }} XP</span
-              >
-            </p>
+        <div v-show="sectionVisible('side')" id="home-side" class="game-section game-section--side quest-log">
+          <header class="quest-log__head">
+            <span class="quest-log__head-icon">🎬</span>
+            番外 & 特训
+            <span class="game-tabs__count"
+              >{{ progressStore.sideCompletedCount }}/{{ sideLevels.length }}</span
+            >
+          </header>
+          <div class="quest-log__body">
+            <SideQuestHub compact />
           </div>
-          <button
-            type="button"
-            class="home-map__daily-banner-btn"
-            :disabled="dailyStatus === 'completed'"
-            @click="router.push('/level/' + DAILY_LEVEL_ID)"
-          >
-            {{ dailyStatus === 'completed' ? '明日刷新' : '开始 →' }}
-          </button>
-        </article>
-        <p v-else class="home-map__daily-locked home-map__daily--desktop">
-          📅 每日特训 · 完成第 5 关「登录收官」后解锁
-        </p>
+        </div>
 
-        <p v-if="isMobile" class="home-map__fold-hint">
-          下方可展开：<strong>职场剧本</strong>、<strong>番外特训</strong>、<strong
-            >我的进度</strong
-          >
-        </p>
+        <div v-show="sectionVisible('map')" id="home-phases" class="game-section game-section--map quest-log">
+          <header class="quest-log__head">
+            <span class="quest-log__head-icon">🗺️</span>
+            关卡地图
+          </header>
+          <div class="quest-log__body">
+            <CareerMap />
+          </div>
+        </div>
 
-        <details
+        <div
+          v-show="sectionVisible('profile')"
           id="home-progress"
-          class="home-fold home-fold--mobile-collapsible home-fold--progress"
-          :open="isMobile ? undefined : true"
+          class="game-section game-section--profile quest-log"
         >
-          <summary class="home-fold__summary">我的进度 · 分享成绩 · 存档</summary>
-          <div class="home-fold__body">
+          <header class="quest-log__head">
+            <span class="quest-log__head-icon">👤</span>
+            玩家档案
+          </header>
+          <div class="quest-log__body">
             <PlayerDashboard compact />
             <ProgressSettings @show-onboarding="showOnboarding" />
           </div>
-        </details>
+        </div>
 
-        <details
-          id="home-career"
-          class="home-fold home-fold--mobile-collapsible home-fold--career"
-          :open="isMobile ? undefined : true"
-        >
-          <summary class="home-fold__summary">
-            职场剧本
-            <span v-if="isMobile && workBrief.chapterTitle" class="home-fold__summary-meta">
-              {{ workBrief.chapterTitle }}
-            </span>
-          </summary>
-          <div class="home-fold__body">
-            <CareerScript />
-          </div>
-        </details>
-
-        <details
-          id="home-side"
-          class="home-fold home-fold--mobile-collapsible home-fold--side"
-          :open="isMobile ? undefined : true"
-        >
-          <summary class="home-fold__summary">
-            番外 & 每日特训（{{ progressStore.sideCompletedCount }}/{{ sideLevels.length }}）
-          </summary>
-          <div class="home-fold__body">
-            <SideQuestHub />
-          </div>
-        </details>
-
-        <details
-          id="home-phases"
-          class="home-fold home-fold--mobile-collapsible home-fold--phases"
-          :open="isMobile ? undefined : true"
-        >
-          <summary class="home-fold__summary">按阶段查全部关卡</summary>
-          <div class="home-fold__body">
-            <p class="home-map__projects-desc">
-              与上方剧本顺序一致，此处按备考 / 面试 / 笔试 / 入职 / 进阶分类浏览，方便查漏补缺。
-            </p>
-            <CareerMap />
-          </div>
-        </details>
-
-        <details
+        <div
+          v-show="sectionVisible('achievements')"
           id="home-achievements"
-          class="home-fold home-fold--mobile-collapsible home-fold--achievements"
-          :open="isMobile ? undefined : true"
+          class="game-section game-section--achievements quest-log"
         >
-          <summary class="home-fold__summary">成就墙</summary>
-          <div class="home-fold__body">
+          <header class="quest-log__head">
+            <span class="quest-log__head-icon">🏆</span>
+            成就墙
+          </header>
+          <div class="quest-log__body">
             <AchievementPanel class="home-map__achievements" />
           </div>
-        </details>
+        </div>
       </main>
     </div>
+
+    <footer
+      v-if="isMobile && !allCompleted && progressStore.firstAvailableLevelId"
+      class="game-playbar"
+    >
+      <div class="game-playbar__main">
+        <p class="game-playbar__label">当前任务</p>
+        <p class="game-playbar__title">
+          #{{ progressStore.firstAvailableLevelId }} {{ workBrief.title }}
+        </p>
+      </div>
+      <button type="button" class="game-playbar__btn" @click="continueChallenge">
+        开始 →
+      </button>
+    </footer>
   </div>
 </template>

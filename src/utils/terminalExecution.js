@@ -198,8 +198,6 @@ function executeFind(raw, level) {
 }
 
 function executeLs(raw, level) {
-  const norm = normalize(raw)
-  const path = norm.match(/(\/[\w./-]+)/)?.[1] || '.'
   const listing = level.lsListing?.length
     ? level.lsListing
     : [

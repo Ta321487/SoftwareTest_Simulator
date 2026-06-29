@@ -84,7 +84,7 @@ function toggleDockExpanded() {
             'app-mobile-dock__chip--active': activeLevelId === item.levelId,
             'app-mobile-dock__chip--locked': item.locked,
           }"
-          :disabled="item.locked"
+          :aria-disabled="item.locked || undefined"
           :title="item.locked ? item.lockReason : dockApps[item.simType]?.label"
           @click="!item.locked && emit('dock-change', item.levelId)"
         >

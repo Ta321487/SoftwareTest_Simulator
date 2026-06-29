@@ -215,6 +215,90 @@ export const sideDebriefs = {
     pitfalls: '只 ls 不看 -la；忽略 error.log 体积异常大。',
     workplace: 'SSH 登录后 habit：ls -la 日志目录 → 选文件 → tail/grep。',
   },
+  137: {
+    summary: '你用 SELECT 核对了 orders 表落库状态。',
+    why: '接口 200 不等于业务成功，灰盒测试要查 DB 验证 status。',
+    pitfalls: '只测接口不看库；WHERE 漏 order_id；用 UPDATE 改数据。',
+    workplace: '支付/订单：接口断言 + SELECT 核对 status 双保险。',
+  },
+  138: {
+    summary: '你查到了 users 表的 locked_until 锁定信息。',
+    why: '账号锁定逻辑最终落在 DB，和用户现象要对得上。',
+    pitfalls: '查错表；手机号条件写错；只看 fail_count 不看 locked_until。',
+    workplace: '登录锁定：页面现象 → grep 日志 → SELECT users 三件套。',
+  },
+  139: {
+    summary: '你用 GET 读取了 Session 键值。',
+    why: '掉线/登录态问题常查 session 是否还在 Redis。',
+    pitfalls: '键名拼错；查错 db；把 TTL 和 GET 搞混。',
+    workplace: 'Session 问题：GET session:… → 对照 Cookie/网关配置。',
+  },
+  140: {
+    summary: '你用 TTL 查看了验证码剩余秒数。',
+    why: '倒计时 Bug 要对比 Redis TTL 与前端展示是否一致。',
+    pitfalls: '用 GET 代替 TTL；键名漏手机号后缀。',
+    workplace: '验证码：TTL sms:code:手机号 vs UI 倒计时。',
+  },
+  141: {
+    summary: '你定位到 Integration 集成阶段失败。',
+    why: '集成/回归是测试门禁核心，编译红和集成红介入点不同。',
+    pitfalls: '只看 Build；Deploy skipped 误判；不读日志。',
+    workplace: 'CI 红了：先看哪 stage fail → 再读该 stage 日志。',
+  },
+  142: {
+    summary: '你从日志判断 Staging DB 不可达。',
+    why: 'Connection refused + JDBC 指向环境配置，不是用例断言问题。',
+    pitfalls: '怪用例写错；忽略 Connection refused 关键字。',
+    workplace: '集成失败：日志里 host/port/refused 优先查环境。',
+  },
+  143: {
+    summary: '你配置 Mock 回调返回 200 + success。',
+    why: '沙箱不稳定时 Mock 保进度，但要模拟真实成功语义。',
+    pitfalls: 'status 对但 body 不对；path 写错；不测就提交。',
+    workplace: '第三方挂了：Mock path/status/body 与真实契约对齐。',
+  },
+  144: {
+    summary: '你为 Mock 配置了 5000ms 延迟。',
+    why: '超时 UI 需要可控延迟，Mock delay 比改代码快。',
+    pitfalls: '忘记设 delay；delay 单位搞错；status 非 200。',
+    workplace: '超时场景：Mock delay + 前端 loading/超时文案联调。',
+  },
+  145: {
+    summary: '你点出了 MySQL 为最慢链路环节。',
+    why: '800ms · 66% 占比是典型 DB 瓶颈，别先优化 CDN。',
+    pitfalls: '选 Nginx/Gateway；不看占比只看绝对值错觉。',
+    workplace: 'APM：P99 高 → 点链路 → 优化占比最大段。',
+  },
+  146: {
+    summary: '你优先关注支付成功率下跌告警。',
+    why: '灰度夜核心链路成功率 > UI 像素级监控。',
+    pitfalls: '盯按钮圆角；忽略成功率曲线。',
+    workplace: '放量 checklist：支付/创建错误率 + CPU，UI 后补。',
+  },
+  147: {
+    summary: '你选对 hotfix 基准分支 release/v2.3.0。',
+    why: 'Hotfix 从与生产 tag 一致的 release 切，别从 main/feature。',
+    pitfalls: '从 main 切带入未发布代码；从 feature 切不稳定。',
+    workplace: '生产事故：release/当前生产 tag → hotfix → cherry-pick。',
+  },
+  148: {
+    summary: '你找到了含 TEST-1008 的修复 commit。',
+    why: '部署前核对 staging 是否含修复，看 message 里的 ticket。',
+    pitfalls: '只看最新 commit；忽略 chore/feat 误选。',
+    workplace: '发布前：git log 搜 TEST-xxxx 或 fix 关键词。',
+  },
+  149: {
+    summary: '你在 MQ 里定位了 orderId=8821 的成功回调。',
+    why: '支付成功订单未更新，常查 callback 消息是否进队/消费。',
+    pitfalls: '选 order.created；选 FAIL 消息；漏看 orderId。',
+    workplace: '异步：队列 payload 的 orderId/status 与 DB 交叉验证。',
+  },
+  150: {
+    summary: '你从测试收件箱读取了最新验证码。',
+    why: '自动化/联调需要短信码，测试网关收件箱是常用手段。',
+    pitfalls: '用过期短信；位数抄错；取旧码不取最新。',
+    workplace: '测试环境：短信网关 Mock 收件箱 + 脚本读码。',
+  },
 }
 
 export const dailyDebriefs = {

@@ -1,7 +1,8 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { simTypeLabels } from '../data/levels'
+import { dockApps } from '../data/projects'
 
 const props = defineProps({
   level: {
@@ -23,6 +24,8 @@ const statusConfig = {
   available: { icon: '▶️', label: '可挑战', className: 'status-available' },
   completed: { icon: '✅', label: '已通关', className: 'status-completed' },
 }
+
+const simIcon = computed(() => dockApps[props.level.simType]?.icon || '📎')
 
 function showToast(message) {
   toast.value = message
@@ -56,13 +59,18 @@ function handleKeydown(event) {
     @click="handleClick"
     @keydown="handleKeydown"
   >
-    <div class="level-card__header">
-      <span class="level-card__index">#{{ level.id }}</span>
-      <span class="level-card__status">
-        {{ statusConfig[status].icon }} {{ statusConfig[status].label }}
-      </span>
+    <div class="level-card__top">
+      <span class="level-card__sim" aria-hidden="true">{{ simIcon }}</span>
+      <div class="level-card__meta">
+        <div class="level-card__header">
+          <span class="level-card__index">#{{ level.id }}</span>
+          <span class="level-card__status">
+            {{ statusConfig[status].icon }} {{ statusConfig[status].label }}
+          </span>
+        </div>
+        <h3 class="level-card__title">{{ level.title }}</h3>
+      </div>
     </div>
-    <h3 class="level-card__title">{{ level.title }}</h3>
     <p class="level-card__desc">{{ level.description }}</p>
     <div class="level-card__footer">
       <span class="level-card__xp">+{{ level.xpReward }} XP</span>

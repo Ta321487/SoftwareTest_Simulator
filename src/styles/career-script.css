@@ -314,7 +314,7 @@
 }
 
 .career-script__lore-summary {
-  display: none;
+  display: block;
   cursor: pointer;
   list-style: none;
   font-size: 0.78rem;

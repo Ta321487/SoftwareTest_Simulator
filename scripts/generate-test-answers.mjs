@@ -32,6 +32,27 @@ function fmtTerminal(level) {
   return level.correctCommand ? `\`${level.correctCommand}\`` : null
 }
 
+function fmtSql(level) {
+  if (level.simType === 'sqlclient' && level.correctQuery) {
+    return `\`${level.correctQuery}\``
+  }
+  return null
+}
+
+function fmtMock(level) {
+  if (level.simType !== 'mockserver') return null
+  const parts = [`path=${level.mockPath}`, `status=${level.mockStatus}`]
+  if (level.mockDelayMs != null) parts.push(`delay=${level.mockDelayMs}ms`)
+  if (level.mockBodyIncludes?.length) parts.push(`body 含 ${level.mockBodyIncludes.join('/')}`)
+  return parts.join(' · ')
+}
+
+function fmtMq(level) {
+  if (level.correctMessageId) return `消息 **${level.correctMessageId}**`
+  if (level.correctCode) return `验证码 **${level.correctCode}**`
+  return null
+}
+
 function fmtConfig(level) {
   return level.correctValue ? `${level.configKey || '配置项'} = \`${level.correctValue}\`` : null
 }
@@ -76,7 +97,14 @@ function answerBlock(level) {
   lines.push(`**类型**：${sim}`)
 
   const exact =
-    fmtChecks(level) || fmtClick(level) || fmtTerminal(level) || fmtConfig(level) || fmtCalc(level)
+    fmtChecks(level) ||
+    fmtClick(level) ||
+    fmtTerminal(level) ||
+    fmtSql(level) ||
+    fmtMock(level) ||
+    fmtMq(level) ||
+    fmtConfig(level) ||
+    fmtCalc(level)
 
   if (exact) {
     lines.push('', '**过关答案**：', `- ${exact}`)

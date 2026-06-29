@@ -19,6 +19,12 @@ describe('handbook', () => {
     expect(blurb).not.toMatch(/^你/)
   })
 
+  it('falls back to workplace when why is missing', () => {
+    const entry = { summary: '你完成了', workplace: '接到模糊 PRD 时先列维度' }
+    expect(getHandbookBlurb(entry)).toContain('维度')
+    expect(getHandbookBlurb(entry)).not.toMatch(/^你/)
+  })
+
   it('prefers explicit takeaway when present', () => {
     const entry = { takeaway: '先列维度再确认优先级', why: 'other', summary: '你完成了' }
     expect(getHandbookBlurb(entry)).toBe('先列维度再确认优先级')

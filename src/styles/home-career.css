@@ -242,9 +242,15 @@
     color var(--transition);
 }
 
-.career-map__tab:hover {
+.career-map__tab:hover:not([aria-disabled='true']):not(.career-map__tab--locked) {
   border-color: var(--btn-ghost-hover);
   color: var(--text-primary);
+}
+
+.career-map__tab--locked,
+.career-map__tab[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .career-map__tab--active {

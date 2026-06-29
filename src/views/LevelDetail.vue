@@ -568,6 +568,66 @@ const simProps = computed(() => {
       return {
         packetRequests: lv.packetRequests,
       }
+    case 'sqlclient':
+      return {
+        sqlHint: lv.sqlHint,
+        sqlTable: lv.sqlTable,
+        sqlSchema: lv.sqlSchema,
+        sqlMustInclude: lv.sqlMustInclude,
+        sqlMustIncludeAny: lv.sqlMustIncludeAny,
+        sqlResultRows: lv.sqlResultRows,
+        correctQuery: lv.correctQuery,
+      }
+    case 'redis':
+      return {
+        redisHint: lv.redisHint,
+        redisStore: lv.redisStore,
+        redisKeys: lv.redisKeys,
+        correctCommand: lv.correctCommand,
+        redisSuccessMsg: lv.redisSuccessMsg,
+      }
+    case 'cipipeline':
+      return {
+        pipelineStages: lv.pipelineStages,
+        pipelineLog: lv.pipelineLog,
+        correctStage: lv.correctStage,
+        causeOptions: lv.causeOptions,
+        correctCause: lv.correctCause,
+      }
+    case 'mockserver':
+      return {
+        mockPath: lv.mockPath,
+        mockStatus: lv.mockStatus,
+        mockBodyIncludes: lv.mockBodyIncludes,
+        mockDelayMs: lv.mockDelayMs,
+        mockHint: lv.mockHint,
+        defaultBody: lv.defaultBody,
+      }
+    case 'apmtrace':
+      return {
+        traceTitle: lv.traceTitle,
+        traceNodes: lv.traceNodes,
+        apmMetrics: lv.apmMetrics,
+        correctClick: lv.correctClick,
+        apmMode: lv.apmMode || 'trace',
+      }
+    case 'gitrelease':
+      return {
+        gitTitle: lv.gitTitle,
+        gitOptions: lv.gitOptions,
+        gitCommits: lv.gitCommits,
+        correctClick: lv.correctClick,
+        gitMode: lv.gitMode || 'branch',
+      }
+    case 'mqinbox':
+      return {
+        inboxMode: lv.inboxMode || 'mq',
+        mqMessages: lv.mqMessages,
+        smsMessages: lv.smsMessages,
+        correctMessageId: lv.correctMessageId,
+        correctCode: lv.correctCode,
+        mqHint: lv.mqHint,
+      }
     default:
       return {}
   }
@@ -930,12 +990,21 @@ function handleSimSubmit(data) {
     jiraInvalidFields.value = result.invalidFields || []
   }
 
-  if (level.value.simType === 'terminal') {
+  if (level.value.simType === 'terminal' || level.value.simType === 'redis') {
     if (result.isPass) {
       simRef.value?.markSuccess?.()
       handlePass(data)
     } else {
       simRef.value?.markError?.()
+      handleFail(data, result)
+    }
+    return
+  }
+
+  if (level.value.simType === 'sqlclient') {
+    if (result.isPass) {
+      handlePass(data)
+    } else {
       handleFail(data, result)
     }
     return

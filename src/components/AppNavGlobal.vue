@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAppNav } from '../composables/useAppNav'
 
 const props = defineProps({
@@ -19,6 +20,7 @@ const props = defineProps({
 })
 
 const { mainLevelId, dailyOpen, dailyDone, goHome, goMain, goDaily, goHandbook } = useAppNav()
+const route = useRoute()
 
 const mainTaskActive = computed(
   () =>
@@ -34,8 +36,8 @@ const mainTaskActive = computed(
     <button
       type="button"
       class="workbench__dock-item app-tab"
-      :class="{ 'workbench__dock-item--active': current === 'home' }"
-      :disabled="current === 'home'"
+      :class="{ 'workbench__dock-item--active': current === 'home' && !route.hash }"
+      :disabled="current === 'home' && !route.hash"
       @click="goHome"
     >
       <span class="app-tab__icon-wrap">

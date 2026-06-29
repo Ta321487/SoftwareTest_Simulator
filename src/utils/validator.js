@@ -7,6 +7,11 @@ import {
 import { validateChatStructure } from './chatValidation'
 import { validateTemplateSubmission } from './templateValidation'
 import { validateTerminalCommand } from './terminalValidation'
+import { validateSqlQuery } from './sqlValidation'
+import { validateRedisCommand } from './redisValidation'
+import { validatePipelineSubmission } from './cipipelineValidation'
+import { validateMockServer } from './mockserverValidation'
+import { validateMqInbox } from './mqinboxValidation'
 
 function arraysEqual(a, b) {
   const sortedA = [...a].sort()
@@ -229,6 +234,38 @@ export function validateSimulation(level, data) {
           ? `计算正确！结果为 ${expected}${unit.trim()}`
           : `结果不对（你填的是 ${userAnswer}）。请按公式重算，保留两位小数后再提交。`,
       }
+    }
+
+    case 'sqlclient': {
+      return validateSqlQuery(data.query || '', level)
+    }
+
+    case 'redis': {
+      return validateRedisCommand(data.command || '', level)
+    }
+
+    case 'cipipeline': {
+      return validatePipelineSubmission(level, data)
+    }
+
+    case 'mockserver': {
+      return validateMockServer(level, data)
+    }
+
+    case 'apmtrace':
+    case 'gitrelease': {
+      const isPass = data.selected === level.correctClick
+      if (!data.selected) {
+        return { isPass: false, message: '请先点击选中一项，再确认提交。' }
+      }
+      return {
+        isPass,
+        message: isPass ? '选择正确！' : '选择不对。请结合场景中的数据与环境背景重新分析。',
+      }
+    }
+
+    case 'mqinbox': {
+      return validateMqInbox(level, data)
     }
 
     default:

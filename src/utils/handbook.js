@@ -1,7 +1,7 @@
 /** 手札卡片/检索用摘要：参考笔记口吻，不用通关复盘 summary */
 export function getHandbookBlurb(entry) {
   if (!entry) return ''
-  return entry.takeaway || entry.why || entry.summary || ''
+  return entry.takeaway || entry.why || entry.workplace || entry.summary || ''
 }
 
 export function matchesHandbookSearch(entry, query) {
