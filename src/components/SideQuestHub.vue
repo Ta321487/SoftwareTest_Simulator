@@ -1,12 +1,15 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { sideLevels, sideArcs, getUnlockHint } from '../data/sideQuests'
 import { DAILY_LEVEL_ID } from '../data/dailyChallenges'
 import { useProgressStore } from '../stores/progressStore'
+import { useMobileLayout } from '../composables/useMobileLayout'
 
 const router = useRouter()
 const progressStore = useProgressStore()
+const { isMobile } = useMobileLayout()
+const expandedArcIds = ref(new Set())
 
 const sideCards = computed(() =>
   sideLevels.map((level) => {
@@ -30,6 +33,32 @@ const sideProgress = computed(() => {
 
 const dailyStatus = computed(() => progressStore.getDailyStatus())
 
+const activeArcId = computed(() => {
+  for (const arc of sideArcs) {
+    const levels = sideCards.value.filter((c) => c.sideArc === arc.id)
+    if (!levels.length) continue
+    const done = levels.filter((l) => l.status === 'completed').length
+    if (done < levels.length && levels.some((l) => l.status !== 'locked')) return arc.id
+  }
+  const available = sideCards.value.find((c) => c.status === 'available')
+  return available?.sideArc ?? sideArcs[0]?.id
+})
+
+const arcsWithLevels = computed(() =>
+  sideArcs.map((arc) => {
+    const levels = sideCards.value.filter((c) => c.sideArc === arc.id)
+    const done = levels.filter((l) => l.status === 'completed').length
+    return {
+      ...arc,
+      levels,
+      done,
+      total: levels.length,
+      complete: levels.length > 0 && done >= levels.length,
+      active: activeArcId.value === arc.id && done < levels.length,
+    }
+  })
+)
+
 function starLine(n) {
   if (!n) return ''
   return '★'.repeat(n) + '☆'.repeat(3 - n)
@@ -37,6 +66,17 @@ function starLine(n) {
 
 function goLevel(id) {
   router.push('/level/' + id)
+}
+
+function arcOpen(arc) {
+  if (!isMobile.value) return true
+  return arc.active || expandedArcIds.value.has(arc.id)
+}
+
+function onArcToggle(arc, event) {
+  if (!isMobile.value) return
+  if (event.target.open) expandedArcIds.value.add(arc.id)
+  else expandedArcIds.value.delete(arc.id)
 }
 </script>
 
@@ -68,8 +108,11 @@ function goLevel(id) {
           {{ dailyStatus === 'locked' ? '完成登录收官关（第 5 关）后解锁' : '今日一题 · 轮换题库' }}
         </h3>
         <p v-if="dailyStatus !== 'locked'" class="side-hub__daily-meta">
-          连续 {{ progressStore.dailyStreak }} 天
+          <span v-if="progressStore.dailyStreak" class="side-hub__streak"
+            >🔥 连续 {{ progressStore.dailyStreak }} 天</span
+          >
           <span v-if="dailyStatus === 'completed'"> · 今日已完成 ✓</span>
+          <span v-else-if="dailyStatus === 'available'" class="side-hub__xp-hint"> · 通关 +XP</span>
         </p>
       </div>
       <button
@@ -82,7 +125,7 @@ function goLevel(id) {
       </button>
     </article>
 
-    <div class="side-hub__grid">
+    <div v-if="!isMobile" class="side-hub__grid">
       <button
         v-for="card in sideCards"
         :key="card.id"
@@ -97,13 +140,69 @@ function goLevel(id) {
         <h3 class="side-hub__card-title">{{ card.title }}</h3>
         <p class="side-hub__card-tagline">{{ card.arc?.tagline }}</p>
         <div class="side-hub__card-foot">
-          <span v-if="card.stars" class="side-hub__card-stars">{{ starLine(card.stars) }}</span>
+          <span v-if="card.xpReward && card.status === 'available'" class="side-hub__card-xp"
+            >+{{ card.xpReward }} XP</span
+          >
+          <span v-else-if="card.stars" class="side-hub__card-stars">{{ starLine(card.stars) }}</span>
           <span class="side-hub__card-status">
             {{ card.status === 'completed' ? '✓' : card.status === 'available' ? '▶' : '🔒' }}
           </span>
         </div>
         <p v-if="card.status === 'locked'" class="side-hub__card-lock">{{ card.unlockHint }}</p>
       </button>
+    </div>
+
+    <div v-else class="side-hub__arcs">
+      <details
+        v-for="arc in arcsWithLevels"
+        :key="arc.id"
+        class="side-hub__arc-fold"
+        :class="{
+          'side-hub__arc-fold--active': arc.active,
+          'side-hub__arc-fold--done': arc.complete,
+        }"
+        :open="arcOpen(arc)"
+        @toggle="onArcToggle(arc, $event)"
+      >
+        <summary class="side-hub__arc-summary">
+          <span class="side-hub__arc-summary-icon">{{ arc.icon }}</span>
+          <span class="side-hub__arc-summary-name">{{ arc.name }}</span>
+          <span class="side-hub__arc-summary-meta">
+            <span v-if="arc.complete" class="side-hub__arc-badge">通关</span>
+            <span class="side-hub__arc-progress">{{ arc.done }}/{{ arc.total }}</span>
+          </span>
+        </summary>
+        <div class="side-hub__arc-body">
+          <p class="side-hub__arc-tagline">{{ arc.tagline }}</p>
+          <div class="side-hub__arc-grid">
+            <button
+              v-for="card in arc.levels"
+              :key="card.id"
+              type="button"
+              class="side-hub__card side-hub__card--compact"
+              :class="[`side-hub__card--${card.status}`, `side-hub__card--arc-${card.sideArc}`]"
+              :disabled="card.status === 'locked'"
+              @click="goLevel(card.id)"
+            >
+              <span class="side-hub__card-id">EX-{{ card.id - 100 }}</span>
+              <h3 class="side-hub__card-title">{{ card.title }}</h3>
+              <div class="side-hub__card-foot">
+                <span v-if="card.xpReward && card.status === 'available'" class="side-hub__card-xp"
+                  >+{{ card.xpReward }} XP</span
+                >
+                <span v-else-if="card.stars" class="side-hub__card-stars">{{
+                  starLine(card.stars)
+                }}</span>
+                <span class="side-hub__card-status">
+                  {{
+                    card.status === 'completed' ? '✓' : card.status === 'available' ? '▶' : '🔒'
+                  }}
+                </span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </details>
     </div>
   </section>
 </template>

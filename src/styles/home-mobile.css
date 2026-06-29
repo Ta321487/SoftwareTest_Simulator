@@ -98,4 +98,77 @@
   .home-map .workbench__level-tag {
     display: none;
   }
+
+  .home-map__hero-xp {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--surface-muted);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .home-map__hero-xp-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 10px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .home-map__hero-xp-target {
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  .home-map__hero-xp-need {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--accent-cyan);
+  }
+
+  .home-map__hero-xp-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: var(--border-subtle);
+    overflow: hidden;
+  }
+
+  .home-map__hero-xp-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+    transition: width 0.35s ease;
+  }
+
+  .home-map__hero-xp-max {
+    margin: 10px 0 0;
+    font-size: 0.8125rem;
+    color: var(--accent-amber);
+  }
+
+  .home-map__action-xp {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    opacity: 0.9;
+    margin-left: 4px;
+  }
+
+  .home-map__streak {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent-amber);
+    margin-left: 4px;
+  }
+
+  .home-map__daily-chip {
+    flex-shrink: 0;
+  }
+
+  .home-fold--progress .save-panel {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border-subtle);
+  }
 }

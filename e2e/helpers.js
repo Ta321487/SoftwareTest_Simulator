@@ -50,7 +50,7 @@ export async function openSavePanel(page) {
   const exportBtn = page.getByRole('button', { name: '导出存档' })
   if (await exportBtn.isVisible()) return
 
-  const panel = page.locator('details.home-fold--achievements')
+  const panel = page.locator('details.home-fold--progress')
   await panel.evaluate((el) => {
     el.open = true
   })

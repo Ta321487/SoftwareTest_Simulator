@@ -175,6 +175,126 @@
   line-height: 1.4;
 }
 
+.side-hub__streak {
+  color: var(--accent-amber);
+  font-weight: 600;
+}
+
+.side-hub__xp-hint {
+  color: var(--accent-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.side-hub__card-xp {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+.side-hub__arc-fold {
+  margin-bottom: 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: var(--surface-muted);
+  padding: 0 12px;
+}
+
+.side-hub__arc-fold--active {
+  border-color: var(--cyan-border);
+}
+
+.side-hub__arc-fold--done {
+  opacity: 0.88;
+}
+
+.side-hub__arc-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.side-hub__arc-summary::-webkit-details-marker {
+  display: none;
+}
+
+.side-hub__arc-summary::before {
+  content: '▸ ';
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.side-hub__arc-fold[open] > .side-hub__arc-summary::before {
+  content: '▾ ';
+}
+
+.side-hub__arc-summary-icon {
+  flex-shrink: 0;
+}
+
+.side-hub__arc-summary-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.side-hub__arc-summary-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.side-hub__arc-badge {
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--green-bg-soft);
+  color: var(--accent-green, #22c55e);
+}
+
+.side-hub__arc-tagline {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0 0 10px;
+  line-height: 1.45;
+}
+
+.side-hub__arc-grid {
+  display: grid;
+  gap: 8px;
+  padding-bottom: 12px;
+}
+
+.side-hub__card--compact {
+  min-height: auto;
+  padding: 10px 12px;
+}
+
+.side-hub__card--compact .side-hub__card-title {
+  font-size: 0.8125rem;
+  margin-bottom: 4px;
+}
+
+@media (max-width: 768px) {
+  .side-hub__subtitle {
+    display: none;
+  }
+
+  .side-hub__header {
+    margin-bottom: 12px;
+  }
+}
+
 .task-panel__extra-tag {
   font-size: 0.75rem;
   font-family: var(--font-mono);
