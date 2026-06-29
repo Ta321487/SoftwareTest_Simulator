@@ -137,7 +137,7 @@ for (const lv of levels) {
 
 md += `---
 
-## 番外 13 关（#101–#113）
+## 番外 ${sideLevels.length} 关（#101–#${sideLevels[sideLevels.length - 1]?.id ?? 113}）
 
 `
 

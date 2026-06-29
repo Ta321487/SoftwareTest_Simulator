@@ -75,4 +75,18 @@ describe('validateTerminalCommand', () => {
     expect(result.isPass).toBe(false)
     expect(result.message).toContain('grep')
   })
+
+  const tailFollowLevel = { correctCommand: 'tail -f /var/log/app/error.log' }
+
+  it('accepts tail -f for follow mode', () => {
+    expect(validateTerminalCommand('tail -f /var/log/app/error.log', tailFollowLevel).isPass).toBe(
+      true
+    )
+  })
+
+  it('rejects tail -f level without follow flag', () => {
+    const result = validateTerminalCommand('tail -n 100 /var/log/app/error.log', tailFollowLevel)
+    expect(result.isPass).toBe(false)
+    expect(result.message).toContain('-f')
+  })
 })

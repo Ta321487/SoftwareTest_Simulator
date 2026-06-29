@@ -77,6 +77,66 @@ export const sideDebriefs = {
     pitfalls: '只看 200 的创建订单；忽略回调 404；不核对域名环境。',
     workplace: '联调抓包必看：回调 URL 环境、status、body 验签结果。',
   },
+  114: {
+    summary: '你按规范提交了文件上传 XSS 安全 Bug 单。',
+    why: '上传漏洞要测扩展名/ MIME 校验与存储路径；.html 可执行脚本是典型存储型 XSS 入口。',
+    pitfalls: '标题太泛；模块选错；步骤没写上传文件类型。',
+    workplace: '安全 Bug：复现步骤附恶意样本说明，标 Critical/Major 并 @ 安全组。',
+  },
+  115: {
+    summary: '你用 grep -C 带上下文筛出了 ERROR 记录。',
+    why: '单条 ERROR 往往不够定位；前后 3 行能看到 retry、熔断等关联日志。',
+    pitfalls: '只 grep 不带 -C；路径写错；关键字大小写不匹配。',
+    workplace: '日志排查：关键字 + 上下文 + 时间窗，比 blind tail 高效。',
+  },
+  116: {
+    summary: '你向 DBA 清楚说明了脱敏数据需求。',
+    why: '压测/联调要用生产形态数据，但必须脱敏并说明用途与截止时间，DBA 才好排期。',
+    pitfalls: '只说「给点数据」；不提脱敏；不说用途。',
+    workplace: '要数据模板：场景 + 量级 + 脱敏字段 + 期望时间。',
+  },
+  117: {
+    summary: '你写清了 hotfix 必测范围与可暂缓项。',
+    why: '紧急修复时间紧，冒烟必须绑 diff；暂缓项要写理由和补测计划，避免背锅。',
+    pitfalls: '全量或全不测两个极端；暂缓不写补测时间。',
+    workplace: 'Hotfix 冒烟单：必测清单 + 暂缓清单 + 签字人，发群里留痕。',
+  },
+  118: {
+    summary: '冒烟通过率 = 72 ÷ 80 × 100% = 90.00%。',
+    why: '通过率用于衡量冒烟质量与是否可进下一阶段，要结合 FAIL 项严重度一起看。',
+    pitfalls: '公式分子分母搞反；忘记两位小数。',
+    workplace: '冒烟报告写通过率 + Blocker/Critical 清单，别只有一个百分比。',
+  },
+  119: {
+    summary: '你把 STAGING_API_BASE 改成了正确的 staging 域名。',
+    why: '集成测试 404 常见原因是 API 仍指向 localhost 或错误环境。',
+    pitfalls: '只改 DB 不改 API；不点测试连接就提交。',
+    workplace: '新 staging 第一天：配置清单逐项打勾，自动化跑一条冒烟验证。',
+  },
+  120: {
+    summary: '你圈出了限流、参数校验、鉴权与 Content-Type 等必测项。',
+    why: '短信/验证码接口是滥用高发区，限流与非法参数必测；UI 字体不是接口项。',
+    pitfalls: '只测 200 happy path；忽略 429 限流。',
+    workplace: '验证码类接口：频率限制 + 非法手机号 + 鉴权三板斧。',
+  },
+  121: {
+    summary: '你选了推送 FAIL 项、跳转与核心登录回归。',
+    why: '小版本改推送模板，必测展示/跳转；核心登录虽 PASS 但高风险仍建议抽测。',
+    pitfalls: '只测关于页版本号；忽略 FAIL 的推送项。',
+    workplace: 'App 小版本回归：diff 功能 + 核心链路，写在报告里给 PM 看。',
+  },
+  122: {
+    summary: '你规范描述了订单列表慢查询性能问题。',
+    why: '性能 Bug 要写清 P99/耗时、模块、APM 线索，方便 DBA/开发定位。',
+    pitfalls: '标题写「有点慢」；不写 P99 数字；模块选错。',
+    workplace: '性能单附：接口路径 + 耗时数据 + traceId/慢 SQL 线索。',
+  },
+  123: {
+    summary: '你优先验证系统大字体下结算按钮的可视与可点性。',
+    why: '用户反馈「字体大后按钮被裁切」应直接复现 accessibility/系统字体缩放场景。',
+    pitfalls: '去测深色模式或无关页面；忽略 Android 系统设置。',
+    workplace: '兼容矩阵加一列：系统字体 150%/200% × 关键转化页。',
+  },
 }
 
 export const dailyDebriefs = {
@@ -420,4 +480,21 @@ export function getDailyDebrief(dailyKey) {
   if (!dailyKey) return null
   const key = dailyKey.replace(/^\d{4}-\d{2}-\d{2}-/, '')
   return dailyDebriefs[key] || null
+}
+
+/** 手札「每日精选」：有 debrief 的每日题入库 */
+export function getDailyHandbookEntries(dailyPool) {
+  if (!Array.isArray(dailyPool)) return []
+  return dailyPool
+    .filter((item) => dailyDebriefs[item.key])
+    .map((item) => ({
+      id: item.key,
+      key: item.key,
+      title: item.title.replace(/^今日：/, ''),
+      simType: item.simType,
+      tipLabel: '每日心得',
+      phaseName: '每日特训',
+      phaseIcon: '📅',
+      ...dailyDebriefs[item.key],
+    }))
 }

@@ -39,6 +39,14 @@ function hasTailLineCount(norm) {
   return /(?:-n\s+\d+|-\d+\b|\btail\b[^\n]*\s+\d+\s)/.test(norm)
 }
 
+function isTailFollowMode(expected) {
+  return /\btail\b[^\n]*\s-(?:f|F)\b/.test(expected)
+}
+
+function hasTailFollowFlag(norm) {
+  return /\btail\b[^\n]*\s-(?:f|F)\b/.test(norm)
+}
+
 export function parseTailLineCount(command) {
   const norm = normalize(command)
   let match = norm.match(/tail\s+-n\s+(\d+)/)
@@ -71,6 +79,12 @@ export function validateTerminalCommand(command, level) {
     }
     if (path && !norm.includes(path.toLowerCase())) {
       return { isPass: false, message: `请指定日志路径：${path}` }
+    }
+    if (isTailFollowMode(expected)) {
+      if (!hasTailFollowFlag(norm)) {
+        return { isPass: false, message: '实时跟踪日志需使用 tail -f 参数。' }
+      }
+      return { isPass: true, message: '命令执行成功！' }
     }
     if (!hasTailLineCount(norm)) {
       return { isPass: false, message: '查看末尾日志需指定行数，如 tail -n 100 或 tail -100。' }
