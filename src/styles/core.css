@@ -283,6 +283,52 @@ body {
   margin-left: 6px;
 }
 
+.home-map__hero-achievement {
+  margin-top: 12px;
+  max-width: 480px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border-subtle);
+}
+
+.home-map__hero-achievement-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 10px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.home-map__hero-achievement-meta {
+  font-family: var(--font-mono);
+  color: var(--accent-amber);
+}
+
+.home-map__hero-achievement-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border-subtle);
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.home-map__hero-achievement-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent-amber), #f59e0b);
+  transition: width 0.35s ease;
+}
+
+.home-map__hero-achievement-desc {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
 .workbench__title--app {
   font-size: 1.25rem;
   color: var(--text-primary);

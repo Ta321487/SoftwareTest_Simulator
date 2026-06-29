@@ -417,6 +417,24 @@
 .player-dashboard__phases {
   display: grid;
   gap: 10px;
+  margin-bottom: 14px;
+}
+
+.player-dashboard__phases--compact {
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.player-dashboard__phases--compact .player-dashboard__phase-head {
+  font-size: 0.75rem;
+}
+
+.player-dashboard__phases--compact .player-dashboard__phase-bar {
+  height: 5px;
+}
+
+.player-dashboard__phase-row {
+  display: block;
 }
 
 .player-dashboard__phase-head {

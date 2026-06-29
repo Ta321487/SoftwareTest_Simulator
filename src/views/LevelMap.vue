@@ -16,6 +16,7 @@ import { DAILY_LEVEL_ID } from '../data/dailyChallenges'
 import { getRankForXp, getRankProgress } from '../data/ranks'
 import { getWeakAreas } from '../utils/weakAreas'
 import { getLevelById } from '../utils/levelRegistry'
+import { getNextAchievementHint } from '../utils/achievementProgress'
 import ThemeToggle from '../components/ThemeToggle.vue'
 import { useMobileLayout } from '../composables/useMobileLayout'
 
@@ -56,6 +57,16 @@ const nextLevelXp = computed(() => {
   if (!id) return 0
   return getLevelById(id)?.xpReward ?? 0
 })
+
+const nextAchievement = computed(() =>
+  getNextAchievementHint({
+    achievements: progressStore.achievements,
+    completedLevelIds: progressStore.completedLevelIds,
+    levelMeta: progressStore.levelMeta,
+    levelMistakes: progressStore.levelMistakes,
+    dailyStreak: progressStore.dailyStreak,
+  })
+)
 
 function continueChallenge() {
   const nextId = progressStore.firstAvailableLevelId
@@ -153,6 +164,21 @@ function showOnboarding() {
             </div>
           </div>
           <p v-else class="home-map__hero-xp-max">🛡️ 已达最高职级 · 质量 Owner</p>
+          <div v-if="nextAchievement" class="home-map__hero-achievement">
+            <div class="home-map__hero-achievement-head">
+              <span>🏆 下一成就 · {{ nextAchievement.icon }} {{ nextAchievement.title }}</span>
+              <span class="home-map__hero-achievement-meta"
+                >{{ nextAchievement.current }}/{{ nextAchievement.target }}</span
+              >
+            </div>
+            <div class="home-map__hero-achievement-bar">
+              <div
+                class="home-map__hero-achievement-fill"
+                :style="{ width: `${nextAchievement.percent}%` }"
+              />
+            </div>
+            <p class="home-map__hero-achievement-desc">{{ nextAchievement.desc }}</p>
+          </div>
           <p v-if="reinforcementHint" class="home-map__hero-reinforce">
             有空可重温
             <router-link

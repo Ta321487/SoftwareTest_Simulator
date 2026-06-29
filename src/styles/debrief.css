@@ -316,3 +316,74 @@
 [data-theme='light'] .debrief-panel {
   box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12);
 }
+
+@keyframes debrief-xp-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes debrief-star-pop {
+  0% {
+    transform: scale(0.2) rotate(-20deg);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.25) rotate(8deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes debrief-rank-glow {
+  0% {
+    box-shadow: 0 0 0 0 var(--cyan-border);
+    transform: scale(0.96);
+  }
+  40% {
+    box-shadow: 0 0 0 6px transparent;
+    transform: scale(1.02);
+  }
+  100% {
+    box-shadow: none;
+    transform: scale(1);
+  }
+}
+
+.debrief-panel__xp--pop {
+  animation: debrief-xp-pop 0.55s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
+.debrief-panel__star--pop:nth-child(1) {
+  animation: debrief-star-pop 0.45s ease-out 0.08s both;
+}
+
+.debrief-panel__star--pop:nth-child(2) {
+  animation: debrief-star-pop 0.45s ease-out 0.18s both;
+}
+
+.debrief-panel__star--pop:nth-child(3) {
+  animation: debrief-star-pop 0.45s ease-out 0.28s both;
+}
+
+.debrief-panel__rank-up--celebrate {
+  animation: debrief-rank-glow 0.9s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .debrief-panel__xp--pop,
+  .debrief-panel__star--pop,
+  .debrief-panel__rank-up--celebrate {
+    animation: none;
+  }
+}

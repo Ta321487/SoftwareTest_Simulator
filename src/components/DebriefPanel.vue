@@ -95,16 +95,19 @@ const showHighlights = computed(() => props.newAchievements.length > 0 || Boolea
           <h2 id="debrief-title" class="debrief-panel__title">{{ levelTitle }}</h2>
         </div>
         <div class="debrief-panel__rewards">
-          <span class="debrief-panel__stars" :title="starLabel(stars)">
+          <span class="debrief-panel__stars debrief-panel__stars--animate" :title="starLabel(stars)">
             <span
               v-for="i in 3"
               :key="i"
               class="debrief-panel__star"
-              :class="{ 'debrief-panel__star--filled': i <= stars }"
+              :class="{
+                'debrief-panel__star--filled': i <= stars,
+                'debrief-panel__star--pop': i <= stars,
+              }"
               >★</span
             >
           </span>
-          <span class="debrief-panel__xp">
+          <span class="debrief-panel__xp debrief-panel__xp--pop">
             +{{ xpReward }} XP
             <span v-if="bonusXp > 0" class="debrief-panel__bonus">+{{ bonusXp }}</span>
           </span>
@@ -142,7 +145,7 @@ const showHighlights = computed(() => props.newAchievements.length > 0 || Boolea
             <li v-for="item in newAchievements" :key="item.id">{{ item.icon }} {{ item.title }}</li>
           </ul>
         </div>
-        <div v-if="rankUp" class="debrief-panel__rank-up">
+        <div v-if="rankUp" class="debrief-panel__rank-up debrief-panel__rank-up--celebrate">
           <span class="debrief-panel__rank-icon">{{ rankUp.icon }}</span>
           <div>
             <p class="debrief-panel__rank-title">职级提升 · {{ rankUp.title }}</p>

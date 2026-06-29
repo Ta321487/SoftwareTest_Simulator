@@ -8,6 +8,7 @@ import { buildShareText, copyShareText, PLAY_URL } from '../utils/shareProgress'
 import { getSharePracticeContext, formatPracticeLine } from '../utils/sharePractice'
 import { downloadShareCard } from '../utils/shareCard'
 import { getWeakAreas } from '../utils/weakAreas'
+import { phaseOrder, phases, getPhaseProgress } from '../data/phases'
 
 defineProps({
   compact: {
@@ -91,6 +92,15 @@ const weakAreas = computed(() =>
   })
 )
 
+const phaseRows = computed(() =>
+  phaseOrder.map((id) => {
+    const phase = phases[id]
+    const { done, total } = getPhaseProgress(phase, progressStore.completedLevelIds)
+    const percent = total ? Math.round((done / total) * 100) : 0
+    return { id, icon: phase.icon, name: phase.name, done, total, percent }
+  })
+)
+
 async function handleShare() {
   try {
     const result = await copyShareText(shareText.value)
@@ -161,6 +171,22 @@ function handleSaveShareImage() {
           >{{ progressStore.achievements.length }}/{{ achievements.length }}</span
         >
         <span class="player-dashboard__stat-label">成就</span>
+      </div>
+    </div>
+
+    <div class="player-dashboard__phases" :class="{ 'player-dashboard__phases--compact': compact }">
+      <div v-for="row in phaseRows" :key="row.id" class="player-dashboard__phase-row">
+        <div class="player-dashboard__phase-head">
+          <span>{{ row.icon }} {{ row.name }}</span>
+          <span>{{ row.done }}/{{ row.total }}</span>
+        </div>
+        <div class="player-dashboard__phase-bar">
+          <div
+            class="player-dashboard__phase-fill"
+            :class="`player-dashboard__phase-fill--${row.id}`"
+            :style="{ width: `${row.percent}%` }"
+          />
+        </div>
       </div>
     </div>
 
