@@ -282,6 +282,79 @@
   color: var(--accent-purple);
 }
 
+.handbook__card--playbook {
+  border-color: color-mix(in srgb, var(--accent-amber) 35%, transparent);
+}
+
+.handbook__card--playbook .handbook__card-more {
+  color: var(--accent-amber);
+}
+
+.handbook__card--daily {
+  border-color: color-mix(in srgb, var(--accent-cyan) 25%, transparent);
+}
+
+.handbook__daily-hint {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.handbook__domain-head {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.handbook__domain-title {
+  margin: 0 0 4px;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.handbook__domain-tagline {
+  margin: 0 0 6px;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.handbook__domain-stats {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.handbook__tab-count {
+  margin-left: 4px;
+  font-size: 0.6875rem;
+  opacity: 0.75;
+}
+
+.handbook-modal__panel--playbook {
+  border-top: 3px solid var(--accent-amber);
+}
+
+.handbook-modal__panel--daily {
+  border-top: 3px solid var(--accent-cyan);
+}
+
+.handbook-modal__steps {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.handbook-modal__steps li + li {
+  margin-top: 8px;
+}
+
+.handbook-modal__link-chip--playbook {
+  border-color: color-mix(in srgb, var(--accent-amber) 40%, transparent);
+}
+
 .handbook__empty {
   text-align: center;
   color: var(--text-muted);

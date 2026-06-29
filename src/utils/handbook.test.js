@@ -4,10 +4,12 @@ import {
   getGlossaryBlurb,
   matchesHandbookSearch,
   matchesGlossarySearch,
+  matchesPlaybookSearch,
   filterGlossaryTerms,
 } from './handbook.js'
 import { debriefs } from '../data/debriefs.js'
 import { glossaryTerms } from '../data/glossary.js'
+import { playbooks } from '../data/playbooks.js'
 
 describe('handbook', () => {
   it('uses why instead of second-person summary for card blurb', () => {
@@ -50,5 +52,10 @@ describe('handbook', () => {
     expect(
       filterGlossaryTerms(glossaryTerms, { query: '判定表' }).some((t) => t.id === 'decision-table')
     ).toBe(true)
+  })
+
+  it('finds playbooks by step keyword', () => {
+    const pb = playbooks.find((p) => p.id === 'log-grep')
+    expect(matchesPlaybookSearch(pb, 'tail')).toBe(true)
   })
 })

@@ -304,6 +304,48 @@
   line-height: 1.6;
 }
 
+.debrief-section--handbook {
+  border-top: 1px dashed var(--border-subtle);
+  padding-top: 12px;
+}
+
+.debrief-handbook-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.debrief-handbook-chip {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.debrief-handbook-chip:hover {
+  border-color: var(--accent-cyan);
+  color: var(--text-primary);
+}
+
+.debrief-handbook-chip--playbook {
+  border-color: color-mix(in srgb, var(--accent-amber) 35%, transparent);
+}
+
+.debrief-handbook-more {
+  font-size: 0.8125rem;
+  color: var(--accent-cyan);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .debrief-reference {
   margin: 0;
 }

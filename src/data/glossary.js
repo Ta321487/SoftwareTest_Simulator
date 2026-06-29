@@ -59,7 +59,7 @@ export const glossaryTerms = [
     category: 'defect',
     definition: '软件实际行为与需求/预期不一致的可复现问题，需写清步骤、预期与实际。',
     example: 'Jira 里 TEST-1003：验证码倒计时显示 -1 秒——标题含现象，步骤可复现。',
-    relatedLevelIds: [3, 4, 22],
+    relatedLevelIds: [3, 4, 22, 114],
     seeAlso: ['regression', 'prd'],
   },
   {
@@ -69,7 +69,7 @@ export const glossaryTerms = [
     category: 'defect',
     definition: '改代码或发版后，重新执行相关用例，确认新改动没把老功能弄坏。',
     example: '登录修完验证码后，要回归密码错误锁定、记住密码等——改了什么测什么，FAIL 优先。',
-    relatedLevelIds: [4, 5, 21],
+    relatedLevelIds: [4, 5, 21, 42, 117, 121],
     seeAlso: ['smoke', 'risk-driven'],
   },
   {
@@ -89,7 +89,7 @@ export const glossaryTerms = [
     category: 'process',
     definition: '产品需求说明，描述功能规则与边界。测试要先从 PRD 圈测试点，再写用例。',
     example: '「密码错 5 次锁定」——PRD 写了就要测；没写的 OAuth、UI 美观通常不是首轮重点。',
-    relatedLevelIds: [1],
+    relatedLevelIds: [1, 34],
     seeAlso: ['test-point', 'happy-path'],
   },
   {
@@ -99,7 +99,7 @@ export const glossaryTerms = [
     category: 'process',
     definition: '从需求里提炼「需要验证哪些方面」，是写用例前的清单，不是具体步骤。',
     example: '登录 PRD：格式校验、锁定逻辑、记住密码安全、登录后跳转——各是一个测试点。',
-    relatedLevelIds: [1],
+    relatedLevelIds: [1, 34],
     seeAlso: ['test-case', 'prd'],
   },
   {
@@ -109,7 +109,7 @@ export const glossaryTerms = [
     category: 'process',
     definition: '一条可执行的测试场景：前置条件、步骤、预期结果。预期要写清系统反应。',
     example: '「用户名为空 + 密码正确 → 提示必填、不允许登录」——预期不能写「报错」两个字就完事。',
-    relatedLevelIds: [2],
+    relatedLevelIds: [2, 17, 36],
     seeAlso: ['expected-result', 'equivalence-class', 'black-box'],
   },
   {
@@ -119,7 +119,7 @@ export const glossaryTerms = [
     category: 'process',
     definition: '执行用例后系统「应该怎样」，要用测试语言写完整、可判定。',
     example: '密码少于 6 位 → 提示格式错误并阻止提交，而不是只写「失败」。',
-    relatedLevelIds: [2],
+    relatedLevelIds: [2, 17, 36],
     seeAlso: ['test-case'],
   },
   {
@@ -129,7 +129,7 @@ export const glossaryTerms = [
     category: 'process',
     definition: '发版或提测后先做一轮主流程快速验证，不通则「冒烟失败」，不深入测。',
     example: '小版本只改推送文案——必测文案与跳转，分页 PASS 可暂缓，但 FAIL+高风险要回归。',
-    relatedLevelIds: [5, 21],
+    relatedLevelIds: [5, 21, 41, 106, 117],
     seeAlso: ['regression'],
   },
   {
@@ -139,7 +139,7 @@ export const glossaryTerms = [
     category: 'technique',
     definition: '一切输入合法、流程顺利走完的理想路径。只测 happy path 容易漏边界和安全。',
     example: '登录只测「正确账号密码能进」不够，还要测空值、错误次数、记住密码等。',
-    relatedLevelIds: [1],
+    relatedLevelIds: [1, 34],
     seeAlso: ['boundary-value', 'equivalence-class', 'black-box'],
   },
   {
@@ -149,7 +149,7 @@ export const glossaryTerms = [
     category: 'technique',
     definition: '把输入分成「同一类测一个就行」的组，减少用例数量又覆盖代表场景。',
     example: '密码 6–12 位字母数字：合法类、太短、太长、含特殊字符——每类至少一条用例。',
-    relatedLevelIds: [2],
+    relatedLevelIds: [2, 17, 36],
     seeAlso: ['boundary-value', 'test-case', 'black-box'],
   },
   {
@@ -159,7 +159,7 @@ export const glossaryTerms = [
     category: 'technique',
     definition: '规则边界上的取值最容易出 Bug，应重点测「刚好合法 / 刚好非法」。',
     example: '密码 6–12 位：测 5 位、6 位、12 位、13 位——比只测 8 位更能抓问题。',
-    relatedLevelIds: [2],
+    relatedLevelIds: [2, 17, 36],
     seeAlso: ['equivalence-class', 'black-box'],
   },
   {
@@ -189,9 +189,10 @@ export const glossaryTerms = [
     aliases: ['白盒', 'white box', '结构测试', '逻辑覆盖'],
     category: 'technique',
     definition:
-      '基于程序内部结构/design 设计用例，关注分支、路径、语句是否被执行到。开发自测、单元测试常用。',
-    example: '知道登录有「校验密码 → 查库 → 写 Session」三条分支，就要分别走到并断言每步结果。',
-    relatedLevelIds: [2],
+      '基于程序内部结构（代码/分支/路径）设计用例，验证逻辑是否被走到。重点是「知道里面怎么实现的再测什么」，不是「谁写脚本」。',
+    example:
+      '开发写 JUnit 单测覆盖 if/else 是典型白盒；测试若对照代码发现「密码错 5 次锁定」还有一条未测分支，也是白盒思路——不一定要自己写自动化，但要能读逻辑、补场景。',
+    relatedLevelIds: [2, 40],
     seeAlso: ['black-box', 'gray-box', 'unit-test', 'coverage'],
   },
   {
@@ -203,7 +204,7 @@ export const glossaryTerms = [
       '介于黑盒与白盒之间：整体当黑盒测，但利用数据库、日志、接口文档等「部分内部信息」辅助设计用例。',
     example:
       '界面黑盒点登录，同时查 DB 是否写入 Session、tail 日志是否有 Auth ERROR——游戏值班关常见。',
-    relatedLevelIds: [23, 24],
+    relatedLevelIds: [23, 24, 45, 46],
     seeAlso: ['black-box', 'white-box', 'api-test'],
   },
   {
@@ -280,7 +281,7 @@ export const glossaryTerms = [
     definition:
       '不运行程序也能做的质量活动：需求/设计/代码走查、测试用例评审，越早发现问题成本越低。',
     example: 'PRD 评审时发现「记住密码」没写加密要求——第 1 关圈测试点就是在练静态阶段的思路。',
-    relatedLevelIds: [1],
+    relatedLevelIds: [1, 28],
     seeAlso: ['dynamic-test', 'prd'],
   },
   {
@@ -311,7 +312,7 @@ export const glossaryTerms = [
     category: 'technique',
     definition: '测性能、安全、兼容、易用、可靠等「做得好不好」，而不是「功能对不对」。',
     example: 'P99 延迟、XSS、4G 下 8 秒打不开——分别属于性能、安全、兼容/体验类非功能测试。',
-    relatedLevelIds: [12, 101, 22],
+    relatedLevelIds: [12, 101, 22, 38],
     seeAlso: ['functional-test', 'p99', 'xss'],
   },
   {
@@ -404,7 +405,7 @@ export const glossaryTerms = [
     category: 'security',
     definition: '攻击者在页面注入恶意脚本，在其他用户浏览器里执行。要测输入过滤与输出编码。',
     example: '评论框提交 `<script>` 或 onerror=——应被转义/拦截，且不能在他人页面执行。',
-    relatedLevelIds: [101],
+    relatedLevelIds: [101, 114],
     seeAlso: ['stored-xss', 'sql-injection'],
   },
   {
@@ -414,7 +415,7 @@ export const glossaryTerms = [
     category: 'security',
     definition: '恶意脚本存进数据库，其他用户打开页面时被加载执行，危害面大。',
     example: 'A 发恶意评论，B 打开列表触发脚本——必须测存储与展示两端。',
-    relatedLevelIds: [101],
+    relatedLevelIds: [101, 114],
     seeAlso: ['xss'],
   },
   {
@@ -424,7 +425,7 @@ export const glossaryTerms = [
     category: 'security',
     definition: '通过输入拼接恶意 SQL，欺骗数据库执行。应参数化查询并测特殊字符输入。',
     example: `评论含 ' OR 1=1-- 不应导致越权查全表。`,
-    relatedLevelIds: [101],
+    relatedLevelIds: [101, 114],
     seeAlso: ['xss'],
   },
   {
@@ -444,7 +445,7 @@ export const glossaryTerms = [
     category: 'ops',
     definition: '大促或发版前的放行会议：指标达标 Go，否则 No-Go 或裁剪范围。',
     example: '错误率超 SLO 时 No-Go 不是怂——是对用户负责；写进邮件存档。',
-    relatedLevelIds: [33],
+    relatedLevelIds: [33, 48],
     seeAlso: ['slo', 'blocker'],
   },
   {
@@ -454,7 +455,7 @@ export const glossaryTerms = [
     category: 'ops',
     definition: '服务等级目标，如可用性、错误率、P99 上限。超 SLO 通常要告警或阻止发布。',
     example: '大促 Go/No-Go：错误率比 P99 更要命——库存服务挂了比慢 200ms 严重。',
-    relatedLevelIds: [33],
+    relatedLevelIds: [33, 48],
     seeAlso: ['go-nogo', 'p99'],
   },
   {
@@ -464,7 +465,7 @@ export const glossaryTerms = [
     category: 'ops',
     definition: '代码合并后自动构建、测试、部署。测试要懂流水线哪步拦错包、验哪条分支。',
     example: '发布前确认部署分支与 Jira 一致——验到旧包等于白测。',
-    relatedLevelIds: [9, 10, 103],
+    relatedLevelIds: [9, 10, 103, 119],
     seeAlso: ['regression', 'gray-release'],
   },
   {
@@ -475,7 +476,7 @@ export const glossaryTerms = [
     definition:
       '支付等场景：第三方完成后 POST 通知你的服务器。地址配错会导致「付了款但没通知到」。',
     example: '抓包看 notify Host 是否 prod；PAYMENT_DB_HOST 与回调 URL 要双核对。',
-    relatedLevelIds: [7, 8, 31],
+    relatedLevelIds: [7, 8, 31, 42, 113],
     seeAlso: ['api-test'],
   },
   {
@@ -485,7 +486,7 @@ export const glossaryTerms = [
     category: 'api',
     definition: '对 HTTP/API 发请求，断言状态码、响应体、业务逻辑，不依赖 UI 点击。',
     example: 'POST /api/login 错密码应 401 + 明确错误码；比只点 App 更快定位后端问题。',
-    relatedLevelIds: [17, 27],
+    relatedLevelIds: [16, 26, 27, 44, 120],
     seeAlso: ['callback', 'http-status'],
   },
   {
@@ -495,8 +496,38 @@ export const glossaryTerms = [
     category: 'api',
     definition: '服务器对请求的简短结果码：2xx 成功，4xx 客户端问题，5xx 服务端错误。',
     example: '密码错误通常 401 而非 200；500 要查服务端日志，不是改前端。',
-    relatedLevelIds: [17],
+    relatedLevelIds: [17, 37],
     seeAlso: ['api-test'],
+  },
+  {
+    id: 'rate-limit',
+    term: '接口限流',
+    aliases: ['限流', 'rate limit', '429'],
+    category: 'api',
+    definition: '限制单位时间内请求次数，防止滥用与暴力破解。测试应验证超限时的响应码与提示。',
+    example: '短信验证码 60 秒内重复请求应返回 429 或业务限流码——番外 #120、安全冒烟必测。',
+    relatedLevelIds: [38, 120],
+    seeAlso: ['api-test', 'http-status'],
+  },
+  {
+    id: 'idempotent',
+    term: '幂等性',
+    aliases: ['幂等', 'idempotent'],
+    category: 'api',
+    definition: '同一操作重复执行多次，结果与执行一次相同。支付回调、下单等异步场景必须测重复通知。',
+    example: '重复支付回调不应让订单状态从「已支付」变成「重复支付」或重复扣款。',
+    relatedLevelIds: [42, 111, 113],
+    seeAlso: ['callback', 'api-test'],
+  },
+  {
+    id: 'hotfix',
+    term: 'Hotfix',
+    aliases: ['热修复', '紧急修复'],
+    category: 'ops',
+    definition: '线上紧急问题的小范围修复，通常走独立分支快速发布。测试范围应绑定 diff，冒烟优先。',
+    example: '支付回调 URL 热修复——1 小时内冒烟：回调/支付必测，无关模块写清暂缓。',
+    relatedLevelIds: [117, 121],
+    seeAlso: ['smoke', 'regression', 'cicd'],
   },
 ]
 

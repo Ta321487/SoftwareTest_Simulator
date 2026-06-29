@@ -4,21 +4,35 @@ import { useRoute, useRouter } from 'vue-router'
 import { phaseOrder, phases, getLevelTitle } from '../data/phases'
 import { debriefs } from '../data/debriefs'
 import { sideLevels, sideArcs } from '../data/sideQuests'
-import { sideDebriefs } from '../data/sideDebriefs'
+import { sideDebriefs, getDailyHandbookEntries } from '../data/sideDebriefs'
+import { DAILY_POOL } from '../data/dailyChallenges'
 import {
   glossaryCategories,
   glossaryTerms,
   getGlossaryCategory,
   getGlossaryTerm,
 } from '../data/glossary'
+import { playbooks, playbookCategories, getPlaybook, getPlaybookCategory } from '../data/playbooks'
+import {
+  handbookDomains,
+  getHandbookDomain,
+  getDomainCounts,
+  filterPlaybooksByDomain,
+  filterTermsByDomain,
+  filterEntriesByDomain,
+} from '../data/handbookDomains'
+import { getPlaybooksForTerm, getHandbookLinksForLevel } from '../utils/handbookLinks'
 import ThemeToggle from '../components/ThemeToggle.vue'
 import AppNavDock from '../components/AppNavDock.vue'
 import { useMobileLayout } from '../composables/useMobileLayout'
 import {
   getHandbookBlurb,
   getGlossaryBlurb,
+  getPlaybookBlurb,
   matchesHandbookSearch,
+  matchesDailySearch,
   filterGlossaryTerms,
+  filterPlaybooks,
 } from '../utils/handbook'
 import { getRecentTermIds, recordRecentTerm } from '../utils/handbookRecent'
 
@@ -29,8 +43,12 @@ const { isMobile } = useMobileLayout()
 const viewMode = ref('notes')
 const activePhase = ref('all')
 const activeGlossaryCategory = ref('all')
+const activePlaybookCategory = ref('all')
+const activeDomainId = ref('functional')
 const selectedEntry = ref(null)
 const selectedTerm = ref(null)
+const selectedPlaybook = ref(null)
+const selectedDaily = ref(null)
 const searchQuery = ref('')
 
 const LIST_BATCH = 15
@@ -44,6 +62,9 @@ const listScopeKey = computed(() => {
   const q = searchQuery.value.trim()
   if (q) return `search:${q}`
   if (viewMode.value === 'glossary') return `glossary:${activeGlossaryCategory.value}`
+  if (viewMode.value === 'playbooks') return `playbooks:${activePlaybookCategory.value}`
+  if (viewMode.value === 'daily') return 'daily'
+  if (viewMode.value === 'domains') return `domains:${activeDomainId.value}`
   return `notes:${activePhase.value}`
 })
 
@@ -66,6 +87,8 @@ function loadMore() {
 }
 
 const isSearching = computed(() => searchQuery.value.trim().length > 0)
+
+const dailyEntries = computed(() => getDailyHandbookEntries(DAILY_POOL))
 
 const mainEntries = computed(() =>
   phaseOrder.flatMap((phaseId) => {
@@ -128,6 +151,23 @@ const filteredGlossaryTerms = computed(() =>
   )
 )
 
+const filteredPlaybooks = computed(() =>
+  filterPlaybooks(
+    playbooks,
+    {
+      query: searchQuery.value,
+      categoryId: isSearching.value ? 'all' : activePlaybookCategory.value,
+    },
+    (categoryId) => getPlaybookCategory(categoryId)?.name || ''
+  )
+)
+
+const filteredDailyEntries = computed(() => {
+  const q = searchQuery.value.trim().toLowerCase()
+  if (!q) return dailyEntries.value
+  return dailyEntries.value.filter((e) => matchesDailySearch(e, q))
+})
+
 const searchResultNotes = computed(() =>
   isSearching.value
     ? allEntries.value.filter((e) => matchesHandbookSearch(e, searchQuery.value))
@@ -144,15 +184,65 @@ const searchResultTerms = computed(() =>
     : []
 )
 
+const searchResultPlaybooks = computed(() =>
+  isSearching.value
+    ? filterPlaybooks(
+        playbooks,
+        { query: searchQuery.value, categoryId: 'all' },
+        (categoryId) => getPlaybookCategory(categoryId)?.name || ''
+      )
+    : []
+)
+
+const searchResultDaily = computed(() =>
+  isSearching.value
+    ? dailyEntries.value.filter((e) => matchesDailySearch(e, searchQuery.value))
+    : []
+)
+
 const visibleGlossaryTerms = computed(() => limitedList(filteredGlossaryTerms.value))
 const visibleEntries = computed(() => limitedList(filteredEntries.value))
+const visiblePlaybooks = computed(() => limitedList(filteredPlaybooks.value))
+const visibleDaily = computed(() => limitedList(filteredDailyEntries.value))
 const visibleSearchTerms = computed(() => limitedList(searchResultTerms.value))
 const visibleSearchNotes = computed(() => limitedList(searchResultNotes.value))
+const visibleSearchPlaybooks = computed(() => limitedList(searchResultPlaybooks.value))
+const visibleSearchDaily = computed(() => limitedList(searchResultDaily.value))
 
 const showLoadMoreGlossary = computed(() => remainingCount(filteredGlossaryTerms.value) > 0)
 const showLoadMoreNotes = computed(() => remainingCount(filteredEntries.value) > 0)
+const showLoadMorePlaybooks = computed(() => remainingCount(filteredPlaybooks.value) > 0)
+const showLoadMoreDaily = computed(() => remainingCount(filteredDailyEntries.value) > 0)
 const showLoadMoreSearchTerms = computed(() => remainingCount(searchResultTerms.value) > 0)
 const showLoadMoreSearchNotes = computed(() => remainingCount(searchResultNotes.value) > 0)
+const showLoadMoreSearchPlaybooks = computed(() => remainingCount(searchResultPlaybooks.value) > 0)
+const showLoadMoreSearchDaily = computed(() => remainingCount(searchResultDaily.value) > 0)
+
+const domainOverview = computed(() =>
+  getDomainCounts({
+    entries: allEntries.value,
+    terms: glossaryTerms,
+    playbooks,
+  })
+)
+
+const activeDomain = computed(() => getHandbookDomain(activeDomainId.value))
+
+const domainPlaybooks = computed(() =>
+  filterPlaybooksByDomain(playbooks, activeDomainId.value)
+)
+
+const domainTerms = computed(() => filterTermsByDomain(glossaryTerms, activeDomainId.value))
+
+const domainNotes = computed(() => filterEntriesByDomain(allEntries.value, activeDomainId.value))
+
+const visibleDomainPlaybooks = computed(() => limitedList(domainPlaybooks.value))
+const visibleDomainTerms = computed(() => limitedList(domainTerms.value))
+const visibleDomainNotes = computed(() => limitedList(domainNotes.value))
+
+const showLoadMoreDomainPlaybooks = computed(() => remainingCount(domainPlaybooks.value) > 0)
+const showLoadMoreDomainTerms = computed(() => remainingCount(domainTerms.value) > 0)
+const showLoadMoreDomainNotes = computed(() => remainingCount(domainNotes.value) > 0)
 
 const recentTerms = computed(() =>
   getRecentTermIds()
@@ -160,20 +250,36 @@ const recentTerms = computed(() =>
     .filter(Boolean)
 )
 
-function openEntry(entry) {
+function closeAllModals() {
+  selectedEntry.value = null
   selectedTerm.value = null
+  selectedPlaybook.value = null
+  selectedDaily.value = null
+}
+
+function openEntry(entry) {
+  closeAllModals()
   selectedEntry.value = entry
 }
 
 function openTerm(term) {
-  selectedEntry.value = null
+  closeAllModals()
   selectedTerm.value = term
   recordRecentTerm(term.id)
 }
 
+function openPlaybook(pb) {
+  closeAllModals()
+  selectedPlaybook.value = pb
+}
+
+function openDaily(entry) {
+  closeAllModals()
+  selectedDaily.value = entry
+}
+
 function closeModal() {
-  selectedEntry.value = null
-  selectedTerm.value = null
+  closeAllModals()
 }
 
 function goToLevelFromEntry() {
@@ -189,27 +295,77 @@ function goToLevelFromTerm(levelId) {
 
 function openRelatedTerm(termId) {
   const term = getGlossaryTerm(termId)
-  if (term) selectedTerm.value = term
+  if (term) openTerm(term)
+}
+
+function openRelatedPlaybook(playbookId) {
+  const pb = getPlaybook(playbookId)
+  if (pb) openPlaybook(pb)
 }
 
 function getTermCategory(term) {
   return getGlossaryCategory(term?.category)
 }
 
+function getPlaybookCat(pb) {
+  return getPlaybookCategory(pb?.category)
+}
+
+function openEntryByLevelId(levelId) {
+  const numId = Number(levelId)
+  const entry = allEntries.value.find((e) => e.levelId === numId)
+  if (entry) {
+    viewMode.value = 'notes'
+    openEntry(entry)
+  }
+}
+
+function applyRouteQuery(query) {
+  if (query.view === 'glossary') viewMode.value = 'glossary'
+  if (query.view === 'playbooks') viewMode.value = 'playbooks'
+  if (query.view === 'daily') viewMode.value = 'daily'
+  if (query.view === 'domains') viewMode.value = 'domains'
+  if (query.domain && handbookDomains.some((d) => d.id === query.domain)) {
+    activeDomainId.value = String(query.domain)
+  }
+  if (query.term) {
+    const term = getGlossaryTerm(String(query.term))
+    if (term) {
+      viewMode.value = 'glossary'
+      openTerm(term)
+    }
+  }
+  if (query.playbook) {
+    const pb = getPlaybook(String(query.playbook))
+    if (pb) {
+      viewMode.value = 'playbooks'
+      openPlaybook(pb)
+    }
+  }
+  if (query.note) {
+    openEntryByLevelId(query.note)
+  }
+}
+
 watch(
   () => route.query,
-  (query) => {
-    if (query.view === 'glossary') viewMode.value = 'glossary'
-    if (query.term) {
-      const term = getGlossaryTerm(String(query.term))
-      if (term) {
-        viewMode.value = 'glossary'
-        selectedTerm.value = term
-      }
-    }
-  },
+  (query) => applyRouteQuery(query),
   { immediate: true }
 )
+
+const selectedEntryLinks = computed(() =>
+  selectedEntry.value
+    ? getHandbookLinksForLevel(selectedEntry.value.levelId)
+    : { terms: [], playbooks: [] }
+)
+
+const selectedTermPlaybooks = computed(() =>
+  selectedTerm.value ? getPlaybooksForTerm(selectedTerm.value.id) : []
+)
+
+watch(allEntries, () => {
+  if (route.query.note) openEntryByLevelId(route.query.note)
+})
 </script>
 
 <template>
@@ -219,7 +375,8 @@ watch(
         <div class="workbench__title-block">
           <h1 class="workbench__title">测试手札 · 百科</h1>
           <p class="workbench__subtitle">
-            {{ allEntries.length }} 条关卡笔记 · {{ glossaryTerms.length }} 条术语 · 统一搜索
+            {{ allEntries.length }} 条关卡笔记 · {{ glossaryTerms.length }} 条术语 ·
+            {{ playbooks.length }} 张套路卡 · {{ dailyEntries.length }} 条每日精选
           </p>
         </div>
       </div>
@@ -236,7 +393,7 @@ watch(
               v-model="searchQuery"
               type="search"
               class="handbook__search-input"
-              placeholder="搜索关卡笔记、Blocker、回归、P99…"
+              placeholder="搜索笔记、术语、套路卡、每日精选…"
               aria-label="搜索手札与术语"
             />
           </div>
@@ -257,6 +414,75 @@ watch(
               @click="viewMode = 'glossary'"
             >
               📖 术语百科
+            </button>
+            <button
+              type="button"
+              class="handbook__view-tab"
+              :class="{ 'handbook__view-tab--active': viewMode === 'playbooks' }"
+              @click="viewMode = 'playbooks'"
+            >
+              📋 套路卡
+            </button>
+            <button
+              type="button"
+              class="handbook__view-tab"
+              :class="{ 'handbook__view-tab--active': viewMode === 'daily' }"
+              @click="viewMode = 'daily'"
+            >
+              📅 每日精选
+            </button>
+            <button
+              type="button"
+              class="handbook__view-tab"
+              :class="{ 'handbook__view-tab--active': viewMode === 'domains' }"
+              @click="viewMode = 'domains'"
+            >
+              🗂️ 能力域
+            </button>
+          </nav>
+
+          <nav
+            v-if="!isSearching && viewMode === 'domains'"
+            class="handbook__tabs"
+            aria-label="能力域"
+          >
+            <button
+              v-for="domain in domainOverview"
+              :key="domain.id"
+              type="button"
+              class="handbook__tab"
+              :class="{ 'handbook__tab--active': activeDomainId === domain.id }"
+              @click="activeDomainId = domain.id"
+            >
+              {{ domain.icon }} {{ domain.name }}
+              <span class="handbook__tab-count">{{
+                domain.counts.notes + domain.counts.terms + domain.counts.playbooks
+              }}</span>
+            </button>
+          </nav>
+
+          <nav
+            v-if="!isSearching && viewMode === 'playbooks'"
+            class="handbook__tabs"
+            aria-label="套路卡分类"
+          >
+            <button
+              type="button"
+              class="handbook__tab"
+              :class="{ 'handbook__tab--active': activePlaybookCategory === 'all' }"
+              @click="activePlaybookCategory = 'all'"
+            >
+              全部
+            </button>
+            <button
+              v-for="cat in playbookCategories"
+              :key="cat.id"
+              type="button"
+              class="handbook__tab"
+              :class="{ 'handbook__tab--active': activePlaybookCategory === cat.id }"
+              @click="activePlaybookCategory = cat.id"
+            >
+              {{ cat.icon }} {{ cat.name }}
             </button>
           </nav>
 
@@ -393,9 +619,227 @@ watch(
             </button>
           </section>
 
-          <p v-if="!searchResultTerms.length && !searchResultNotes.length" class="handbook__empty">
+          <section v-if="searchResultPlaybooks.length" class="handbook__section">
+            <h2 class="handbook__section-title">套路卡 · {{ searchResultPlaybooks.length }}</h2>
+            <div class="handbook__grid">
+              <button
+                v-for="pb in visibleSearchPlaybooks"
+                :key="pb.id"
+                type="button"
+                class="handbook__card handbook__card--playbook"
+                @click="openPlaybook(pb)"
+              >
+                <span class="handbook__card-phase">
+                  {{ getPlaybookCat(pb)?.icon }} {{ getPlaybookCat(pb)?.name }}
+                </span>
+                <h3 class="handbook__card-title">{{ pb.icon }} {{ pb.title }}</h3>
+                <p class="handbook__card-summary">{{ getPlaybookBlurb(pb) }}</p>
+                <span class="handbook__card-more">展开套路 →</span>
+              </button>
+            </div>
+            <button
+              v-if="showLoadMoreSearchPlaybooks"
+              type="button"
+              class="handbook__load-more"
+              @click="loadMore"
+            >
+              加载更多（还剩 {{ remainingCount(searchResultPlaybooks) }} 条）
+            </button>
+          </section>
+
+          <section v-if="searchResultDaily.length" class="handbook__section">
+            <h2 class="handbook__section-title">每日精选 · {{ searchResultDaily.length }}</h2>
+            <div class="handbook__grid">
+              <button
+                v-for="entry in visibleSearchDaily"
+                :key="entry.key"
+                type="button"
+                class="handbook__card handbook__card--daily"
+                @click="openDaily(entry)"
+              >
+                <span class="handbook__card-phase">📅 每日特训</span>
+                <h3 class="handbook__card-title">{{ entry.title }}</h3>
+                <p class="handbook__card-summary">{{ entry.summary }}</p>
+                <span class="handbook__card-more">展开心得 →</span>
+              </button>
+            </div>
+            <button
+              v-if="showLoadMoreSearchDaily"
+              type="button"
+              class="handbook__load-more"
+              @click="loadMore"
+            >
+              加载更多（还剩 {{ remainingCount(searchResultDaily) }} 条）
+            </button>
+          </section>
+
+          <p
+            v-if="
+              !searchResultTerms.length &&
+              !searchResultNotes.length &&
+              !searchResultPlaybooks.length &&
+              !searchResultDaily.length
+            "
+            class="handbook__empty"
+          >
             没有匹配「{{ searchQuery.trim() }}」的内容
           </p>
+        </template>
+
+        <template v-else-if="viewMode === 'playbooks'">
+          <div class="handbook__grid">
+            <button
+              v-for="pb in visiblePlaybooks"
+              :key="pb.id"
+              type="button"
+              class="handbook__card handbook__card--playbook"
+              @click="openPlaybook(pb)"
+            >
+              <span class="handbook__card-phase">
+                {{ getPlaybookCat(pb)?.icon }} {{ getPlaybookCat(pb)?.name }}
+              </span>
+              <h3 class="handbook__card-title">{{ pb.icon }} {{ pb.title }}</h3>
+              <p class="handbook__card-summary">{{ getPlaybookBlurb(pb) }}</p>
+              <span class="handbook__card-more">展开套路 →</span>
+            </button>
+          </div>
+          <button
+            v-if="showLoadMorePlaybooks"
+            type="button"
+            class="handbook__load-more"
+            @click="loadMore"
+          >
+            加载更多（还剩 {{ remainingCount(filteredPlaybooks) }} 条）
+          </button>
+          <p v-if="!filteredPlaybooks.length" class="handbook__empty">该分类暂无套路卡</p>
+        </template>
+
+        <template v-else-if="viewMode === 'domains'">
+          <header v-if="activeDomain" class="handbook__domain-head">
+            <h2 class="handbook__domain-title">
+              {{ activeDomain.icon }} {{ activeDomain.name }}
+            </h2>
+            <p class="handbook__domain-tagline">{{ activeDomain.tagline }}</p>
+            <p class="handbook__domain-stats">
+              {{ domainNotes.length }} 条笔记 · {{ domainTerms.length }} 条术语 ·
+              {{ domainPlaybooks.length }} 张套路卡
+            </p>
+          </header>
+
+          <section v-if="domainPlaybooks.length" class="handbook__section">
+            <h2 class="handbook__section-title">套路卡</h2>
+            <div class="handbook__grid">
+              <button
+                v-for="pb in visibleDomainPlaybooks"
+                :key="pb.id"
+                type="button"
+                class="handbook__card handbook__card--playbook"
+                @click="openPlaybook(pb)"
+              >
+                <span class="handbook__card-phase">{{ pb.icon }} 套路</span>
+                <h3 class="handbook__card-title">{{ pb.title }}</h3>
+                <p class="handbook__card-summary">{{ getPlaybookBlurb(pb) }}</p>
+                <span class="handbook__card-more">展开 →</span>
+              </button>
+            </div>
+            <button
+              v-if="showLoadMoreDomainPlaybooks"
+              type="button"
+              class="handbook__load-more"
+              @click="loadMore"
+            >
+              加载更多套路卡
+            </button>
+          </section>
+
+          <section v-if="domainTerms.length" class="handbook__section">
+            <h2 class="handbook__section-title">核心术语</h2>
+            <div class="handbook__grid">
+              <button
+                v-for="term in visibleDomainTerms"
+                :key="term.id"
+                type="button"
+                class="handbook__card handbook__card--glossary"
+                @click="openTerm(term)"
+              >
+                <span class="handbook__card-phase">
+                  {{ getTermCategory(term)?.icon }} {{ getTermCategory(term)?.name }}
+                </span>
+                <h3 class="handbook__card-title">{{ term.term }}</h3>
+                <p class="handbook__card-summary">{{ getGlossaryBlurb(term) }}</p>
+                <span class="handbook__card-more">展开词条 →</span>
+              </button>
+            </div>
+            <button
+              v-if="showLoadMoreDomainTerms"
+              type="button"
+              class="handbook__load-more"
+              @click="loadMore"
+            >
+              加载更多术语
+            </button>
+          </section>
+
+          <section v-if="domainNotes.length" class="handbook__section">
+            <h2 class="handbook__section-title">代表关卡笔记</h2>
+            <div class="handbook__grid">
+              <button
+                v-for="entry in visibleDomainNotes"
+                :key="entry.levelId"
+                type="button"
+                class="handbook__card"
+                :class="`handbook__card--${entry.phaseId}`"
+                @click="openEntry(entry)"
+              >
+                <span class="handbook__card-phase">{{ entry.phaseIcon }} {{ entry.phaseName }}</span>
+                <span class="handbook__card-id">#{{ entry.levelId }}</span>
+                <h3 class="handbook__card-title">{{ entry.title }}</h3>
+                <p class="handbook__card-summary">{{ getHandbookBlurb(entry) }}</p>
+                <span class="handbook__card-more">展开笔记 →</span>
+              </button>
+            </div>
+            <button
+              v-if="showLoadMoreDomainNotes"
+              type="button"
+              class="handbook__load-more"
+              @click="loadMore"
+            >
+              加载更多笔记
+            </button>
+          </section>
+
+          <p
+            v-if="!domainPlaybooks.length && !domainTerms.length && !domainNotes.length"
+            class="handbook__empty"
+          >
+            该能力域暂无内容
+          </p>
+        </template>
+
+        <template v-else-if="viewMode === 'daily'">
+          <p class="handbook__daily-hint">来自每日特训题库，按主题归档便于复习（与当天轮换题目一致）。</p>
+          <div class="handbook__grid">
+            <button
+              v-for="entry in visibleDaily"
+              :key="entry.key"
+              type="button"
+              class="handbook__card handbook__card--daily"
+              @click="openDaily(entry)"
+            >
+              <span class="handbook__card-phase">📅 每日特训</span>
+              <h3 class="handbook__card-title">{{ entry.title }}</h3>
+              <p class="handbook__card-summary">{{ entry.summary }}</p>
+              <span class="handbook__card-more">展开心得 →</span>
+            </button>
+          </div>
+          <button
+            v-if="showLoadMoreDaily"
+            type="button"
+            class="handbook__load-more"
+            @click="loadMore"
+          >
+            加载更多（还剩 {{ remainingCount(filteredDailyEntries) }} 条）
+          </button>
         </template>
 
         <template v-else-if="viewMode === 'glossary'">
@@ -502,6 +946,34 @@ watch(
             <h3>{{ selectedEntry.tipLabel }}</h3>
             <p>{{ selectedEntry.workplace }}</p>
           </section>
+          <section
+            v-if="selectedEntryLinks.terms.length || selectedEntryLinks.playbooks.length"
+            class="handbook-modal__section"
+          >
+            <h3>延伸阅读</h3>
+            <div v-if="selectedEntryLinks.terms.length" class="handbook-modal__links">
+              <button
+                v-for="term in selectedEntryLinks.terms"
+                :key="term.id"
+                type="button"
+                class="handbook-modal__link-chip"
+                @click="openTerm(term)"
+              >
+                {{ term.term }}
+              </button>
+            </div>
+            <div v-if="selectedEntryLinks.playbooks.length" class="handbook-modal__links">
+              <button
+                v-for="pb in selectedEntryLinks.playbooks"
+                :key="pb.id"
+                type="button"
+                class="handbook-modal__link-chip handbook-modal__link-chip--playbook"
+                @click="openPlaybook(pb)"
+              >
+                {{ pb.icon }} {{ pb.title }}
+              </button>
+            </div>
+          </section>
 
           <footer class="handbook-modal__footer">
             <button type="button" class="sim-btn sim-btn--primary" @click="closeModal">关闭</button>
@@ -577,7 +1049,126 @@ watch(
               </button>
             </div>
           </section>
+          <section v-if="selectedTermPlaybooks.length" class="handbook-modal__section">
+            <h3>相关套路卡</h3>
+            <div class="handbook-modal__links">
+              <button
+                v-for="pb in selectedTermPlaybooks"
+                :key="pb.id"
+                type="button"
+                class="handbook-modal__link-chip handbook-modal__link-chip--playbook"
+                @click="openPlaybook(pb)"
+              >
+                {{ pb.icon }} {{ pb.title }}
+              </button>
+            </div>
+          </section>
 
+          <footer class="handbook-modal__footer">
+            <button type="button" class="sim-btn sim-btn--primary" @click="closeModal">关闭</button>
+          </footer>
+        </div>
+      </article>
+    </div>
+
+    <div v-if="selectedPlaybook" class="handbook-modal" @click.self="closeModal">
+      <article class="handbook-modal__panel handbook-modal__panel--playbook">
+        <div class="handbook-modal__sticky-head">
+          <button v-if="isMobile" type="button" class="handbook-modal__back" @click="closeModal">
+            ← 返回列表
+          </button>
+          <header class="handbook-modal__header">
+            <div>
+              <span class="handbook-modal__phase">
+                {{ getPlaybookCat(selectedPlaybook)?.icon }}
+                {{ getPlaybookCat(selectedPlaybook)?.name }}
+              </span>
+              <h2 class="handbook-modal__title">{{ selectedPlaybook.icon }} {{ selectedPlaybook.title }}</h2>
+            </div>
+            <button type="button" class="handbook-modal__close" aria-label="关闭" @click="closeModal">
+              ×
+            </button>
+          </header>
+        </div>
+        <div class="handbook-modal__body">
+          <section class="handbook-modal__section handbook-modal__section--highlight">
+            <h3>什么时候用</h3>
+            <p>{{ selectedPlaybook.summary }}</p>
+          </section>
+          <section class="handbook-modal__section">
+            <h3>步骤清单</h3>
+            <ol class="handbook-modal__steps">
+              <li v-for="(step, idx) in selectedPlaybook.steps" :key="idx">{{ step }}</li>
+            </ol>
+          </section>
+          <section v-if="selectedPlaybook.relatedTermIds?.length" class="handbook-modal__section">
+            <h3>相关术语</h3>
+            <div class="handbook-modal__links">
+              <button
+                v-for="termId in selectedPlaybook.relatedTermIds"
+                :key="termId"
+                type="button"
+                class="handbook-modal__link-chip"
+                @click="openRelatedTerm(termId)"
+              >
+                {{ getGlossaryTerm(termId)?.term || termId }}
+              </button>
+            </div>
+          </section>
+          <section v-if="selectedPlaybook.relatedLevelIds?.length" class="handbook-modal__section">
+            <h3>练手关卡</h3>
+            <div class="handbook-modal__links">
+              <button
+                v-for="levelId in selectedPlaybook.relatedLevelIds"
+                :key="levelId"
+                type="button"
+                class="handbook-modal__link-chip"
+                @click="goToLevelFromTerm(levelId)"
+              >
+                #{{ levelId }} {{ getLevelTitle(levelId) }}
+              </button>
+            </div>
+          </section>
+          <footer class="handbook-modal__footer">
+            <button type="button" class="sim-btn sim-btn--primary" @click="closeModal">关闭</button>
+          </footer>
+        </div>
+      </article>
+    </div>
+
+    <div v-if="selectedDaily" class="handbook-modal" @click.self="closeModal">
+      <article class="handbook-modal__panel handbook-modal__panel--daily">
+        <div class="handbook-modal__sticky-head">
+          <button v-if="isMobile" type="button" class="handbook-modal__back" @click="closeModal">
+            ← 返回列表
+          </button>
+          <header class="handbook-modal__header">
+            <div>
+              <span class="handbook-modal__phase">📅 每日特训精选</span>
+              <h2 class="handbook-modal__title">{{ selectedDaily.title }}</h2>
+            </div>
+            <button type="button" class="handbook-modal__close" aria-label="关闭" @click="closeModal">
+              ×
+            </button>
+          </header>
+        </div>
+        <div class="handbook-modal__body">
+          <section class="handbook-modal__section handbook-modal__section--highlight">
+            <h3>要点</h3>
+            <p>{{ selectedDaily.summary }}</p>
+          </section>
+          <section class="handbook-modal__section">
+            <h3>为什么</h3>
+            <p>{{ selectedDaily.why }}</p>
+          </section>
+          <section class="handbook-modal__section handbook-modal__section--warn">
+            <h3>常见坑</h3>
+            <p>{{ selectedDaily.pitfalls }}</p>
+          </section>
+          <section class="handbook-modal__section">
+            <h3>{{ selectedDaily.tipLabel }}</h3>
+            <p>{{ selectedDaily.workplace }}</p>
+          </section>
           <footer class="handbook-modal__footer">
             <button type="button" class="sim-btn sim-btn--primary" @click="closeModal">关闭</button>
           </footer>

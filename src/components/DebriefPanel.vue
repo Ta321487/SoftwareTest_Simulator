@@ -67,9 +67,17 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  handbookLinks: {
+    type: Object,
+    default: null,
+  },
+  handbookNoteLevelId: {
+    type: Number,
+    default: null,
+  },
 })
 
-const emit = defineEmits(['close', 'next', 'retry'])
+const emit = defineEmits(['close', 'next', 'retry', 'handbook', 'handbook-term', 'handbook-playbook'])
 
 const showRetryStars = computed(
   () => props.sessionStars > 0 && props.sessionStars < 3 && props.stars < 3
@@ -216,6 +224,43 @@ const showHighlights = computed(() => props.newAchievements.length > 0 || Boolea
         <section class="debrief-section">
           <h3 class="debrief-section__label">{{ tipLabel }}</h3>
           <p>{{ debrief.workplace }}</p>
+        </section>
+
+        <section
+          v-if="handbookLinks?.terms?.length || handbookLinks?.playbooks?.length || handbookNoteLevelId"
+          class="debrief-section debrief-section--handbook"
+        >
+          <h3 class="debrief-section__label">手札延伸阅读</h3>
+          <div v-if="handbookLinks?.terms?.length" class="debrief-handbook-links">
+            <button
+              v-for="term in handbookLinks.terms.slice(0, 4)"
+              :key="term.id"
+              type="button"
+              class="debrief-handbook-chip"
+              @click="emit('handbook-term', term.id)"
+            >
+              {{ term.term }}
+            </button>
+          </div>
+          <div v-if="handbookLinks?.playbooks?.length" class="debrief-handbook-links">
+            <button
+              v-for="pb in handbookLinks.playbooks.slice(0, 3)"
+              :key="pb.id"
+              type="button"
+              class="debrief-handbook-chip debrief-handbook-chip--playbook"
+              @click="emit('handbook-playbook', pb.id)"
+            >
+              {{ pb.icon }} {{ pb.title }}
+            </button>
+          </div>
+          <button
+            v-if="handbookNoteLevelId"
+            type="button"
+            class="debrief-handbook-more"
+            @click="emit('handbook', handbookNoteLevelId)"
+          >
+            在手札中查看本关笔记 →
+          </button>
         </section>
       </div>
 

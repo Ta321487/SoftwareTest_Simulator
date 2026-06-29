@@ -37,7 +37,7 @@ import {
   computeArtifactQuality,
   getPassDebriefNote,
 } from '../data/consequences'
-import DebriefPanel from '../components/DebriefPanel.vue'
+import { getHandbookLinksForLevel } from '../utils/handbookLinks'
 import PreviousSubmission from '../components/PreviousSubmission.vue'
 import WorkbenchShell from '../components/workbench/WorkbenchShell.vue'
 import ProjectContextPanel from '../components/workbench/ProjectContextPanel.vue'
@@ -201,6 +201,10 @@ const simGuide = computed(() => (level.value ? getSimGuide(level.value.simType) 
 const validationCriteria = computed(() => (level.value ? getValidationCriteria(level.value) : ''))
 const debrief = computed(() =>
   level.value ? getDebrief(level.value.id, level.value.dailyKey) : null
+)
+
+const handbookLinks = computed(() =>
+  level.value && debrief.value ? getHandbookLinksForLevel(level.value.id) : null
 )
 
 const simComponent = computed(() => (level.value ? simComponentMap[level.value.simType] : null))
@@ -973,6 +977,18 @@ function retryFromDebrief() {
   resetState()
 }
 
+function openHandbookNote(levelId) {
+  router.push({ path: '/handbook', query: { note: levelId } })
+}
+
+function openHandbookTerm(termId) {
+  router.push({ path: '/handbook', query: { view: 'glossary', term: termId } })
+}
+
+function openHandbookPlaybook(playbookId) {
+  router.push({ path: '/handbook', query: { view: 'playbooks', playbook: playbookId } })
+}
+
 function goBack() {
   if (isSutMode.value) {
     goToMainTask()
@@ -1244,9 +1260,14 @@ onUnmounted(() => {
       :phase-milestone="phaseMilestone"
       :next-level="nextLevelAfterPass"
       :sim-epilogue="passSimEpilogue"
+      :handbook-links="handbookLinks"
+      :handbook-note-level-id="level?.id"
       @close="closeDebrief"
       @next="goToNextLevel"
       @retry="retryFromDebrief"
+      @handbook="openHandbookNote"
+      @handbook-term="openHandbookTerm"
+      @handbook-playbook="openHandbookPlaybook"
     />
   </WorkbenchShell>
 </template>
