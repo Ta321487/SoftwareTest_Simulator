@@ -51,6 +51,10 @@ v1.0.1: 修复移动端 Dock 遮挡模拟区
 3. 不提交 `node_modules`、`.env`、密钥；`dist` 已在 `.gitignore`
 4. 仅当用户明确要求时 `git push`；push 前确认 remote 与分支
 
+## 注意事项
+
+本项目已接入Github CI，注意检查是否能通过检查，不能通过则再次修复并推送（主动进行）
+
 ## 远程仓库
 
 -  origin：`git@github.com:Ta321487/SoftwareTest_Simulator.git`
