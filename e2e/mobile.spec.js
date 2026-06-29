@@ -15,7 +15,7 @@ test.describe('mobile viewport', () => {
     await seedAppStorage(page)
     await page.goto('/')
     const careerFold = page.locator('details.home-fold--career')
-    await careerFold.locator('summary').click()
+    await careerFold.locator('summary.home-fold__summary').click()
     await expect(careerFold.locator('.career-script__chapter-summary').first()).toBeVisible()
   })
 
