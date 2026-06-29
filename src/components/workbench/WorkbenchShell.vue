@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { dockApps } from '../../data/projects'
+import { getSeasonMeta } from '../../data/seasonMeta'
 import ThemeToggle from '../ThemeToggle.vue'
 import AppSidebar from '../AppSidebar.vue'
 import WorkInbox from './WorkInbox.vue'
@@ -89,6 +90,12 @@ const headerSubtitle = computed(() => {
   if (props.phase) return props.level.title
   return props.project?.subtitle || ''
 })
+
+const seasonBadge = computed(() => {
+  const season = props.level?.season
+  if (!season || season === 'extra' || season === 'daily') return null
+  return getSeasonMeta(season)
+})
 </script>
 
 <template>
@@ -104,6 +111,13 @@ const headerSubtitle = computed(() => {
       <div class="workbench__topbar-right">
         <WorkInbox :messages="inboxMessages" />
         <RankBadge :xp="progressStore.totalXp" compact class="workbench__rank-compact" />
+        <span
+          v-if="seasonBadge"
+          class="workbench__season-tag"
+          :class="seasonBadge.className"
+          :title="`${seasonBadge.label}段位`"
+          >{{ seasonBadge.label }}</span
+        >
         <span class="workbench__level-tag"
           >{{ viewMode === 'sut' ? '上机' : '主线' }} · #{{ level.id }}</span
         >

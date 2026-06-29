@@ -8,17 +8,16 @@ import { getRankForXp } from '../data/ranks'
 import { getStoryContext } from '../data/storyContext'
 import { getDebrief } from '../data/debriefs'
 import { getReferenceAnswer } from '../data/referenceAnswers'
-import { getAchievementById } from '../data/achievements'
 import { useProgressStore } from '../stores/progressStore'
 import { useProjectStore } from '../stores/projectStore'
-import { validateSimulation } from '../utils/validator'
 import { getValidationCriteria } from '../utils/validationCriteria'
 import { getSimGuide } from '../utils/simGuides'
-import { getFailureHint, getLevelHint } from '../utils/failureHints'
 import { getLevelXpPreview } from '../utils/levelXp'
 import { getLevelDeliverable } from '../data/levelDeliverables'
-import { getPhaseMilestoneForLevel } from '../data/phaseMilestones'
 import { useMobileLayout } from '../composables/useMobileLayout'
+import { useLevelHints } from '../composables/useLevelHints'
+import { useLevelSubmit } from '../composables/useLevelSubmit'
+import { buildSimProps, getLinkedJiraIssue as resolveLinkedJiraIssue } from '../utils/simProps'
 import {
   buildSutRoute,
   buildMainLevelRoute,
@@ -30,13 +29,7 @@ import {
   setImmersionStepProgress,
   initPassiveSutStep,
   syncDbConnectedStep,
-  getImmersionEntries,
 } from '../utils/sutImmersion'
-import {
-  shouldRecordMistake,
-  computeArtifactQuality,
-  getPassDebriefNote,
-} from '../data/consequences'
 import { getHandbookLinksForLevel } from '../utils/handbookLinks'
 import DebriefPanel from '../components/DebriefPanel.vue'
 import PreviousSubmission from '../components/PreviousSubmission.vue'
@@ -89,35 +82,19 @@ const progressStore = useProgressStore()
 const projectStore = useProjectStore()
 const { isMobile } = useMobileLayout()
 
-const showFeedback = ref(false)
-const feedbackMessage = ref('')
-const failureHint = ref('')
-const showHint = ref(false)
-const hintText = ref('')
-const showDebrief = ref(false)
-const isSubmitting = ref(false)
-const jiraInvalidFields = ref([])
-const jiraPreview = ref(null)
 const simRef = ref(null)
 const simSessionKey = ref(0)
 const freshRetrySession = ref(false)
 const activeDockLevelId = ref(1)
-const xpBeforeLevel = ref(0)
-const rankBeforeLevel = ref(null)
-const levelReward = ref({ stars: 1, bonusXp: 0, sessionStars: 0, improved: false })
-const newAchievements = ref([])
 const sessionAttempts = ref(0)
-const sessionHintUsed = ref(false)
-const passDebriefNote = ref(null)
-const sessionJiraTier = ref(null)
-const phaseMilestone = ref(null)
-const passSimEpilogue = ref(null)
 const sutToast = ref('')
-const submitFlash = ref('')
 const taskReturnFlash = ref('')
 const taskFocusPulse = ref(false)
 let taskReturnTimer = null
 let taskPulseTimer = null
+
+const { showHint, hintText, sessionHintUsed, resetHints, revealHint: revealLevelHint } =
+  useLevelHints(progressStore)
 
 const levelId = computed(() => Number(route.params.id))
 const level = computed(() => getLevelById(levelId.value))
@@ -154,6 +131,32 @@ const storyContext = computed(() =>
     ? getStoryContext(level.value.id, projectStore, progressStore)
     : { inbox: [], envStatus: [] }
 )
+
+const {
+  showFeedback,
+  feedbackMessage,
+  failureHint,
+  showDebrief,
+  jiraInvalidFields,
+  jiraPreview,
+  rankBeforeLevel,
+  levelReward,
+  newAchievements,
+  passDebriefNote,
+  phaseMilestone,
+  passSimEpilogue,
+  submitFlash,
+  resetSubmitState,
+  handleSimSubmit,
+} = useLevelSubmit({
+  level,
+  storyContext,
+  progressStore,
+  projectStore,
+  sessionHintUsed,
+  sessionAttempts,
+  simRef,
+})
 
 const referenceAnswer = computed(() => (level.value ? getReferenceAnswer(level.value.id) : null))
 
@@ -461,277 +464,29 @@ function lockedLabel(levelId, projectDay) {
 }
 
 function getLinkedJiraIssue(projectId) {
-  if (!projectId) return null
-  const jiraLevel = levels.find((l) => l.projectId === projectId && l.simType === 'jira')
-  if (jiraLevel && projectStore.hasArtifact(projectId, jiraLevel.id)) {
-    return `TEST-${1000 + jiraLevel.id}`
-  }
-  return null
+  return resolveLinkedJiraIssue(projectId, projectStore.hasArtifact.bind(projectStore))
 }
 
-const simProps = computed(() => {
-  if (!level.value) return {}
-  const lv = level.value
-  const ctx = storyContext.value
-
-  switch (lv.simType) {
-    case 'jira':
-      return {
-        jiraFields: lv.jiraFields,
-        externalInvalidFields: jiraInvalidFields.value,
-        preview: jiraPreview.value,
-        levelId: lv.id,
-        jiraRules: lv.jiraRules,
-        projectName: project.value?.name || '通用',
-        jiraMode: ctx.jiraMode,
-        jiraDraft: ctx.jiraDraft,
-        jiraBacklog: ctx.jiraBacklog,
-      }
-    case 'terminal':
-      return {
-        terminalHint: lv.terminalHint,
-        terminalSuccessMsg: lv.terminalSuccessMsg,
-        logPath: lv.logPath || '/var/log/app/error.log',
-        storyLogs: lv.storyLogs,
-        correctCommand: lv.correctCommand,
-        fileContent: lv.fileContent,
-        findResults: lv.findResults,
-        lsListing: lv.lsListing,
-        curlResponse: lv.curlResponse,
-      }
-    case 'chat':
-      return {
-        chatContext: lv.chatContext,
-        chatGroup: lv.chatGroup,
-        chatHistory: ctx.chatHistory,
-        composeHint: lv.chatHint,
-        placeholder: lv.chatPlaceholder,
-        chatPreviewConfig:
-          lv.chatStructure || lv.chatKeywords?.length
-            ? {
-                chatStructure: lv.chatStructure,
-                chatKeywords: lv.chatKeywords,
-                chatMinLength: lv.chatMinLength,
-                chatMinKeywords: lv.chatMinKeywords,
-              }
-            : null,
-      }
-    case 'config':
-      return {
-        configContent: lv.configContent,
-        configKey: lv.configKey || 'DB_HOST',
-        defaultValue: '127.0.0.1',
-        correctValue: lv.correctValue,
-      }
-    case 'report':
-      return {
-        reportItems: lv.reportItems,
-        storyRef: lv.storyRef,
-        linkedIssueFromStore: getLinkedJiraIssue(lv.projectId),
-        projectLabel: project.value ? `${project.value.name}回归流水线 #428` : '',
-      }
-    case 'checklist':
-      return { checklistItems: lv.checklistItems, prdContent: ctx.prdContent }
-    case 'clickcard':
-      return {
-        clickOptions: lv.clickOptions,
-        clickVariant: ctx.clickVariant || lv.clickVariant,
-      }
-    case 'template':
-      return {
-        templateFields: lv.templateFields,
-        requirement: lv.requirement,
-        fillHint: lv.fillHint,
-        templateMinLength: lv.templateMinLength || 0,
-        initialValues: submissionInitialValues.value,
-      }
-    case 'apiclient':
-      return {
-        apiMethod: lv.apiMethod || 'POST',
-        apiUrl: lv.apiUrl || '/api/login',
-        apiRequestBody: lv.apiRequestBody || '{}',
-        templateFields: lv.templateFields || [],
-        checklistItems: lv.checklistItems || [],
-        requirement: lv.requirement,
-        fillHint: lv.fillHint,
-        templateMinLength: lv.templateMinLength || 0,
-        initialValues: submissionInitialValues.value,
-        initialSelected: submissionInitialSelected.value,
-      }
-    case 'calculator':
-      return {
-        calculatorFields: lv.calculatorFields,
-        calculatorFormula: lv.calculatorFormula || 'schedule',
-        calculatorReadonly: lv.calculatorReadonly !== false,
-      }
-    case 'packet':
-      return {
-        packetRequests: lv.packetRequests,
-      }
-    case 'sqlclient':
-      return {
-        sqlHint: lv.sqlHint,
-        sqlTable: lv.sqlTable,
-        sqlSchema: lv.sqlSchema,
-        sqlMustInclude: lv.sqlMustInclude,
-        sqlMustIncludeAny: lv.sqlMustIncludeAny,
-        sqlResultRows: lv.sqlResultRows,
-        correctQuery: lv.correctQuery,
-      }
-    case 'redis':
-      return {
-        redisHint: lv.redisHint,
-        redisStore: lv.redisStore,
-        redisKeys: lv.redisKeys,
-        correctCommand: lv.correctCommand,
-        redisSuccessMsg: lv.redisSuccessMsg,
-      }
-    case 'cipipeline':
-      return {
-        pipelineStages: lv.pipelineStages,
-        pipelineLog: lv.pipelineLog,
-        correctStage: lv.correctStage,
-        causeOptions: lv.causeOptions,
-        correctCause: lv.correctCause,
-      }
-    case 'mockserver':
-      return {
-        mockPath: lv.mockPath,
-        mockStatus: lv.mockStatus,
-        mockBodyIncludes: lv.mockBodyIncludes,
-        mockDelayMs: lv.mockDelayMs,
-        mockHint: lv.mockHint,
-        defaultBody: lv.defaultBody,
-      }
-    case 'apmtrace':
-      return {
-        traceTitle: lv.traceTitle,
-        traceNodes: lv.traceNodes,
-        apmMetrics: lv.apmMetrics,
-        correctClick: lv.correctClick,
-        apmMode: lv.apmMode || 'trace',
-      }
-    case 'gitrelease':
-      return {
-        gitTitle: lv.gitTitle,
-        gitOptions: lv.gitOptions,
-        gitCommits: lv.gitCommits,
-        correctClick: lv.correctClick,
-        gitMode: lv.gitMode || 'branch',
-      }
-    case 'mqinbox':
-      return {
-        inboxMode: lv.inboxMode || 'mq',
-        mqMessages: lv.mqMessages,
-        smsMessages: lv.smsMessages,
-        correctMessageId: lv.correctMessageId,
-        correctCode: lv.correctCode,
-        mqHint: lv.mqHint,
-      }
-    default:
-      return {}
-  }
-})
+const simProps = computed(() =>
+  buildSimProps({
+    level: level.value,
+    storyContext: storyContext.value,
+    project: project.value,
+    jiraInvalidFields: jiraInvalidFields.value,
+    jiraPreview: jiraPreview.value,
+    submissionInitialValues: submissionInitialValues.value,
+    submissionInitialSelected: submissionInitialSelected.value,
+    getLinkedJiraIssue,
+  })
+)
 
 function resetState() {
-  showFeedback.value = false
-  feedbackMessage.value = ''
-  failureHint.value = ''
-  showHint.value = false
-  hintText.value = ''
-  showDebrief.value = false
-  isSubmitting.value = false
-  jiraInvalidFields.value = []
-  jiraPreview.value = null
-  levelReward.value = { stars: 1, bonusXp: 0, sessionStars: 0, improved: false }
-  newAchievements.value = []
-  sessionAttempts.value = 0
-  sessionHintUsed.value = false
-  passDebriefNote.value = null
-  sessionJiraTier.value = null
-  passSimEpilogue.value = null
-  simRef.value?.reset?.()
-}
-
-function getChatEpilogue() {
-  const ctx = storyContext.value
-  if (!ctx.chatReply) return null
-  const history = ctx.chatHistory || []
-  const lastOther = [...history].reverse().find((m) => m.role === 'other') || history[0]
-  return {
-    sender: lastOther?.sender || '对方',
-    text: ctx.chatReply,
-  }
-}
-
-function buildSimEpilogue(simType, submitData) {
-  const lv = level.value
-  if (!lv) return null
-
-  switch (simType) {
-    case 'chat': {
-      const epilogue = getChatEpilogue()
-      if (!epilogue) return null
-      return { kind: 'quote', label: `${epilogue.sender} · 回应`, text: epilogue.text }
-    }
-    case 'terminal':
-      return {
-        kind: 'quote',
-        label: '命令结果',
-        text: lv.terminalSuccessMsg || '日志已加载，发现多条 ERROR，建议结合业务现象继续排查。',
-      }
-    case 'jira': {
-      const values = submitData?.values
-      if (!values) return null
-      const fields = lv.jiraFields || {}
-      const items = Object.entries(fields).map(([key, config]) => ({
-        title: config.label,
-        text: values[key] || '—',
-      }))
-      return {
-        kind: 'list',
-        label: '工单已提交',
-        badge: `TEST-${1000 + lv.id}`,
-        items,
-      }
-    }
-    case 'config': {
-      const value = submitData?.value
-      if (value == null || value === '') return null
-      const key = lv.configKey || 'DB_HOST'
-      return {
-        kind: 'quote',
-        label: '环境检测',
-        text: `✓ 连接成功 — ${key}=${value}，数据库连通正常。`,
-      }
-    }
-    default:
-      return null
-  }
-}
-
-function getDebriefDelay(simType) {
-  switch (simType) {
-    case 'jira':
-      return 1400
-    case 'chat':
-      return 1800
-    case 'terminal':
-      return 1400
-    case 'config':
-      return 1200
-    default:
-      return 700
-  }
+  resetHints()
+  resetSubmitState()
 }
 
 function revealHint() {
-  if (!level.value) return
-  const text = getLevelHint(level.value)
-  if (!text) return
-  sessionHintUsed.value = true
-  hintText.value = text
-  showHint.value = true
+  revealLevelHint(level.value)
 }
 
 watch(
@@ -894,143 +649,12 @@ const showDbConnectedMainLink = computed(
     !progressStore.completedLevelIds.includes(6)
 )
 
-function saveStoryArtifact(submitData) {
-  if (!level.value?.projectId) return
-  const mistakesOnLevel = progressStore.getLevelMistakes(level.value.id)
-  const quality = computeArtifactQuality(
-    sessionAttempts.value,
-    sessionHintUsed.value,
-    mistakesOnLevel,
-    sessionJiraTier.value
-  )
-  projectStore.saveArtifact(level.value.projectId, level.value.id, {
-    ...submitData,
-    _meta: {
-      quality,
-      mistakes: mistakesOnLevel,
-      attempts: sessionAttempts.value,
-      hintsUsed: sessionHintUsed.value,
-      jiraTier: sessionJiraTier.value,
-    },
-  })
-
-  if (level.value.id === 6 && level.value.projectId === PAYMENT_MODULE_ID) {
-    projectStore.patchPaymentSut(PAYMENT_MODULE_ID, { dbConnected: true })
-    const dbEntry = getImmersionEntries(PAYMENT_MODULE_ID).find((e) => e.key === 'dbConnected')
-    if (dbEntry) {
-      syncDbConnectedStep(dbEntry, projectStore, PAYMENT_MODULE_ID, progressStore)
-    }
-  }
-}
-
 const rankUp = computed(() => {
   if (!showDebrief.value || rankBeforeLevel.value == null) return null
   const after = getRankForXp(progressStore.totalXp)
   if (after.minXp > rankBeforeLevel.value.minXp) return after
   return null
 })
-
-function handlePass(submitData) {
-  if (!level.value) return
-  xpBeforeLevel.value = progressStore.totalXp
-  rankBeforeLevel.value = getRankForXp(progressStore.totalXp)
-  saveStoryArtifact(submitData)
-  progressStore.saveSubmission(level.value.id, level.value.simType, submitData)
-
-  const prevAchievements = [...progressStore.achievements]
-  levelReward.value = progressStore.completeLevel(level.value.id, level.value.xpReward, {
-    attempts: sessionAttempts.value,
-    hintsUsed: isDailyQuestId(level.value.id) ? false : sessionHintUsed.value,
-    jiraTier: sessionJiraTier.value,
-  })
-  newAchievements.value = progressStore.achievements
-    .filter((id) => !prevAchievements.includes(id))
-    .map((id) => getAchievementById(id))
-    .filter(Boolean)
-
-  if (level.value.simType === 'jira' && submitData?.values) {
-    jiraPreview.value = { ...submitData.values }
-  }
-
-  passDebriefNote.value = getPassDebriefNote(level.value.id, progressStore, projectStore)
-  phaseMilestone.value = getPhaseMilestoneForLevel(level.value.id)
-
-  showFeedback.value = false
-  feedbackMessage.value = ''
-  failureHint.value = ''
-  isSubmitting.value = true
-  submitFlash.value = `✓ 通过 +${level.value.xpReward} XP`
-  passSimEpilogue.value = buildSimEpilogue(level.value.simType, submitData)
-
-  const debriefDelay = getDebriefDelay(level.value.simType)
-  setTimeout(() => {
-    submitFlash.value = ''
-    showDebrief.value = true
-  }, debriefDelay)
-}
-
-function handleFail(data, result) {
-  showFeedback.value = true
-  feedbackMessage.value = result.message
-  failureHint.value = getFailureHint(level.value, data, result)
-
-  if (level.value && shouldRecordMistake(level.value.simType)) {
-    progressStore.recordMistake(level.value.id)
-  }
-}
-
-function handleSimSubmit(data) {
-  if (!level.value || isSubmitting.value || showDebrief.value) return
-
-  sessionAttempts.value += 1
-  progressStore.recordAttempt(level.value.id)
-  const result = validateSimulation(level.value, data)
-
-  if (level.value.simType === 'jira') {
-    jiraInvalidFields.value = result.invalidFields || []
-  }
-
-  if (level.value.simType === 'terminal' || level.value.simType === 'redis') {
-    if (result.isPass) {
-      simRef.value?.markSuccess?.()
-      handlePass(data)
-    } else {
-      simRef.value?.markError?.()
-      handleFail(data, result)
-    }
-    return
-  }
-
-  if (level.value.simType === 'sqlclient') {
-    if (result.isPass) {
-      handlePass(data)
-    } else {
-      handleFail(data, result)
-    }
-    return
-  }
-
-  if (level.value.simType === 'chat') {
-    if (result.isPass) {
-      simRef.value?.markSuccess?.(storyContext.value.chatReply)
-      handlePass(data)
-    } else {
-      simRef.value?.markError?.()
-      handleFail(data, result)
-    }
-    return
-  }
-
-  if (result.isPass) {
-    if (level.value.simType === 'jira') {
-      sessionJiraTier.value = result.jiraTier || null
-    }
-    handlePass(data)
-    return
-  }
-
-  handleFail(data, result)
-}
 
 function closeDebrief() {
   router.push('/')

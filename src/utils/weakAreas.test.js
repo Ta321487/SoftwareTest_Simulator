@@ -23,6 +23,16 @@ describe('getWeakAreas', () => {
     })
     expect(areas.map((a) => a.levelId).sort()).toEqual([4, 7])
   })
+
+  it('reads hintsUsed from levelMeta when progress hintsUsed is empty', () => {
+    const areas = getWeakAreas({
+      levelMeta: { 12: { stars: 3, hintsUsed: true } },
+      hintsUsed: {},
+      completedLevelIds: [12],
+    })
+    expect(areas).toHaveLength(1)
+    expect(areas[0].reason).toBe('用过提示')
+  })
 })
 
 describe('getWeakSimTypeDrills', () => {

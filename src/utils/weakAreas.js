@@ -40,6 +40,14 @@ export function getWeakAreas({
     }
   }
 
+  for (const [idStr, meta] of Object.entries(levelMeta)) {
+    if (!meta?.hintsUsed) continue
+    const levelId = Number(idStr)
+    if (completedLevelIds.includes(levelId)) {
+      push(levelId, '用过提示', 3)
+    }
+  }
+
   for (const [idStr, used] of Object.entries(hintsUsed)) {
     if (!used) continue
     const levelId = Number(idStr)
