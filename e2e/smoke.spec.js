@@ -14,7 +14,9 @@ test('main level route shows deliverable banner', async ({ page }) => {
   await expect(page.locator('.workbench__topbar-right .workbench__level-tag')).toHaveText(
     '主线 · #3'
   )
-  await expect(page.getByText('今日交付物')).toBeVisible()
+  await expect(
+    page.locator('.task-panel-brief--desktop .task-panel__deliverable-label')
+  ).toBeVisible()
   await expect(page.locator('.sut-mode')).toHaveCount(0)
 })
 
