@@ -38,6 +38,7 @@ import {
   getPassDebriefNote,
 } from '../data/consequences'
 import { getHandbookLinksForLevel } from '../utils/handbookLinks'
+import DebriefPanel from '../components/DebriefPanel.vue'
 import PreviousSubmission from '../components/PreviousSubmission.vue'
 import WorkbenchShell from '../components/workbench/WorkbenchShell.vue'
 import ProjectContextPanel from '../components/workbench/ProjectContextPanel.vue'
