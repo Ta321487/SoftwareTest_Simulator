@@ -143,7 +143,9 @@ function onArcToggle(arc, event) {
           <span v-if="card.xpReward && card.status === 'available'" class="side-hub__card-xp"
             >+{{ card.xpReward }} XP</span
           >
-          <span v-else-if="card.stars" class="side-hub__card-stars">{{ starLine(card.stars) }}</span>
+          <span v-else-if="card.stars" class="side-hub__card-stars">{{
+            starLine(card.stars)
+          }}</span>
           <span class="side-hub__card-status">
             {{ card.status === 'completed' ? '✓' : card.status === 'available' ? '▶' : '🔒' }}
           </span>
@@ -194,9 +196,7 @@ function onArcToggle(arc, event) {
                   starLine(card.stars)
                 }}</span>
                 <span class="side-hub__card-status">
-                  {{
-                    card.status === 'completed' ? '✓' : card.status === 'available' ? '▶' : '🔒'
-                  }}
+                  {{ card.status === 'completed' ? '✓' : card.status === 'available' ? '▶' : '🔒' }}
                 </span>
               </div>
             </button>

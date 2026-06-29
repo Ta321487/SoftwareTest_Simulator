@@ -76,7 +76,11 @@ const sortedDockItems = computed(() => {
 const MOBILE_DOCK_VISIBLE = 4
 
 const visibleDockItems = computed(() => {
-  if (!isMobile.value || dockExpanded.value || sortedDockItems.value.length <= MOBILE_DOCK_VISIBLE) {
+  if (
+    !isMobile.value ||
+    dockExpanded.value ||
+    sortedDockItems.value.length <= MOBILE_DOCK_VISIBLE
+  ) {
     return sortedDockItems.value
   }
   return sortedDockItems.value.slice(0, MOBILE_DOCK_VISIBLE - 1)

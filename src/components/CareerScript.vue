@@ -88,7 +88,9 @@ function onChapterToggle(chapter, event) {
           </div>
           <div class="career-script__chapter-row">
             <h3 class="career-script__chapter-title">{{ chapter.title }}</h3>
-            <span v-if="chapter.locked" class="career-script__chapter-lock">🔒 第一季结业后解锁</span>
+            <span v-if="chapter.locked" class="career-script__chapter-lock"
+              >🔒 第一季结业后解锁</span
+            >
             <span v-else class="career-script__chapter-progress">
               {{ chapter.progress.done }}/{{ chapter.progress.total }}
             </span>

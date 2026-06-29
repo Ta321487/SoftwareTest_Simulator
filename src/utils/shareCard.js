@@ -85,7 +85,11 @@ export function drawShareCard(canvas, payload) {
 
   ctx.font = `400 26px ${font}`
   ctx.fillStyle = COLORS.muted
-  ctx.fillText(`XP ${xp}    ★ ${stars}    主线 ${mainDone}/${mainTotal}    番外 ${sideDone}/${sideTotal}`, 104, 272)
+  ctx.fillText(
+    `XP ${xp}    ★ ${stars}    主线 ${mainDone}/${mainTotal}    番外 ${sideDone}/${sideTotal}`,
+    104,
+    272
+  )
   ctx.fillText(`每日连续 ${streak} 天`, 104, 306)
 
   roundRect(ctx, 80, 325, W - 160, 100, 14)
@@ -102,8 +106,7 @@ export function drawShareCard(canvas, payload) {
 
   ctx.fillStyle = COLORS.text
   ctx.font = `400 24px ${font}`
-  const practiceShort =
-    practiceLine.length > 52 ? `${practiceLine.slice(0, 50)}…` : practiceLine
+  const practiceShort = practiceLine.length > 52 ? `${practiceLine.slice(0, 50)}…` : practiceLine
   ctx.fillText(practiceShort, 104, 398)
 
   ctx.fillStyle = COLORS.cyan

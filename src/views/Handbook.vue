@@ -232,11 +232,7 @@ watch(
           <span class="workbench__dock-icon">🏠</span>
           <span class="workbench__dock-text">首页</span>
         </button>
-        <button
-          type="button"
-          class="workbench__dock-item workbench__dock-item--active"
-          disabled
-        >
+        <button type="button" class="workbench__dock-item workbench__dock-item--active" disabled>
           <span class="workbench__dock-icon">📖</span>
           <span class="workbench__dock-text">手札·百科</span>
         </button>
@@ -311,7 +307,11 @@ watch(
             </select>
           </label>
 
-          <nav v-if="!isSearching && viewMode === 'notes' && !isMobile" class="handbook__tabs" aria-label="阶段筛选">
+          <nav
+            v-if="!isSearching && viewMode === 'notes' && !isMobile"
+            class="handbook__tabs"
+            aria-label="阶段筛选"
+          >
             <button
               type="button"
               class="handbook__tab"
@@ -340,10 +340,7 @@ watch(
             </button>
           </nav>
 
-          <label
-            v-if="!isSearching && viewMode === 'notes' && isMobile"
-            class="handbook__filter"
-          >
+          <label v-if="!isSearching && viewMode === 'notes' && isMobile" class="handbook__filter">
             <span class="handbook__filter-label">笔记分类</span>
             <select v-model="activePhase" class="handbook__filter-select">
               <option value="all">全部</option>
@@ -410,7 +407,9 @@ watch(
                 :class="`handbook__card--${entry.phaseId}`"
                 @click="openEntry(entry)"
               >
-                <span class="handbook__card-phase">{{ entry.phaseIcon }} {{ entry.phaseName }}</span>
+                <span class="handbook__card-phase"
+                  >{{ entry.phaseIcon }} {{ entry.phaseName }}</span
+                >
                 <span class="handbook__card-id">#{{ entry.levelId }}</span>
                 <h3 class="handbook__card-title">{{ entry.title }}</h3>
                 <p class="handbook__card-summary">{{ getHandbookBlurb(entry) }}</p>

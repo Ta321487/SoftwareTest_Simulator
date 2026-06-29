@@ -78,7 +78,9 @@ function starDisplay(n) {
           <p v-if="task.deliverable" class="script-task-list__deliverable">
             📎 交付：{{ task.deliverable }}
           </p>
-          <span v-if="task.stars" class="script-task-list__stars">{{ starDisplay(task.stars) }}</span>
+          <span v-if="task.stars" class="script-task-list__stars">{{
+            starDisplay(task.stars)
+          }}</span>
         </button>
       </li>
     </ul>

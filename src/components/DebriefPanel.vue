@@ -95,7 +95,10 @@ const showHighlights = computed(() => props.newAchievements.length > 0 || Boolea
           <h2 id="debrief-title" class="debrief-panel__title">{{ levelTitle }}</h2>
         </div>
         <div class="debrief-panel__rewards">
-          <span class="debrief-panel__stars debrief-panel__stars--animate" :title="starLabel(stars)">
+          <span
+            class="debrief-panel__stars debrief-panel__stars--animate"
+            :title="starLabel(stars)"
+          >
             <span
               v-for="i in 3"
               :key="i"

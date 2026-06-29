@@ -191,9 +191,7 @@ const debrief = computed(() =>
 const simComponent = computed(() => (level.value ? simComponentMap[level.value.simType] : null))
 
 const MOBILE_HEAVY_SIMS = new Set(['terminal', 'apiclient', 'packet'])
-const showMobileSimHint = computed(
-  () => level.value && MOBILE_HEAVY_SIMS.has(level.value.simType)
-)
+const showMobileSimHint = computed(() => level.value && MOBILE_HEAVY_SIMS.has(level.value.simType))
 
 const isTaskView = computed(
   () => level.value && !isSutMode.value && activeDockLevelId.value === level.value.id
@@ -981,34 +979,34 @@ function goBack() {
         <span class="task-panel-fold__text">{{ level.content }}</span>
       </summary>
       <section class="task-panel task-panel--compact">
-      <p v-if="isExtraLevel" class="task-panel__extra-tag">
-        {{ isDailyQuestId(levelId) ? '📅 每日特训' : '🎬 番外关卡' }}
-      </p>
-      <p v-if="deliverable" class="task-panel__deliverable">
-        <span class="task-panel__deliverable-label">今日交付物</span>
-        {{ deliverable }}
-      </p>
-      <div class="task-panel__action task-panel__action--full">
-        <span class="task-panel__action-icon">📋</span>
-        <p>{{ level.content }}</p>
-      </div>
-      <div v-if="sutEntriesOnLevel.length" class="task-panel__sut-links">
-        <span class="task-panel__sut-label">可选上机实操（不影响通关）：</span>
-        <button
-          v-for="entry in sutEntriesOnLevel"
-          :key="entry.key"
-          type="button"
-          class="task-panel__sut-link"
-          @click="openSutEntry(entry)"
-        >
-          ▶ {{ entry.label }}
-        </button>
-      </div>
-      <details class="task-panel__details">
-        <summary>背景与判定标准</summary>
-        <p class="task-panel__text">{{ level.description }}</p>
-        <p class="task-panel__criteria-inline">{{ validationCriteria }}</p>
-      </details>
+        <p v-if="isExtraLevel" class="task-panel__extra-tag">
+          {{ isDailyQuestId(levelId) ? '📅 每日特训' : '🎬 番外关卡' }}
+        </p>
+        <p v-if="deliverable" class="task-panel__deliverable">
+          <span class="task-panel__deliverable-label">今日交付物</span>
+          {{ deliverable }}
+        </p>
+        <div class="task-panel__action task-panel__action--full">
+          <span class="task-panel__action-icon">📋</span>
+          <p>{{ level.content }}</p>
+        </div>
+        <div v-if="sutEntriesOnLevel.length" class="task-panel__sut-links">
+          <span class="task-panel__sut-label">可选上机实操（不影响通关）：</span>
+          <button
+            v-for="entry in sutEntriesOnLevel"
+            :key="entry.key"
+            type="button"
+            class="task-panel__sut-link"
+            @click="openSutEntry(entry)"
+          >
+            ▶ {{ entry.label }}
+          </button>
+        </div>
+        <details class="task-panel__details">
+          <summary>背景与判定标准</summary>
+          <p class="task-panel__text">{{ level.description }}</p>
+          <p class="task-panel__criteria-inline">{{ validationCriteria }}</p>
+        </details>
       </section>
     </details>
 

@@ -157,10 +157,7 @@ function showOnboarding() {
               aria-valuemin="0"
               aria-valuemax="100"
             >
-              <div
-                class="home-map__hero-xp-fill"
-                :style="{ width: `${rankProgress.percent}%` }"
-              />
+              <div class="home-map__hero-xp-fill" :style="{ width: `${rankProgress.percent}%` }" />
             </div>
           </div>
           <p v-else class="home-map__hero-xp-max">🛡️ 已达最高职级 · 质量 Owner</p>
@@ -243,7 +240,9 @@ function showOnboarding() {
           class="home-fold home-fold--mobile-collapsible home-fold--side"
           :open="isMobile ? undefined : true"
         >
-          <summary class="home-fold__summary">番外 & 每日特训（{{ progressStore.sideCompletedCount }}/{{ sideLevels.length }}）</summary>
+          <summary class="home-fold__summary">
+            番外 & 每日特训（{{ progressStore.sideCompletedCount }}/{{ sideLevels.length }}）
+          </summary>
           <div class="home-fold__body">
             <SideQuestHub />
           </div>

@@ -29,10 +29,13 @@ function showShareMsg(message, isError = false) {
   }
   shareMsg.value = message
   shareError.value = isError
-  shareMsgTimer = setTimeout(() => {
-    shareMsg.value = ''
-    shareMsgTimer = null
-  }, isError ? 5000 : 3500)
+  shareMsgTimer = setTimeout(
+    () => {
+      shareMsg.value = ''
+      shareMsgTimer = null
+    },
+    isError ? 5000 : 3500
+  )
 }
 
 onUnmounted(() => {
@@ -135,7 +138,11 @@ function handleSaveShareImage() {
         <button type="button" class="level-map__btn level-map__btn--ghost" @click="handleShare">
           分享成绩
         </button>
-        <button type="button" class="level-map__btn level-map__btn--ghost" @click="handleSaveShareImage">
+        <button
+          type="button"
+          class="level-map__btn level-map__btn--ghost"
+          @click="handleSaveShareImage"
+        >
           保存分享图
         </button>
         <a
