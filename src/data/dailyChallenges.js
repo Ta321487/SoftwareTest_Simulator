@@ -1,4 +1,6 @@
-/** 每日特训题库 — 按日期轮换 */
+import { DAILY_POOL_EXTRA } from './dailyChallengesExtra.js'
+
+/** 每日特训题库 — 按日期轮换（7 日内不重复同一 key） */
 export const DAILY_POOL = [
   {
     key: 'regression-mini',
@@ -377,11 +379,13 @@ export const DAILY_POOL = [
     hint: '全面屏看安全区与底栏可达性；emoji 不是兼容冒烟重点。',
     xpReward: 10,
   },
+  ...DAILY_POOL_EXTRA,
 ]
 
 export const DAILY_POOL_SIZE = DAILY_POOL.length
 
 export const DAILY_LEVEL_ID = 900
+export const DAILY_NO_REPEAT_DAYS = 7
 
 function dateSeed(dateStr) {
   let hash = 0
@@ -396,8 +400,62 @@ export function getTodayDateStr(d = new Date()) {
   return d.toISOString().slice(0, 10)
 }
 
+export function shiftDateStr(dateStr, days) {
+  const d = new Date(`${dateStr}T12:00:00.000Z`)
+  d.setUTCDate(d.getUTCDate() + days)
+  return d.toISOString().slice(0, 10)
+}
+
+const DAILY_INDEX_ANCHOR = '2024-01-01'
+
+function pickDailyIndex(dateStr, memo) {
+  const recentKeys = new Set()
+  for (let i = 1; i <= DAILY_NO_REPEAT_DAYS; i++) {
+    const prevDate = shiftDateStr(dateStr, -i)
+    if (prevDate < DAILY_INDEX_ANCHOR) continue
+    const prevIdx = memo.get(prevDate)
+    if (prevIdx != null) recentKeys.add(DAILY_POOL[prevIdx].key)
+  }
+
+  const baseIdx = dateSeed(dateStr) % DAILY_POOL.length
+  if (!recentKeys.has(DAILY_POOL[baseIdx].key)) return baseIdx
+
+  for (let offset = 1; offset < DAILY_POOL.length; offset++) {
+    const idx = (baseIdx + offset) % DAILY_POOL.length
+    if (!recentKeys.has(DAILY_POOL[idx].key)) return idx
+  }
+  return baseIdx
+}
+
 export function getDailyIndex(dateStr = getTodayDateStr()) {
-  return dateSeed(dateStr) % DAILY_POOL.length
+  if (dateStr <= DAILY_INDEX_ANCHOR) {
+    return dateSeed(dateStr) % DAILY_POOL.length
+  }
+
+  const memo = new Map()
+  memo.set(DAILY_INDEX_ANCHOR, dateSeed(DAILY_INDEX_ANCHOR) % DAILY_POOL.length)
+
+  let cursor = DAILY_INDEX_ANCHOR
+  while (cursor < dateStr) {
+    cursor = shiftDateStr(cursor, 1)
+    memo.set(cursor, pickDailyIndex(cursor, memo))
+  }
+
+  return memo.get(dateStr)
+}
+
+/** 首页/番外卡片展示：hint 首句，不泄答案 */
+export function getDailyFocusHint(challenge) {
+  if (!challenge) return ''
+  const hint = String(challenge.hint || '').trim()
+  if (hint) {
+    const clause = hint.split(/[；;。]/)[0].trim()
+    if (clause.length <= 52) return clause
+    return `${clause.slice(0, 49)}…`
+  }
+  return String(challenge.title || '')
+    .replace(/^今日：/, '')
+    .trim()
 }
 
 export function getTodayDailyChallenge(dateStr = getTodayDateStr()) {

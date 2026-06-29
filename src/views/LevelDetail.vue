@@ -471,6 +471,7 @@ const simProps = computed(() => {
         externalInvalidFields: jiraInvalidFields.value,
         preview: jiraPreview.value,
         levelId: lv.id,
+        jiraRules: lv.jiraRules,
         projectName: project.value?.name || '通用',
         jiraMode: ctx.jiraMode,
         jiraDraft: ctx.jiraDraft,
@@ -790,7 +791,7 @@ function handlePass(submitData) {
   const prevAchievements = [...progressStore.achievements]
   levelReward.value = progressStore.completeLevel(level.value.id, level.value.xpReward, {
     attempts: sessionAttempts.value,
-    hintsUsed: sessionHintUsed.value,
+    hintsUsed: isDailyQuestId(level.value.id) ? false : sessionHintUsed.value,
     jiraTier: sessionJiraTier.value,
   })
   newAchievements.value = progressStore.achievements
@@ -1103,11 +1104,15 @@ onUnmounted(() => {
         >
           💡
           {{
-            levelStatus === 'completed'
-              ? '冲星提示'
-              : sessionHintUsed
-                ? '再看提示'
-                : '提示（影响星级）'
+            isDailyQuestId(levelId)
+              ? sessionHintUsed
+                ? '再看思路'
+                : '思路提示'
+              : levelStatus === 'completed'
+                ? '冲星提示'
+                : sessionHintUsed
+                  ? '再看提示'
+                  : '提示（影响星级）'
           }}
         </button>
       </div>

@@ -19,6 +19,10 @@ const props = defineProps({
     type: Number,
     default: 1,
   },
+  jiraRules: {
+    type: Object,
+    default: null,
+  },
   projectName: {
     type: String,
     default: '通用',
@@ -90,7 +94,12 @@ function handleSubmit() {
   emit('submit', { values: { ...values } })
 }
 
-const tierPreview = computed(() => getJiraTierPreview(props.levelId, values))
+const tierPreview = computed(() =>
+  getJiraTierPreview(
+    props.jiraRules ? { id: props.levelId, jiraRules: props.jiraRules } : props.levelId,
+    values
+  )
+)
 
 const showTierPreview = computed(
   () => tierPreview.value.hasRules && view.value !== 'list' && !props.preview

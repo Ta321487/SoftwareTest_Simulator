@@ -108,7 +108,7 @@ export function validateSimulation(level, data) {
         }
       }
 
-      const minimum = validateJiraMinimum(level.id, values)
+      const minimum = validateJiraMinimum(level, values)
       if (!minimum.isPass) {
         return {
           isPass: false,
@@ -117,7 +117,7 @@ export function validateSimulation(level, data) {
         }
       }
 
-      const jiraTier = scoreJiraTier(level.id, values)
+      const jiraTier = scoreJiraTier(level, values)
       return {
         isPass: true,
         message: jiraTierMessage(jiraTier),

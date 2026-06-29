@@ -2,7 +2,7 @@
 import { computed, ref, watch, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { sideLevels, sideArcs, getUnlockHint } from '../data/sideQuests'
-import { DAILY_LEVEL_ID, getTodayDailyChallenge } from '../data/dailyChallenges'
+import { DAILY_LEVEL_ID, getTodayDailyChallenge, getDailyFocusHint } from '../data/dailyChallenges'
 import { useProgressStore } from '../stores/progressStore'
 import { useMobileLayout } from '../composables/useMobileLayout'
 
@@ -14,6 +14,15 @@ const arcToast = ref('')
 let arcToastTimer = null
 
 const dailyXp = computed(() => getTodayDailyChallenge().xpReward ?? 0)
+const todayDaily = computed(() => getTodayDailyChallenge())
+const dailyFocus = computed(() =>
+  dailyStatus.value === 'locked' ? '' : getDailyFocusHint(todayDaily.value)
+)
+const dailyTitle = computed(() => {
+  if (dailyStatus.value === 'locked') return '完成登录收官关（第 5 关）后解锁'
+  const raw = todayDaily.value?.title || ''
+  return raw.replace(/^今日：/, '') || '今日一题'
+})
 
 const sideCards = computed(() =>
   sideLevels.map((level) => {
@@ -131,10 +140,9 @@ onUnmounted(() => {
       ]"
     >
       <div class="side-hub__daily-body">
-        <span class="side-hub__daily-badge">📅 每日特训</span>
-        <h3 class="side-hub__daily-title">
-          {{ dailyStatus === 'locked' ? '完成登录收官关（第 5 关）后解锁' : '今日一题 · 轮换题库' }}
-        </h3>
+        <span class="side-hub__daily-badge">每日特训</span>
+        <h3 class="side-hub__daily-title">{{ dailyTitle }}</h3>
+        <p v-if="dailyFocus" class="side-hub__daily-focus">{{ dailyFocus }}</p>
         <p v-if="dailyStatus !== 'locked'" class="side-hub__daily-meta">
           <span v-if="progressStore.dailyStreak" class="side-hub__streak"
             >🔥 连续 {{ progressStore.dailyStreak }} 天</span

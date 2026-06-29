@@ -48,13 +48,22 @@ function countLines(text) {
   return text.split(/\n+/).filter((line) => line.trim()).length
 }
 
+function resolveJiraRules(levelOrId) {
+  if (levelOrId != null && typeof levelOrId === 'object') {
+    if (levelOrId.jiraRules) return levelOrId.jiraRules
+    if (levelOrId.id != null) return JIRA_RULES[levelOrId.id] || null
+    return null
+  }
+  return JIRA_RULES[levelOrId] || null
+}
+
 /** 最低可提交线：必填 + 基础可读性，保证能过关 */
-export function validateJiraMinimum(levelId, values) {
+export function validateJiraMinimum(levelOrId, values) {
   const summary = String(values.summary || '').trim()
   const steps = String(values.steps || '').trim()
   const expected = String(values.expected || '').trim()
   const actual = String(values.actual || '').trim()
-  const rules = JIRA_RULES[levelId]
+  const rules = resolveJiraRules(levelOrId)
 
   if (summary.length < 6) {
     return {
@@ -100,8 +109,8 @@ export function validateJiraMinimum(levelId, values) {
 }
 
 /** 合格线：原有关键词/模块/严重度等规则 */
-export function validateJiraQuality(levelId, values) {
-  const rules = JIRA_RULES[levelId]
+export function validateJiraQuality(levelOrId, values) {
+  const rules = resolveJiraRules(levelOrId)
   if (!rules) return { isPass: true }
 
   const summary = String(values.summary || '').trim()
@@ -203,14 +212,14 @@ export function validateJiraQuality(levelId, values) {
 }
 
 /** 三档：draft 可过关；good 合格；excellent 优秀（冲三星上限） */
-export function scoreJiraTier(levelId, values) {
-  const minimum = validateJiraMinimum(levelId, values)
+export function scoreJiraTier(levelOrId, values) {
+  const minimum = validateJiraMinimum(levelOrId, values)
   if (!minimum.isPass) return 'draft'
 
-  const quality = validateJiraQuality(levelId, values)
+  const quality = validateJiraQuality(levelOrId, values)
   if (!quality.isPass) return 'draft'
 
-  const rules = JIRA_RULES[levelId]
+  const rules = resolveJiraRules(levelOrId)
   const summary = String(values.summary || '').trim()
   const steps = String(values.steps || '').trim()
   const stepLines = countLines(steps)
@@ -223,15 +232,16 @@ export function scoreJiraTier(levelId, values) {
   return 'good'
 }
 
-export function getJiraTierPreview(levelId, values) {
-  const hasRules = Boolean(JIRA_RULES[levelId])
+export function getJiraTierPreview(levelOrId, values) {
+  const rules = resolveJiraRules(levelOrId)
+  const hasRules = Boolean(rules)
   if (!hasRules) {
     return { hasRules: false, tier: null, starCap: 3, tips: [] }
   }
 
-  const minimum = validateJiraMinimum(levelId, values)
-  const quality = validateJiraQuality(levelId, values)
-  const tier = scoreJiraTier(levelId, values)
+  const minimum = validateJiraMinimum(levelOrId, values)
+  const quality = validateJiraQuality(levelOrId, values)
+  const tier = scoreJiraTier(levelOrId, values)
   const tips = []
 
   if (!minimum.isPass) {

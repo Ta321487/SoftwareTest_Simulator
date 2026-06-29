@@ -52,7 +52,7 @@
 .side-hub__daily {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
   padding: 14px 16px;
   margin-bottom: 16px;
@@ -60,6 +60,11 @@
   background: var(--surface-muted);
   border: 1px solid var(--border-subtle);
   flex-wrap: wrap;
+}
+
+.side-hub__daily-body {
+  flex: 1;
+  min-width: min(100%, 280px);
 }
 
 .side-hub__daily--locked {
@@ -80,6 +85,15 @@
 .side-hub__daily-title {
   font-size: 0.9375rem;
   margin: 4px 0 0;
+  line-height: 1.4;
+}
+
+.side-hub__daily-focus {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  margin: 6px 0 0;
+  line-height: 1.5;
+  max-width: 36rem;
 }
 
 .side-hub__daily-meta {
@@ -98,6 +112,8 @@
   color: var(--btn-primary-text);
   cursor: pointer;
   white-space: nowrap;
+  align-self: center;
+  flex-shrink: 0;
 }
 
 .side-hub__daily-btn:disabled {
@@ -295,6 +311,20 @@
 .side-hub__card--compact .side-hub__card-title {
   font-size: 0.8125rem;
   margin-bottom: 4px;
+}
+
+@media (min-width: 769px) {
+  .side-hub__daily {
+    align-items: center;
+  }
+
+  .side-hub__daily-body {
+    min-width: 0;
+  }
+
+  .side-hub__daily-btn {
+    align-self: center;
+  }
 }
 
 @media (max-width: 768px) {
