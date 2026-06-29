@@ -324,6 +324,7 @@
     align-items: center;
     gap: 6px;
     width: 100%;
+    min-width: 0;
     box-sizing: border-box;
     padding: 10px 12px;
     padding-left: max(12px, env(safe-area-inset-left));
@@ -332,6 +333,9 @@
     background: color-mix(in srgb, var(--surface-muted) 80%, transparent);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x;
+    scroll-snap-type: x proximity;
     scrollbar-width: none;
   }
 
@@ -353,7 +357,11 @@
     font-weight: 600;
     white-space: nowrap;
     cursor: pointer;
+    touch-action: pan-x;
+    scroll-snap-align: start;
     -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   .app-mobile-dock__chip-icon {

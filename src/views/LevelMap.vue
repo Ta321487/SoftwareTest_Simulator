@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, onMounted, watch, defineAsyncComponent } from 'vue'
+import { computed, ref, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useProgressStore } from '../stores/progressStore'
 import { useProjectStore } from '../stores/projectStore'
@@ -31,6 +31,7 @@ import { getNextAchievementHint } from '../utils/achievementProgress'
 import ThemeToggle from '../components/ThemeToggle.vue'
 import AppNavDock from '../components/AppNavDock.vue'
 import { useMobileLayout } from '../composables/useMobileLayout'
+import { useHorizontalDragScroll } from '../composables/useHorizontalDragScroll'
 
 const router = useRouter()
 const route = useRoute()
@@ -40,6 +41,9 @@ const onboardingReady = ref(false)
 const { isMobile } = useMobileLayout()
 const homeTab = ref('quest')
 const visitedTabs = ref(new Set(['quest']))
+const gameTabsRef = ref(null)
+const { bind: bindGameTabsDragScroll } = useHorizontalDragScroll()
+let unbindGameTabsDragScroll = null
 
 const HOME_TABS = [
   { id: 'quest', icon: '⚔️', label: '任务' },
@@ -174,10 +178,15 @@ function syncHomeTabFromHash(hash) {
 
 onMounted(() => {
   syncHomeTabFromHash(route.hash)
+  unbindGameTabsDragScroll = bindGameTabsDragScroll(gameTabsRef.value)
   const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 300))
   idle(() => {
     onboardingReady.value = true
   })
+})
+
+onUnmounted(() => {
+  unbindGameTabsDragScroll?.()
 })
 
 watch(
@@ -209,7 +218,7 @@ watch(
       <AppNavDock current="home" />
 
       <main class="workbench__main home-map__main">
-        <nav class="game-tabs" role="tablist" aria-label="首页分区">
+        <nav ref="gameTabsRef" class="game-tabs" role="tablist" aria-label="首页分区">
           <button
             v-for="tab in HOME_TABS"
             :key="tab.id"

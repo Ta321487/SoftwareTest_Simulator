@@ -1,9 +1,10 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { dockApps } from '../data/projects'
 import AppNavGlobal from './AppNavGlobal.vue'
 import AppNavArchive from './AppNavArchive.vue'
 import { useMobileLayout } from '../composables/useMobileLayout'
+import { useHorizontalDragScroll } from '../composables/useHorizontalDragScroll'
 
 const props = defineProps({
   current: {
@@ -32,6 +33,9 @@ const emit = defineEmits(['dock-change'])
 
 const { isMobile } = useMobileLayout()
 const dockExpanded = ref(false)
+const projectStripRef = ref(null)
+const { bind: bindProjectStripDragScroll } = useHorizontalDragScroll()
+let unbindProjectStripDragScroll = null
 
 const MOBILE_PROJECT_VISIBLE = 5
 
@@ -62,6 +66,16 @@ function projectIcon(item) {
 function toggleDockExpanded() {
   dockExpanded.value = !dockExpanded.value
 }
+
+async function setupProjectStripDragScroll() {
+  unbindProjectStripDragScroll?.()
+  await nextTick()
+  unbindProjectStripDragScroll = bindProjectStripDragScroll(projectStripRef.value)
+}
+
+onMounted(setupProjectStripDragScroll)
+watch([hasProject, isMobile], setupProjectStripDragScroll)
+onUnmounted(() => unbindProjectStripDragScroll?.())
 </script>
 
 <template>
@@ -74,7 +88,7 @@ function toggleDockExpanded() {
         'app-mobile-dock--level': isMobile && hasProject,
       }"
     >
-      <div v-if="isMobile && hasProject" class="app-mobile-dock__project">
+      <div v-if="isMobile && hasProject" ref="projectStripRef" class="app-mobile-dock__project">
         <button
           v-for="item in visibleProjectItems"
           :key="item.levelId"

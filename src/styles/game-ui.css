@@ -287,11 +287,14 @@
 .game-tabs {
   display: flex;
   gap: 6px;
+  min-width: 0;
+  max-width: 100%;
   overflow-x: auto;
   padding: 4px 0 10px;
   margin-bottom: 12px;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
 }
 
 .game-tabs::-webkit-scrollbar {
@@ -477,6 +480,27 @@
 @media (max-width: 768px) {
   .home-map__main {
     padding-bottom: calc(72px + var(--safe-bottom));
+  }
+
+  .game-tabs {
+    touch-action: pan-x;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 14px;
+    margin-inline: -14px;
+    padding-inline: 14px;
+    padding-bottom: 10px;
+    cursor: grab;
+  }
+
+  .game-tabs:active {
+    cursor: grabbing;
+  }
+
+  .game-tabs__btn {
+    touch-action: pan-x;
+    scroll-snap-align: start;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   .game-playbar {
