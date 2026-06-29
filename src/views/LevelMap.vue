@@ -1,6 +1,6 @@
 <script setup>
-import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, ref, onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useProgressStore } from '../stores/progressStore'
 import { useProjectStore } from '../stores/projectStore'
 import CareerScript from '../components/CareerScript.vue'
@@ -12,15 +12,17 @@ import OnboardingTour from '../components/OnboardingTour.vue'
 import ProgressSettings from '../components/ProgressSettings.vue'
 import { getWorkBrief } from '../data/careerScript'
 import { sideLevels } from '../data/sideQuests'
-import { DAILY_LEVEL_ID, getTodayDailyChallenge } from '../data/dailyChallenges'
+import { DAILY_LEVEL_ID, getTodayDailyChallenge, getDailyFocusHint } from '../data/dailyChallenges'
 import { getRankForXp, getRankProgress } from '../data/ranks'
 import { getWeakAreas } from '../utils/weakAreas'
 import { getLevelById } from '../utils/levelRegistry'
 import { getNextAchievementHint } from '../utils/achievementProgress'
 import ThemeToggle from '../components/ThemeToggle.vue'
+import AppNavDock from '../components/AppNavDock.vue'
 import { useMobileLayout } from '../composables/useMobileLayout'
 
 const router = useRouter()
+const route = useRoute()
 const progressStore = useProgressStore()
 const onboardingRef = ref(null)
 const { isMobile } = useMobileLayout()
@@ -52,6 +54,14 @@ const rank = computed(() => getRankForXp(progressStore.totalXp))
 const rankProgress = computed(() => getRankProgress(progressStore.totalXp))
 const dailyStatus = computed(() => progressStore.getDailyStatus())
 const dailyXp = computed(() => getTodayDailyChallenge().xpReward ?? 0)
+const todayDaily = computed(() => getTodayDailyChallenge())
+const dailyFocus = computed(() =>
+  dailyStatus.value === 'locked' ? '' : getDailyFocusHint(todayDaily.value)
+)
+const dailyTitle = computed(() => {
+  const raw = todayDaily.value?.title || ''
+  return raw.replace(/^今日：/, '') || '今日一题'
+})
 
 const nextLevelXp = computed(() => {
   const id = progressStore.firstAvailableLevelId
@@ -86,6 +96,17 @@ function resetProgress() {
 function showOnboarding() {
   onboardingRef.value?.reopen?.()
 }
+
+function scrollToHomeHash() {
+  const id = route.hash?.replace('#', '')
+  if (!id) return
+  requestAnimationFrame(() => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  })
+}
+
+onMounted(scrollToHomeHash)
+watch(() => route.hash, scrollToHomeHash)
 </script>
 
 <template>
@@ -108,17 +129,7 @@ function showOnboarding() {
     </header>
 
     <div class="workbench__body">
-      <aside class="workbench__dock">
-        <p class="workbench__dock-label">导航</p>
-        <button type="button" class="workbench__dock-item workbench__dock-item--active" disabled>
-          <span class="workbench__dock-icon">🏠</span>
-          <span class="workbench__dock-text">首页</span>
-        </button>
-        <button type="button" class="workbench__dock-item" @click="router.push('/handbook')">
-          <span class="workbench__dock-icon">📖</span>
-          <span class="workbench__dock-text">手札·百科</span>
-        </button>
-      </aside>
+      <AppNavDock current="home" />
 
       <main class="workbench__main home-map__main">
         <section class="home-map__hero">
@@ -190,37 +201,76 @@ function showOnboarding() {
         </section>
 
         <div class="home-map__actions">
-          <button
-            v-if="!allCompleted && progressStore.firstAvailableLevelId"
-            type="button"
-            class="level-map__btn level-map__btn--primary"
-            @click="continueChallenge"
-          >
-            开始今日任务
-            <span v-if="nextLevelXp" class="home-map__action-xp">+{{ nextLevelXp }} XP</span>
-            →
-          </button>
-          <button
+          <div class="home-map__action-btns">
+            <button
+              v-if="!allCompleted && progressStore.firstAvailableLevelId"
+              type="button"
+              class="level-map__btn level-map__btn--primary"
+              @click="continueChallenge"
+            >
+              开始今日任务
+              <span v-if="nextLevelXp" class="home-map__action-xp">+{{ nextLevelXp }} XP</span>
+              →
+            </button>
+            <button type="button" class="level-map__btn level-map__btn--ghost" @click="resetProgress">
+              重置进度
+            </button>
+          </div>
+          <div
             v-if="dailyStatus !== 'locked'"
+            class="home-map__daily-wrap home-map__daily--mobile"
+          >
+            <button
+              type="button"
+              class="level-map__btn level-map__btn--ghost home-map__daily-chip"
+              :class="{ 'home-map__daily-chip--done': dailyStatus === 'completed' }"
+              :disabled="dailyStatus === 'completed'"
+              @click="router.push('/level/' + DAILY_LEVEL_ID)"
+            >
+              <template v-if="dailyStatus === 'completed'">📅 今日已完成 · 明日刷新</template>
+              <template v-else>
+                📅 每日特训
+                <span class="home-map__action-xp">+{{ dailyXp }} XP</span>
+                <span v-if="progressStore.dailyStreak" class="home-map__streak"
+                  >🔥 {{ progressStore.dailyStreak }}</span
+                >
+              </template>
+            </button>
+            <p v-if="dailyFocus" class="home-map__daily-focus">{{ dailyFocus }}</p>
+          </div>
+        </div>
+
+        <article
+          v-if="dailyStatus !== 'locked'"
+          class="home-map__daily-banner home-map__daily--desktop"
+          :class="{ 'home-map__daily-banner--done': dailyStatus === 'completed' }"
+        >
+          <div class="home-map__daily-banner-body">
+            <span class="home-map__daily-banner-badge">每日特训</span>
+            <h3 class="home-map__daily-banner-title">{{ dailyTitle }}</h3>
+            <p v-if="dailyFocus" class="home-map__daily-banner-focus">{{ dailyFocus }}</p>
+            <p class="home-map__daily-banner-meta">
+              <span v-if="progressStore.dailyStreak" class="home-map__streak"
+                >🔥 连续 {{ progressStore.dailyStreak }} 天</span
+              >
+              <span v-if="dailyStatus === 'completed'">今日已完成 · 明日刷新</span>
+              <span v-else-if="dailyStatus === 'available'" class="home-map__xp-hint"
+                >通关 +{{ dailyXp }} XP</span
+              >
+            </p>
+          </div>
+          <button
             type="button"
-            class="level-map__btn level-map__btn--ghost home-map__daily-chip"
-            :class="{ 'home-map__daily-chip--done': dailyStatus === 'completed' }"
+            class="home-map__daily-banner-btn"
             :disabled="dailyStatus === 'completed'"
             @click="router.push('/level/' + DAILY_LEVEL_ID)"
           >
-            <template v-if="dailyStatus === 'completed'">📅 今日已完成 · 明日刷新</template>
-            <template v-else>
-              📅 每日特训
-              <span class="home-map__action-xp">+{{ dailyXp }} XP</span>
-              <span v-if="progressStore.dailyStreak" class="home-map__streak"
-                >🔥 {{ progressStore.dailyStreak }}</span
-              >
-            </template>
+            {{ dailyStatus === 'completed' ? '明日刷新' : '开始 →' }}
           </button>
-          <button type="button" class="level-map__btn level-map__btn--ghost" @click="resetProgress">
-            重置进度
-          </button>
-        </div>
+        </article>
+        <p v-else class="home-map__daily-locked home-map__daily--desktop">
+          📅 每日特训 · 完成第 5 关「登录收官」后解锁
+        </p>
 
         <p v-if="isMobile" class="home-map__fold-hint">
           下方可展开：<strong>职场剧本</strong>、<strong>番外特训</strong>、<strong
@@ -229,6 +279,7 @@ function showOnboarding() {
         </p>
 
         <details
+          id="home-progress"
           class="home-fold home-fold--mobile-collapsible home-fold--progress"
           :open="isMobile ? undefined : true"
         >
@@ -255,6 +306,7 @@ function showOnboarding() {
         </details>
 
         <details
+          id="home-side"
           class="home-fold home-fold--mobile-collapsible home-fold--side"
           :open="isMobile ? undefined : true"
         >
@@ -267,6 +319,7 @@ function showOnboarding() {
         </details>
 
         <details
+          id="home-phases"
           class="home-fold home-fold--mobile-collapsible home-fold--phases"
           :open="isMobile ? undefined : true"
         >
@@ -280,6 +333,7 @@ function showOnboarding() {
         </details>
 
         <details
+          id="home-achievements"
           class="home-fold home-fold--mobile-collapsible home-fold--achievements"
           :open="isMobile ? undefined : true"
         >

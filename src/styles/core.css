@@ -34,6 +34,8 @@ body {
 .home-map__main > .career-script,
 .home-map__main > .home-map__hero,
 .home-map__main > .home-map__actions,
+.home-map__main > .home-map__daily-banner,
+.home-map__main > .home-map__daily-locked,
 .home-map__main > .career-map,
 .home-map__main > .phase-timeline,
 .home-map__main > .home-map__projects,
@@ -50,9 +52,38 @@ body {
 
 .home-map__actions {
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.home-map__action-btns {
+  display: flex;
   gap: 12px;
-  margin-bottom: 20px;
   flex-wrap: wrap;
+  align-items: center;
+}
+
+.home-map__daily--desktop {
+  display: none;
+}
+
+.home-map__daily-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
+}
+
+.home-map__daily-focus {
+  margin: 0;
+  padding: 0 4px;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+  max-width: 100%;
+  word-break: break-word;
 }
 
 .home-fold {
@@ -202,9 +233,7 @@ body {
 
 .home-map__hero-tag {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 0.72rem;
   color: var(--text-muted);
   margin-bottom: 8px;
 }
@@ -260,7 +289,7 @@ body {
 .home-map__hero-xp-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+  background: var(--accent-cyan);
   transition: width 0.35s ease;
 }
 
@@ -281,6 +310,11 @@ body {
   font-size: 0.75rem;
   color: var(--accent-amber);
   margin-left: 6px;
+}
+
+.home-map__xp-hint {
+  font-family: var(--font-mono);
+  color: var(--accent-cyan);
 }
 
 .home-map__hero-achievement {
@@ -318,7 +352,7 @@ body {
 .home-map__hero-achievement-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--accent-amber), #f59e0b);
+  background: var(--accent-amber);
   transition: width 0.35s ease;
 }
 
@@ -393,8 +427,8 @@ body {
 }
 
 .level-map__btn--primary:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-btn);
+  transform: none;
+  filter: brightness(1.06);
 }
 
 .level-map__btn--ghost {

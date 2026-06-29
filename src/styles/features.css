@@ -425,6 +425,14 @@
   margin-bottom: 12px;
 }
 
+@media (min-width: 769px) {
+  .player-dashboard__phases--compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+    row-gap: 10px;
+  }
+}
+
 .player-dashboard__phases--compact .player-dashboard__phase-head {
   font-size: 0.75rem;
 }

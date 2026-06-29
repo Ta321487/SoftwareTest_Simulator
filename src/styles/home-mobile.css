@@ -24,6 +24,107 @@
     display: block;
   }
 
+  .home-map__hero {
+    padding: 20px 24px;
+    border-radius: 12px;
+    background: var(--surface-muted);
+    border: 1px solid var(--border-subtle);
+    margin-bottom: 16px;
+  }
+
+  .home-map__hero-rank {
+    display: block;
+  }
+
+  .home-map__actions {
+    margin-bottom: 12px;
+  }
+
+  .home-map__daily--mobile {
+    display: none;
+  }
+
+  .home-map__daily--desktop {
+    display: flex;
+  }
+
+  .home-map__daily-banner {
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    border-radius: 10px;
+    background: var(--surface-muted);
+    border: 1px solid var(--border-subtle);
+    flex-wrap: wrap;
+  }
+
+  .home-map__daily-banner--done {
+    border-color: var(--green-border);
+    background: var(--green-bg);
+  }
+
+  .home-map__daily-banner-body {
+    flex: 1;
+    min-width: min(100%, 320px);
+  }
+
+  .home-map__daily-banner-badge {
+    font-size: 0.6875rem;
+    font-family: var(--font-mono);
+    color: var(--accent-cyan);
+  }
+
+  .home-map__daily-banner-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    margin: 4px 0 0;
+    line-height: 1.4;
+  }
+
+  .home-map__daily-banner-focus {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin: 6px 0 0;
+    line-height: 1.5;
+    max-width: 40rem;
+  }
+
+  .home-map__daily-banner-meta {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin: 6px 0 0;
+  }
+
+  .home-map__daily-banner-btn {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: var(--accent-cyan);
+    color: var(--btn-primary-text);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .home-map__daily-banner-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .home-map__daily-locked {
+    margin: 0 0 24px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    background: var(--surface-muted);
+    border: 1px dashed var(--border-subtle);
+  }
+
   .home-fold--mobile-collapsible {
     border-bottom: none;
     padding-bottom: 0;
@@ -31,7 +132,19 @@
   }
 
   .home-fold--mobile-collapsible > summary {
-    display: none;
+    display: block;
+    cursor: default;
+    pointer-events: none;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 0 0 12px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .home-fold--mobile-collapsible > summary::before {
+    content: none;
   }
 
   .home-fold--mobile-collapsible > .home-fold__body {
@@ -136,10 +249,7 @@
   }
 
   .home-map__hero-xp-fill {
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
-    transition: width 0.35s ease;
+    background: var(--accent-cyan);
   }
 
   .home-map__hero-xp-max {

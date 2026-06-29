@@ -12,6 +12,7 @@ import {
   getGlossaryTerm,
 } from '../data/glossary'
 import ThemeToggle from '../components/ThemeToggle.vue'
+import AppNavDock from '../components/AppNavDock.vue'
 import { useMobileLayout } from '../composables/useMobileLayout'
 import {
   getHandbookBlurb,
@@ -226,17 +227,7 @@ watch(
     </header>
 
     <div class="workbench__body">
-      <aside class="workbench__dock">
-        <p class="workbench__dock-label">导航</p>
-        <button type="button" class="workbench__dock-item" @click="router.push('/')">
-          <span class="workbench__dock-icon">🏠</span>
-          <span class="workbench__dock-text">首页</span>
-        </button>
-        <button type="button" class="workbench__dock-item workbench__dock-item--active" disabled>
-          <span class="workbench__dock-icon">📖</span>
-          <span class="workbench__dock-text">手札·百科</span>
-        </button>
-      </aside>
+      <AppNavDock current="handbook" />
 
       <main class="workbench__main handbook__main">
         <div class="handbook__toolbar">

@@ -94,6 +94,8 @@ body {
   .home-map__main > .career-script,
   .home-map__main > .home-map__hero,
   .home-map__main > .home-map__actions,
+  .home-map__main > .home-map__daily-banner,
+  .home-map__main > .home-map__daily-locked,
   .home-map__main > .career-map,
   .home-map__main > .phase-timeline,
   .home-map__main > .home-map__projects,
@@ -138,6 +140,8 @@ body {
   .home-map__main > .career-script,
   .home-map__main > .home-map__hero,
   .home-map__main > .home-map__actions,
+  .home-map__main > .home-map__daily-banner,
+  .home-map__main > .home-map__daily-locked,
   .home-map__main > .career-map,
   .home-map__main > .phase-timeline,
   .home-map__main > .home-map__projects,
@@ -440,6 +444,7 @@ body {
   .side-hub__daily-btn {
     width: 100%;
     min-height: 44px;
+    align-self: stretch;
   }
 
   .side-hub__card {

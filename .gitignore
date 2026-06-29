@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 test-results
+测试答案速查.md
 *.local
 .npmrc
 

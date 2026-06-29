@@ -1,0 +1,69 @@
+/* 首页 / 手札侧栏 — 比「首页+百科」两行更有用 */
+@media (min-width: 769px) {
+  .home-map .workbench__dock,
+  .handbook .workbench__dock {
+    width: 104px;
+    padding: 12px 6px;
+  }
+
+  .app-nav .workbench__dock-item {
+    min-height: 40px;
+    padding: 6px 4px;
+    gap: 2px;
+  }
+
+  .app-nav .workbench__dock-text {
+    font-size: 0.62rem;
+    line-height: 1.25;
+    text-align: center;
+    word-break: keep-all;
+  }
+}
+
+.app-nav__group {
+  margin: 10px 0 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  text-align: center;
+  width: 100%;
+}
+
+.app-nav__sub {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: var(--accent-cyan);
+  line-height: 1;
+}
+
+.app-nav__tag {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: var(--accent-green);
+  line-height: 1;
+}
+
+.app-nav__done .workbench__dock-text {
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .home-map .app-nav .workbench__dock-item,
+  .handbook .app-nav .workbench__dock-item {
+    flex-shrink: 0;
+    min-width: 52px;
+    max-width: 72px;
+    padding: 8px 6px;
+  }
+
+  .app-nav__group {
+    display: none;
+  }
+
+  .app-nav .workbench__dock-item:nth-child(n + 7) {
+    display: none;
+  }
+}
