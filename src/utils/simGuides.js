@@ -23,7 +23,11 @@ const simGuideContent = {
   },
   terminal: {
     action: '在终端输入命令，按 Enter 执行',
-    steps: ['阅读故障背景与日志路径', '在底部 $ 后输入 Linux 命令', '按 Enter 提交命令'],
+    steps: [
+      '阅读故障背景与日志/配置路径',
+      '输入 tail / grep / head / cat / curl / find / ls 等命令',
+      '按 Enter 执行并确认输出符合任务',
+    ],
   },
   config: {
     action: '保存配置 → 测试连接 → 确认环境就绪',

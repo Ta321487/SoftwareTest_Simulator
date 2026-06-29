@@ -137,6 +137,84 @@ export const sideDebriefs = {
     pitfalls: '去测深色模式或无关页面；忽略 Android 系统设置。',
     workplace: '兼容矩阵加一列：系统字体 150%/200% × 关键转化页。',
   },
+  124: {
+    summary: '你用 tail -n 查看了日志末尾，快速掌握最近故障。',
+    why: '告警恢复后先看尾部：新 ERROR 是否还在刷、时间是否连续。',
+    pitfalls: 'tail 不带行数；路径写错；直接 cat 整文件。',
+    workplace: 'SSH 第一步：tail -n 50~100 error.log，再决定要不要 grep。',
+  },
+  125: {
+    summary: '你用 grep 筛出了 ERROR 级别日志。',
+    why: 'ERROR 是排障主入口，先缩小范围再读上下文。',
+    pitfalls: '关键字拼错；路径漏写；在 info.log 里搜 ERROR。',
+    workplace: 'grep ERROR error.log 是值班肌肉记忆，配合时间窗使用。',
+  },
+  126: {
+    summary: '你用 grep -C 带上下文定位 ERROR 前后因果。',
+    why: '单条 ERROR 往往不够；前后几行能看到 retry、熔断、上游慢等线索。',
+    pitfalls: '只 grep 不带 -C；上下文行数与题目不一致。',
+    workplace: 'grep -C 3~5 比 blind tail 高效，写 Bug 单时可附上下文。',
+  },
+  127: {
+    summary: '你用 grep -v 排除了 INFO 干扰行。',
+    why: 'INFO 太多会淹没 WARN/ERROR，-v 反向筛选让信号更清晰。',
+    pitfalls: '把 -v 和 -i 搞混；排除关键字写错导致漏 ERROR。',
+    workplace: '日志级别混杂时：grep -v INFO 或只 grep WARN|ERROR。',
+  },
+  128: {
+    summary: '你用 grep -i 做了大小写不敏感搜索。',
+    why: '开发/框架日志大小写不统一，-i 避免漏 match。',
+    pitfalls: '只搜小写 timeout 漏掉 TIMEOUT；忘记 -i。',
+    workplace: '搜 timeout/exception/null 等通用词时默认加 -i。',
+  },
+  129: {
+    summary: '你用 grep -E 一次匹配多个关键字。',
+    why: 'TIMEOUT 与 ERROR 都可能指向故障，扩展正则比跑两次 grep 快。',
+    pitfalls: '用多个 grep 管道代替 -E；| 未转义导致匹配过宽。',
+    workplace: 'grep -E "TIMEOUT|ERROR|Exception" error.log 是常见组合。',
+  },
+  130: {
+    summary: '你用 tail -f 进入实时跟踪模式。',
+    why: '复现类问题需要盯着日志等新写入，-f 比反复 tail 高效。',
+    pitfalls: '用 tail -n 代替 -f；忘记 Ctrl+C 退出跟踪。',
+    workplace: '复现步骤交给开发执行时，自己 tail -f 等着抓第一现场。',
+  },
+  131: {
+    summary: '你用 head 查看了启动日志开头。',
+    why: '启动失败/配置错误常在文件头部：profile、端口、缺 env。',
+    pitfalls: '用 tail 看启动日志；行数与题目不符。',
+    workplace: '服务起不来：head startup.log + cat 配置 + systemctl status。',
+  },
+  132: {
+    summary: '你用 cat 查看了配置文件内容。',
+    why: '连错库/错环境多半是配置问题，cat yml/properties 核对最快。',
+    pitfalls: 'vim 改配置（测试只读）；路径写错看了旧文件。',
+    workplace: '配置排查只读 cat/grep，改动走运维或配置中心流程。',
+  },
+  133: {
+    summary: '你用 grep | wc -l 统计了 ERROR 行数。',
+    why: '值班记录和升级汇报需要量化：今晚 ERROR 多少条、是否激增。',
+    pitfalls: '手工数行；wc 前 grep 关键字不对；忘记 | wc -l。',
+    workplace: '告警复盘写：grep ERROR … | wc -l + 时间范围说明。',
+  },
+  134: {
+    summary: '你用 curl 探活了 health 接口。',
+    why: '进程在不在、端口通不通，curl 比猜日志快；502 前先确认本机 200。',
+    pitfalls: '只查日志不探活；URL 端口写错；忽略 HTTP 状态码。',
+    workplace: '链路排查：curl health → grep 日志 → 抓包/APM 三板斧。',
+  },
+  135: {
+    summary: '你用 find 定位了目录下所有 .log 文件。',
+    why: '新环境/新机器路径不熟，find 比盲目 cd 效率高。',
+    pitfalls: 'find 目录写错；-name 模式不会用 *.log。',
+    workplace: 'find /var/log -name "*.log" 摸清日志布局再 tail/grep。',
+  },
+  136: {
+    summary: '你用 ls -la 查看了日志目录详情。',
+    why: '权限、体积、修改时间能判断是否在刷日志、是否磁盘满。',
+    pitfalls: '只 ls 不看 -la；忽略 error.log 体积异常大。',
+    workplace: 'SSH 登录后 habit：ls -la 日志目录 → 选文件 → tail/grep。',
+  },
 }
 
 export const dailyDebriefs = {
@@ -469,6 +547,30 @@ export const dailyDebriefs = {
     why: '线上缺陷要分析测试覆盖缺口与流程改进。',
     pitfalls: '线上 Bug 全怪测试；不复盘。',
     workplace: '逃逸分析会：现象 → 根因 → 补哪类用例。',
+  },
+  'grep-v-info-daily': {
+    summary: '你用 grep -v 排除了 INFO 干扰。',
+    why: 'INFO 太多时 -v 反向筛选让 WARN/ERROR 更易读。',
+    pitfalls: '忘记 -v；路径写到 error.log。',
+    workplace: '日志太吵：grep -v INFO 或只 grep WARN|ERROR。',
+  },
+  'head-startup-daily': {
+    summary: '你用 head 查看了启动日志开头。',
+    why: '启动失败/缺 env 常在文件头部出现。',
+    pitfalls: '用 tail 代替 head；行数不对。',
+    workplace: '起不来：head startup.log + cat 配置。',
+  },
+  'curl-health-daily': {
+    summary: '你用 curl 探活了 health 接口。',
+    why: '先确认进程与端口，再深入 grep 日志。',
+    pitfalls: 'URL 端口写错；只看 body 不看状态。',
+    workplace: '502 三板斧：curl health → grep → APM。',
+  },
+  'grep-wc-daily': {
+    summary: '你用 grep | wc -l 统计了 ERROR 行数。',
+    why: '值班记录需要量化 ERROR 规模。',
+    pitfalls: '手工数行；管道漏 wc -l。',
+    workplace: '汇报写：grep ERROR … | wc -l + 时间范围。',
   },
 }
 

@@ -20,6 +20,22 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  fileContent: {
+    type: Array,
+    default: null,
+  },
+  findResults: {
+    type: Array,
+    default: null,
+  },
+  lsListing: {
+    type: Array,
+    default: null,
+  },
+  curlResponse: {
+    type: String,
+    default: '',
+  },
   terminalSuccessMsg: {
     type: String,
     default: '日志已加载，发现多条 ERROR，建议结合业务现象继续排查。',
@@ -51,6 +67,10 @@ function levelContext() {
     logPath: props.logPath,
     storyLogs: props.storyLogs,
     correctCommand: props.correctCommand,
+    fileContent: props.fileContent,
+    findResults: props.findResults,
+    lsListing: props.lsListing,
+    curlResponse: props.curlResponse,
   }
 }
 
@@ -109,7 +129,12 @@ function handleEnter() {
     return
   }
 
-  if (cmd.startsWith('tail') || cmd.includes('grep')) {
+  const gradedPrefixes = ['tail', 'grep', 'head', 'cat', 'curl', 'find', 'ls']
+  const isGraded =
+    gradedPrefixes.some((prefix) => cmd.startsWith(prefix)) ||
+    (cmd.includes('grep') && cmd.includes('|'))
+
+  if (isGraded) {
     command.value = ''
     runTailOrGrep(raw)
     return
@@ -182,7 +207,7 @@ defineExpose({ markSuccess, markError, reset })
         class="terminal__input"
         type="text"
         :disabled="success"
-        placeholder="支持 ls / cd / pwd / tail / grep …"
+        placeholder="tail / grep / head / cat / curl / find / ls …"
         @keydown.enter="handleEnter"
       />
       <span v-if="success" class="terminal__ok">✓</span>

@@ -16,7 +16,7 @@ export function getValidationCriteria(level) {
     case 'report':
       return '勾选应优先回归的用例——重点关注「失败 + 高风险」项。'
     case 'terminal':
-      return '输入 Linux 命令后按 Enter；需能查看指定日志文件最近的内容。'
+      return '输入 Linux 命令后按 Enter；按任务要求查看日志、配置文件或探活接口。'
     case 'config':
       return '将占位符改为测试环境可用地址；保存后须测试连接通过再提交。'
     case 'chat':

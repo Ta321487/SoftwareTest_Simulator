@@ -491,9 +491,13 @@ const simProps = computed(() => {
       return {
         terminalHint: lv.terminalHint,
         terminalSuccessMsg: lv.terminalSuccessMsg,
-        logPath: '/var/log/app/error.log',
+        logPath: lv.logPath || '/var/log/app/error.log',
         storyLogs: lv.storyLogs,
         correctCommand: lv.correctCommand,
+        fileContent: lv.fileContent,
+        findResults: lv.findResults,
+        lsListing: lv.lsListing,
+        curlResponse: lv.curlResponse,
       }
     case 'chat':
       return {

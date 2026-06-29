@@ -16,7 +16,7 @@
   <text x="80" y="168" fill="#94a3b8" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="28">用「闯关」练软件测试 · 攒 XP 升职级</text>
   <rect x="80" y="200" width="1040" height="72" rx="12" fill="#111827" stroke="#1e293b"/>
   <text x="104" y="246" fill="#e2e8f0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="24">备考 → 面试 → 笔试 → 入职 → Lead</text>
-  <text x="680" y="246" fill="#64748b" font-family="Segoe UI, PingFang SC, sans-serif" font-size="22">48 关主线 · 23 番外 · 每日特训</text>
+  <text x="680" y="246" fill="#64748b" font-family="Segoe UI, PingFang SC, sans-serif" font-size="22">48 关主线 · 36 番外 · 每日特训</text>
   <rect x="80" y="300" width="240" height="120" rx="12" fill="#111827" stroke="#334155"/>
   <text x="104" y="342" fill="#22d3ee" font-family="Segoe UI, PingFang SC, sans-serif" font-size="26">Jira</text>
   <text x="104" y="378" fill="#94a3b8" font-family="Segoe UI, PingFang SC, sans-serif" font-size="20">写 Bug 单 · 定优先级</text>
