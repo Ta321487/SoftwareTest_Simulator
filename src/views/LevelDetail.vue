@@ -12,6 +12,7 @@ import { useProgressStore } from '../stores/progressStore'
 import { useProjectStore } from '../stores/projectStore'
 import { getValidationCriteria } from '../utils/validationCriteria'
 import { getSimGuide } from '../utils/simGuides'
+import { getLevelHint } from '../utils/failureHints'
 import { getLevelXpPreview } from '../utils/levelXp'
 import { getLevelDeliverable } from '../data/levelDeliverables'
 import { useMobileLayout } from '../composables/useMobileLayout'
@@ -148,6 +149,7 @@ const {
   levelReward,
   newAchievements,
   passDebriefNote,
+  sessionJiraTier,
   phaseMilestone,
   passSimEpilogue,
   submitFlash,
