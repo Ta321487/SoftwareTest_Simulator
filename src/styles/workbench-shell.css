@@ -206,13 +206,97 @@
   flex-wrap: wrap;
 }
 
+.workbench__context-banner--archive {
+  padding: 12px 14px;
+  margin: 0 0 14px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--accent-amber) 35%, var(--border-subtle));
+  background: color-mix(in srgb, var(--accent-amber) 8%, var(--surface-muted));
+  border-bottom: 1px solid color-mix(in srgb, var(--accent-amber) 35%, var(--border-subtle));
+}
+
+.workbench__context-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.workbench__context-banner-badge {
+  display: inline-block;
+  width: fit-content;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+  color: var(--accent-amber);
+  background: color-mix(in srgb, var(--accent-amber) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-amber) 30%, transparent);
+}
+
+.workbench__context-banner-label {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.workbench__context-banner-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
 .workbench__context-back {
-  background: transparent;
-  border: none;
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--accent-purple);
+  background: color-mix(in srgb, var(--accent-purple) 12%, transparent);
   color: var(--accent-purple);
   font-family: var(--font-mono);
   font-size: 0.8rem;
+  font-weight: 600;
   cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.workbench__context-back:hover {
+  background: color-mix(in srgb, var(--accent-purple) 20%, transparent);
+}
+
+.workbench__context-back:active {
+  transform: scale(0.98);
+}
+
+.workbench__task-return-flash {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  background: color-mix(in srgb, var(--accent-cyan) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-cyan) 35%, transparent);
+  animation: submit-flash-in 0.35s ease;
+}
+
+.task-panel-fold--pulse,
+.workbench__sim-area--pulse {
+  animation: task-focus-pulse 1.1s ease;
+}
+
+@keyframes task-focus-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-cyan) 45%, transparent);
+  }
+  40% {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-cyan) 25%, transparent);
+  }
+  100% {
+    box-shadow: none;
+  }
 }
 
 .workbench__sim-area {

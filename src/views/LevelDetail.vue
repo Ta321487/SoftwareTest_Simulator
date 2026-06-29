@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, nextTick, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getLevelById, isDailyQuestId, isSideQuestId, levels } from '../utils/levelRegistry'
 import { getProjectForLevel, getProjectDay, getDockShortLabel } from '../data/projects'
@@ -110,6 +110,10 @@ const sessionJiraTier = ref(null)
 const phaseMilestone = ref(null)
 const sutToast = ref('')
 const submitFlash = ref('')
+const taskReturnFlash = ref('')
+const taskFocusPulse = ref(false)
+let taskReturnTimer = null
+let taskPulseTimer = null
 
 const levelId = computed(() => Number(route.params.id))
 const level = computed(() => getLevelById(levelId.value))
@@ -236,7 +240,36 @@ function handleDockChange(id) {
     router.push(buildSutRoute(levelId.value, item.sutDock))
     return
   }
+  const wasArchive = level.value && activeDockLevelId.value !== level.value.id
+  const returningToTask = level.value && id === level.value.id && wasArchive
   activeDockLevelId.value = id
+  nextTick(() => {
+    scrollLevelMain()
+    if (returningToTask) {
+      showTaskReturnFeedback()
+    }
+  })
+}
+
+function scrollLevelMain(behavior = 'smooth') {
+  document.querySelector('.workbench--level .workbench__main')?.scrollTo({ top: 0, behavior })
+}
+
+function showTaskReturnFeedback() {
+  const dayLabel = projectDay.value?.label || `第 ${level.value?.id} 关`
+  const toolLabel = simGuide.value?.label || '答题区'
+  taskReturnFlash.value = `已回到今日任务 · ${dayLabel} · ${toolLabel}`
+  taskFocusPulse.value = true
+  if (taskReturnTimer) clearTimeout(taskReturnTimer)
+  if (taskPulseTimer) clearTimeout(taskPulseTimer)
+  taskReturnTimer = setTimeout(() => {
+    taskReturnFlash.value = ''
+    taskReturnTimer = null
+  }, 2800)
+  taskPulseTimer = setTimeout(() => {
+    taskFocusPulse.value = false
+    taskPulseTimer = null
+  }, 1200)
 }
 
 function goToMainTask() {
@@ -868,6 +901,11 @@ function goBack() {
   }
   router.push('/')
 }
+
+onUnmounted(() => {
+  if (taskReturnTimer) clearTimeout(taskReturnTimer)
+  if (taskPulseTimer) clearTimeout(taskPulseTimer)
+})
 </script>
 
 <template>
@@ -980,9 +1018,21 @@ function goBack() {
       </div>
     </section>
 
+    <ProjectContextPanel
+      v-if="!showDebrief && !isSutMode && !isTaskView && project"
+      :project="project"
+      :source-level-id="activeDockLevelId"
+      :current-level-id="level.id"
+    />
+
+    <p v-if="taskReturnFlash && isTaskView" class="workbench__task-return-flash">
+      {{ taskReturnFlash }}
+    </p>
+
     <details
       v-if="!showDebrief && isTaskView"
       class="task-panel-fold"
+      :class="{ 'task-panel-fold--pulse': taskFocusPulse }"
       :open="isMobile ? undefined : true"
     >
       <summary class="task-panel-fold__summary">
@@ -1028,7 +1078,10 @@ function goBack() {
     <section
       v-if="!showDebrief && isTaskView"
       class="workbench__sim-area"
-      :class="{ 'workbench__sim-area--mobile-heavy': showMobileSimHint && isMobile }"
+      :class="{
+        'workbench__sim-area--mobile-heavy': showMobileSimHint && isMobile,
+        'workbench__sim-area--pulse': taskFocusPulse,
+      }"
     >
       <p v-if="submitFlash" class="workbench__submit-flash">{{ submitFlash }}</p>
       <p v-if="showMobileSimHint" class="workbench__mobile-hint workbench__mobile-hint--heavy">
@@ -1079,13 +1132,6 @@ function goBack() {
         @db-connected="onPaymentDbConnected"
       />
     </section>
-
-    <ProjectContextPanel
-      v-if="!showDebrief && !isSutMode && !isTaskView && project"
-      :project="project"
-      :source-level-id="activeDockLevelId"
-      :current-level-id="level.id"
-    />
 
     <footer v-if="feedbackMessage && !showDebrief && isTaskView" class="workbench__feedback">
       <p class="level-detail__feedback" :class="{ 'level-detail__feedback--error': showFeedback }">

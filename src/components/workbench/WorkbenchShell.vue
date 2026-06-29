@@ -67,6 +67,10 @@ defineEmits(['dock-change', 'back'])
 
 const isTaskDock = computed(() => props.activeDockLevelId === props.level.id)
 
+const activeArchiveItem = computed(() =>
+  props.dockItems.find((d) => d.levelId === props.activeDockLevelId)
+)
+
 const sortedDockItems = computed(() => {
   const current = props.dockItems.find((d) => d.levelId === props.level.id)
   const rest = props.dockItems.filter((d) => d.levelId !== props.level.id)
@@ -184,18 +188,28 @@ const headerSubtitle = computed(() => {
         </button>
       </aside>
 
-      <main class="workbench__main">
-        <div v-if="!isTaskDock" class="workbench__context-banner">
-          <span
-            >📂 阶段档案 ·
-            {{ dockItems.find((d) => d.levelId === activeDockLevelId)?.dayLabel || '产出' }}</span
-          >
+      <main
+        class="workbench__main"
+        :class="{ 'workbench__main--archive': viewMode === 'main' && !isTaskDock }"
+      >
+        <div
+          v-if="!isTaskDock"
+          class="workbench__context-banner workbench__context-banner--archive"
+        >
+          <div class="workbench__context-banner-text">
+            <span class="workbench__context-banner-badge">历史档案</span>
+            <span class="workbench__context-banner-label">
+              {{ activeArchiveItem?.dayLabel || '产出' }} ·
+              {{ dockApps[activeArchiveItem?.simType]?.label || '阶段工具' }}
+            </span>
+            <span class="workbench__context-banner-hint">只读回顾，不能在此提交判题</span>
+          </div>
           <button
             type="button"
             class="workbench__context-back"
             @click="$emit('dock-change', level.id)"
           >
-            返回当前任务 →
+            ← 回到今日任务
           </button>
         </div>
 
