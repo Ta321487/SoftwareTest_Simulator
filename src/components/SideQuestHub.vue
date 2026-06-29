@@ -1,8 +1,8 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { sideLevels, sideArcs, getUnlockHint } from '../data/sideQuests'
-import { DAILY_LEVEL_ID } from '../data/dailyChallenges'
+import { DAILY_LEVEL_ID, getTodayDailyChallenge } from '../data/dailyChallenges'
 import { useProgressStore } from '../stores/progressStore'
 import { useMobileLayout } from '../composables/useMobileLayout'
 
@@ -10,6 +10,10 @@ const router = useRouter()
 const progressStore = useProgressStore()
 const { isMobile } = useMobileLayout()
 const expandedArcIds = ref(new Set())
+const arcToast = ref('')
+let arcToastTimer = null
+
+const dailyXp = computed(() => getTodayDailyChallenge().xpReward ?? 0)
 
 const sideCards = computed(() =>
   sideLevels.map((level) => {
@@ -78,6 +82,30 @@ function onArcToggle(arc, event) {
   if (event.target.open) expandedArcIds.value.add(arc.id)
   else expandedArcIds.value.delete(arc.id)
 }
+
+watch(
+  arcsWithLevels,
+  (arcs, prev) => {
+    if (!prev?.length) return
+    for (const arc of arcs) {
+      if (!arc.complete) continue
+      const was = prev.find((a) => a.id === arc.id)
+      if (was && !was.complete) {
+        arcToast.value = `🎉 ${arc.icon} ${arc.name} 番外线通关！`
+        if (arcToastTimer) clearTimeout(arcToastTimer)
+        arcToastTimer = setTimeout(() => {
+          arcToast.value = ''
+          arcToastTimer = null
+        }, 4000)
+      }
+    }
+  },
+  { deep: true }
+)
+
+onUnmounted(() => {
+  if (arcToastTimer) clearTimeout(arcToastTimer)
+})
 </script>
 
 <template>
@@ -111,8 +139,10 @@ function onArcToggle(arc, event) {
           <span v-if="progressStore.dailyStreak" class="side-hub__streak"
             >🔥 连续 {{ progressStore.dailyStreak }} 天</span
           >
-          <span v-if="dailyStatus === 'completed'"> · 今日已完成 ✓</span>
-          <span v-else-if="dailyStatus === 'available'" class="side-hub__xp-hint"> · 通关 +XP</span>
+          <span v-if="dailyStatus === 'completed'"> · 今日已完成 · 明日刷新</span>
+          <span v-else-if="dailyStatus === 'available'" class="side-hub__xp-hint">
+            · 通关 +{{ dailyXp }} XP</span
+          >
         </p>
       </div>
       <button
@@ -121,7 +151,7 @@ function onArcToggle(arc, event) {
         :disabled="dailyStatus === 'locked'"
         @click="goLevel(DAILY_LEVEL_ID)"
       >
-        {{ dailyStatus === 'completed' ? '再看今日' : dailyStatus === 'locked' ? '🔒' : '开始 →' }}
+        {{ dailyStatus === 'completed' ? '明日刷新' : dailyStatus === 'locked' ? '🔒' : '开始 →' }}
       </button>
     </article>
 
@@ -204,5 +234,6 @@ function onArcToggle(arc, event) {
         </div>
       </details>
     </div>
+    <p v-if="arcToast" class="side-hub__toast">{{ arcToast }}</p>
   </section>
 </template>

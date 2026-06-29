@@ -498,99 +498,123 @@ watch(
 
     <div v-if="selectedEntry" class="handbook-modal" @click.self="closeModal">
       <article class="handbook-modal__panel">
-        <header class="handbook-modal__header">
-          <div>
-            <span class="handbook-modal__phase">
-              {{ selectedEntry.phaseIcon }} {{ selectedEntry.phaseName }} · #{{
-                selectedEntry.levelId
-              }}
-            </span>
-            <h2 class="handbook-modal__title">{{ selectedEntry.title }}</h2>
-          </div>
-          <button type="button" class="handbook-modal__close" aria-label="关闭" @click="closeModal">
-            ×
+        <div class="handbook-modal__sticky-head">
+          <button v-if="isMobile" type="button" class="handbook-modal__back" @click="closeModal">
+            ← 返回列表
           </button>
-        </header>
+          <header class="handbook-modal__header">
+            <div>
+              <span class="handbook-modal__phase">
+                {{ selectedEntry.phaseIcon }} {{ selectedEntry.phaseName }} · #{{
+                  selectedEntry.levelId
+                }}
+              </span>
+              <h2 class="handbook-modal__title">{{ selectedEntry.title }}</h2>
+            </div>
+            <button
+              type="button"
+              class="handbook-modal__close"
+              aria-label="关闭"
+              @click="closeModal"
+            >
+              ×
+            </button>
+          </header>
+        </div>
 
-        <section class="handbook-modal__section handbook-modal__section--highlight">
-          <h3>核心要点</h3>
-          <p>{{ selectedEntry.why }}</p>
-        </section>
-        <section class="handbook-modal__section handbook-modal__section--warn">
-          <h3>常见坑</h3>
-          <p>{{ selectedEntry.pitfalls }}</p>
-        </section>
-        <section class="handbook-modal__section">
-          <h3>{{ selectedEntry.tipLabel }}</h3>
-          <p>{{ selectedEntry.workplace }}</p>
-        </section>
+        <div class="handbook-modal__body">
+          <section class="handbook-modal__section handbook-modal__section--highlight">
+            <h3>核心要点</h3>
+            <p>{{ selectedEntry.why }}</p>
+          </section>
+          <section class="handbook-modal__section handbook-modal__section--warn">
+            <h3>常见坑</h3>
+            <p>{{ selectedEntry.pitfalls }}</p>
+          </section>
+          <section class="handbook-modal__section">
+            <h3>{{ selectedEntry.tipLabel }}</h3>
+            <p>{{ selectedEntry.workplace }}</p>
+          </section>
 
-        <footer class="handbook-modal__footer">
-          <button type="button" class="sim-btn sim-btn--primary" @click="closeModal">关闭</button>
-          <button type="button" class="sim-btn sim-btn--ghost" @click="goToLevelFromEntry">
-            去这一关 →
-          </button>
-        </footer>
+          <footer class="handbook-modal__footer">
+            <button type="button" class="sim-btn sim-btn--primary" @click="closeModal">关闭</button>
+            <button type="button" class="sim-btn sim-btn--ghost" @click="goToLevelFromEntry">
+              去这一关 →
+            </button>
+          </footer>
+        </div>
       </article>
     </div>
 
     <div v-if="selectedTerm" class="handbook-modal" @click.self="closeModal">
       <article class="handbook-modal__panel handbook-modal__panel--glossary">
-        <header class="handbook-modal__header">
-          <div>
-            <span class="handbook-modal__phase">
-              {{ getTermCategory(selectedTerm)?.icon }} {{ getTermCategory(selectedTerm)?.name }}
-            </span>
-            <h2 class="handbook-modal__title">{{ selectedTerm.term }}</h2>
-            <p v-if="selectedTerm.aliases?.length" class="handbook-modal__aliases">
-              也叫：{{ selectedTerm.aliases.join('、') }}
-            </p>
-          </div>
-          <button type="button" class="handbook-modal__close" aria-label="关闭" @click="closeModal">
-            ×
+        <div class="handbook-modal__sticky-head">
+          <button v-if="isMobile" type="button" class="handbook-modal__back" @click="closeModal">
+            ← 返回列表
           </button>
-        </header>
-
-        <section class="handbook-modal__section handbook-modal__section--highlight">
-          <h3>是什么意思</h3>
-          <p>{{ selectedTerm.definition }}</p>
-        </section>
-        <section class="handbook-modal__section">
-          <h3>游戏里怎么用</h3>
-          <p>{{ selectedTerm.example }}</p>
-        </section>
-        <section v-if="selectedTerm.seeAlso?.length" class="handbook-modal__section">
-          <h3>相关术语</h3>
-          <div class="handbook-modal__links">
+          <header class="handbook-modal__header">
+            <div>
+              <span class="handbook-modal__phase">
+                {{ getTermCategory(selectedTerm)?.icon }} {{ getTermCategory(selectedTerm)?.name }}
+              </span>
+              <h2 class="handbook-modal__title">{{ selectedTerm.term }}</h2>
+              <p v-if="selectedTerm.aliases?.length" class="handbook-modal__aliases">
+                也叫：{{ selectedTerm.aliases.join('、') }}
+              </p>
+            </div>
             <button
-              v-for="relatedId in selectedTerm.seeAlso"
-              :key="relatedId"
               type="button"
-              class="handbook-modal__link-chip"
-              @click="openRelatedTerm(relatedId)"
+              class="handbook-modal__close"
+              aria-label="关闭"
+              @click="closeModal"
             >
-              {{ getGlossaryTerm(relatedId)?.term || relatedId }}
+              ×
             </button>
-          </div>
-        </section>
-        <section v-if="selectedTerm.relatedLevelIds?.length" class="handbook-modal__section">
-          <h3>相关关卡</h3>
-          <div class="handbook-modal__links">
-            <button
-              v-for="levelId in selectedTerm.relatedLevelIds"
-              :key="levelId"
-              type="button"
-              class="handbook-modal__link-chip"
-              @click="goToLevelFromTerm(levelId)"
-            >
-              #{{ levelId }} {{ getLevelTitle(levelId) }}
-            </button>
-          </div>
-        </section>
+          </header>
+        </div>
 
-        <footer class="handbook-modal__footer">
-          <button type="button" class="sim-btn sim-btn--primary" @click="closeModal">关闭</button>
-        </footer>
+        <div class="handbook-modal__body">
+          <section class="handbook-modal__section handbook-modal__section--highlight">
+            <h3>是什么意思</h3>
+            <p>{{ selectedTerm.definition }}</p>
+          </section>
+          <section class="handbook-modal__section">
+            <h3>游戏里怎么用</h3>
+            <p>{{ selectedTerm.example }}</p>
+          </section>
+          <section v-if="selectedTerm.seeAlso?.length" class="handbook-modal__section">
+            <h3>相关术语</h3>
+            <div class="handbook-modal__links">
+              <button
+                v-for="relatedId in selectedTerm.seeAlso"
+                :key="relatedId"
+                type="button"
+                class="handbook-modal__link-chip"
+                @click="openRelatedTerm(relatedId)"
+              >
+                {{ getGlossaryTerm(relatedId)?.term || relatedId }}
+              </button>
+            </div>
+          </section>
+          <section v-if="selectedTerm.relatedLevelIds?.length" class="handbook-modal__section">
+            <h3>相关关卡</h3>
+            <div class="handbook-modal__links">
+              <button
+                v-for="levelId in selectedTerm.relatedLevelIds"
+                :key="levelId"
+                type="button"
+                class="handbook-modal__link-chip"
+                @click="goToLevelFromTerm(levelId)"
+              >
+                #{{ levelId }} {{ getLevelTitle(levelId) }}
+              </button>
+            </div>
+          </section>
+
+          <footer class="handbook-modal__footer">
+            <button type="button" class="sim-btn sim-btn--primary" @click="closeModal">关闭</button>
+          </footer>
+        </div>
       </article>
     </div>
   </div>

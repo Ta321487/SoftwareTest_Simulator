@@ -37,6 +37,18 @@
   white-space: nowrap;
 }
 
+.side-hub__toast {
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  text-align: center;
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--accent-purple) 14%, transparent);
+  border: 1px solid var(--purple-border);
+  animation: submit-flash-in 0.35s ease;
+}
+
 .side-hub__daily {
   display: flex;
   justify-content: space-between;

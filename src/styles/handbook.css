@@ -344,7 +344,34 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 0;
+}
+
+.handbook-modal__sticky-head {
+  flex-shrink: 0;
+}
+
+.handbook-modal__back {
+  display: none;
+  margin-bottom: 8px;
+  padding: 6px 0;
+  border: none;
+  background: transparent;
+  color: var(--accent-cyan);
+  font-size: 0.8125rem;
+  font-family: var(--font-mono);
+  cursor: pointer;
+}
+
+.handbook-modal__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.handbook-modal__panel {
+  display: flex;
+  flex-direction: column;
 }
 
 .handbook-modal__phase {

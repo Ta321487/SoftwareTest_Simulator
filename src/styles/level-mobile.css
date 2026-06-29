@@ -105,6 +105,15 @@
     overflow: hidden;
   }
 
+  .task-panel-fold__xp {
+    flex-shrink: 0;
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--accent-cyan);
+    white-space: nowrap;
+  }
+
   .task-panel-fold[open] .task-panel-fold__summary {
     border-bottom: 1px solid var(--border-subtle);
   }

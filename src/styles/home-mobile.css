@@ -166,6 +166,32 @@
     flex-shrink: 0;
   }
 
+  .home-map__fold-hint {
+    order: 2;
+    margin: -4px 0 12px;
+    padding: 0 4px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+  }
+
+  .home-map__fold-hint strong {
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  .home-fold__summary-meta {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .home-map__daily-chip--done {
+    opacity: 0.75;
+  }
+
   .home-fold--progress .save-panel {
     margin-top: 16px;
     padding-top: 16px;

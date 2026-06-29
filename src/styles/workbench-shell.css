@@ -233,6 +233,34 @@
   line-height: 1.45;
 }
 
+.workbench__mobile-hint--heavy {
+  background: color-mix(in srgb, var(--accent-purple) 10%, transparent);
+}
+
+.workbench__submit-flash {
+  margin: 0 0 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  background: color-mix(in srgb, var(--accent-cyan) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-cyan) 35%, transparent);
+  animation: submit-flash-in 0.35s ease;
+}
+
+@keyframes submit-flash-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .workbench__feedback {
   margin-top: 16px;
   text-align: center;

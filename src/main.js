@@ -8,6 +8,12 @@ import './styles/home-mobile.css'
 import './styles/level-mobile.css'
 import { useThemeStore } from './stores/themeStore'
 
+if (import.meta.env.PROD) {
+  import('virtual:pwa-register').then(({ registerSW }) => {
+    registerSW({ immediate: true })
+  })
+}
+
 const app = createApp(App)
 const pinia = createPinia()
 

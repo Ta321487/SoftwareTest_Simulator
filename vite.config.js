@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { VitePWA } from 'vite-plugin-pwa'
 import { copyFileSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -14,9 +15,49 @@ function ghPagesSpaFallback() {
   }
 }
 
+const base = process.env.BASE_PATH || '/'
+
 export default defineConfig({
-  plugins: [vue(), ghPagesSpaFallback()],
-  base: process.env.BASE_PATH || '/',
+  plugins: [
+    vue(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['og.png', 'og.svg'],
+      manifest: {
+        name: '测试人一生 · 软件测试闯关',
+        short_name: '测试人一生',
+        description:
+          '备考 → 面试 → 笔试 → 入职。33 关主线 + 番外 + 每日特训，在模拟工具里攒 XP 升职级。',
+        theme_color: '#0f172a',
+        background_color: '#0f172a',
+        display: 'standalone',
+        lang: 'zh-CN',
+        start_url: base,
+        scope: base,
+        icons: [
+          {
+            src: 'og.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: 'og.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
+          },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        navigateFallback: base === '/' ? 'index.html' : `${base.replace(/\/$/, '')}/index.html`,
+        navigateFallbackDenylist: [/^\/api/],
+      },
+    }),
+    ghPagesSpaFallback(),
+  ],
+  base,
   test: {
     environment: 'node',
     include: ['src/**/*.test.js'],

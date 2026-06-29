@@ -12,7 +12,7 @@ import OnboardingTour from '../components/OnboardingTour.vue'
 import ProgressSettings from '../components/ProgressSettings.vue'
 import { getWorkBrief } from '../data/careerScript'
 import { sideLevels } from '../data/sideQuests'
-import { DAILY_LEVEL_ID } from '../data/dailyChallenges'
+import { DAILY_LEVEL_ID, getTodayDailyChallenge } from '../data/dailyChallenges'
 import { getRankForXp, getRankProgress } from '../data/ranks'
 import { getWeakAreas } from '../utils/weakAreas'
 import { getLevelById } from '../utils/levelRegistry'
@@ -51,6 +51,7 @@ const reinforcementHint = computed(() => {
 const rank = computed(() => getRankForXp(progressStore.totalXp))
 const rankProgress = computed(() => getRankProgress(progressStore.totalXp))
 const dailyStatus = computed(() => progressStore.getDailyStatus())
+const dailyXp = computed(() => getTodayDailyChallenge().xpReward ?? 0)
 
 const nextLevelXp = computed(() => {
   const id = progressStore.firstAvailableLevelId
@@ -200,20 +201,32 @@ function showOnboarding() {
             →
           </button>
           <button
-            v-if="dailyStatus === 'available'"
+            v-if="dailyStatus !== 'locked'"
             type="button"
             class="level-map__btn level-map__btn--ghost home-map__daily-chip"
+            :class="{ 'home-map__daily-chip--done': dailyStatus === 'completed' }"
+            :disabled="dailyStatus === 'completed'"
             @click="router.push('/level/' + DAILY_LEVEL_ID)"
           >
-            📅 每日特训
-            <span v-if="progressStore.dailyStreak" class="home-map__streak"
-              >🔥 {{ progressStore.dailyStreak }}</span
-            >
+            <template v-if="dailyStatus === 'completed'">📅 今日已完成 · 明日刷新</template>
+            <template v-else>
+              📅 每日特训
+              <span class="home-map__action-xp">+{{ dailyXp }} XP</span>
+              <span v-if="progressStore.dailyStreak" class="home-map__streak"
+                >🔥 {{ progressStore.dailyStreak }}</span
+              >
+            </template>
           </button>
           <button type="button" class="level-map__btn level-map__btn--ghost" @click="resetProgress">
             重置进度
           </button>
         </div>
+
+        <p v-if="isMobile" class="home-map__fold-hint">
+          下方可展开：<strong>职场剧本</strong>、<strong>番外特训</strong>、<strong
+            >我的进度</strong
+          >
+        </p>
 
         <details
           class="home-fold home-fold--mobile-collapsible home-fold--progress"
@@ -230,7 +243,12 @@ function showOnboarding() {
           class="home-fold home-fold--mobile-collapsible home-fold--career"
           :open="isMobile ? undefined : true"
         >
-          <summary class="home-fold__summary">职场剧本</summary>
+          <summary class="home-fold__summary">
+            职场剧本
+            <span v-if="isMobile && workBrief.chapterTitle" class="home-fold__summary-meta">
+              {{ workBrief.chapterTitle }}
+            </span>
+          </summary>
           <div class="home-fold__body">
             <CareerScript />
           </div>

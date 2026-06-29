@@ -15,6 +15,7 @@ import { validateSimulation } from '../utils/validator'
 import { getValidationCriteria } from '../utils/validationCriteria'
 import { getSimGuide } from '../utils/simGuides'
 import { getFailureHint, getLevelHint } from '../utils/failureHints'
+import { getLevelXpPreview } from '../utils/levelXp'
 import { getLevelDeliverable } from '../data/levelDeliverables'
 import { getPhaseMilestoneForLevel } from '../data/phaseMilestones'
 import { useMobileLayout } from '../composables/useMobileLayout'
@@ -108,6 +109,7 @@ const passDebriefNote = ref(null)
 const sessionJiraTier = ref(null)
 const phaseMilestone = ref(null)
 const sutToast = ref('')
+const submitFlash = ref('')
 
 const levelId = computed(() => Number(route.params.id))
 const level = computed(() => getLevelById(levelId.value))
@@ -170,6 +172,10 @@ const submissionInitialSelected = computed(() => {
 })
 
 const existingStars = computed(() => progressStore.getLevelMeta(levelId.value)?.stars || 0)
+
+const xpPreview = computed(() =>
+  level.value ? getLevelXpPreview(level.value.xpReward, existingStars.value) : null
+)
 
 const nextLevelAfterPass = computed(() => {
   const id = progressStore.firstAvailableLevelId
@@ -770,15 +776,20 @@ function handlePass(submitData) {
   feedbackMessage.value = ''
   failureHint.value = ''
   isSubmitting.value = true
+  submitFlash.value = `✓ 通过 +${level.value.xpReward} XP`
 
   if (level.value.simType === 'jira') {
     setTimeout(() => {
+      submitFlash.value = ''
       showDebrief.value = true
     }, 800)
     return
   }
 
-  showDebrief.value = true
+  setTimeout(() => {
+    submitFlash.value = ''
+    showDebrief.value = true
+  }, 500)
 }
 
 function handleFail(data, result) {
@@ -977,6 +988,10 @@ function goBack() {
       <summary class="task-panel-fold__summary">
         <span class="task-panel-fold__icon">📋</span>
         <span class="task-panel-fold__text">{{ level.content }}</span>
+        <span v-if="xpPreview" class="task-panel-fold__xp">
+          +{{ xpPreview.base }} XP
+          <template v-if="xpPreview.canImprove"> · 冲星最多 +{{ xpPreview.maxTotal }}</template>
+        </span>
       </summary>
       <section class="task-panel task-panel--compact">
         <p v-if="isExtraLevel" class="task-panel__extra-tag">
@@ -1010,9 +1025,14 @@ function goBack() {
       </section>
     </details>
 
-    <section v-if="!showDebrief && isTaskView" class="workbench__sim-area">
-      <p v-if="showMobileSimHint" class="workbench__mobile-hint">
-        💡 终端 / 接口 / 抓包关建议在电脑浏览器玩，小屏操作会吃力。
+    <section
+      v-if="!showDebrief && isTaskView"
+      class="workbench__sim-area"
+      :class="{ 'workbench__sim-area--mobile-heavy': showMobileSimHint && isMobile }"
+    >
+      <p v-if="submitFlash" class="workbench__submit-flash">{{ submitFlash }}</p>
+      <p v-if="showMobileSimHint" class="workbench__mobile-hint workbench__mobile-hint--heavy">
+        💡 终端 / 接口 / 抓包关建议横屏或电脑浏览器；手机可先读任务，大屏实操更顺手。
       </p>
       <div class="sim-workspace__header">
         <span class="sim-workspace__tag">{{ simGuide.label }}</span>
