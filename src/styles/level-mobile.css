@@ -1,16 +1,8 @@
 /* ===== 关卡页：移动端模拟器优先 / 桌面完整壳层 ===== */
 
 @media (min-width: 769px) {
-  .task-panel-fold > summary {
-    display: none;
-  }
-
   .task-panel-fold {
     margin-bottom: 16px;
-  }
-
-  .task-panel__action--full {
-    display: none;
   }
 }
 

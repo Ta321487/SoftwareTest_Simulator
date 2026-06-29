@@ -91,6 +91,7 @@ const sessionAttempts = ref(0)
 const sutToast = ref('')
 const taskReturnFlash = ref('')
 const taskFocusPulse = ref(false)
+const taskPanelOpen = ref(true)
 let taskReturnTimer = null
 let taskPulseTimer = null
 
@@ -536,6 +537,7 @@ watch(
     }
 
     freshRetrySession.value = false
+    taskPanelOpen.value = true
     resetState()
     setupSutSession()
   },
@@ -827,16 +829,53 @@ onUnmounted(() => {
       {{ taskReturnFlash }}
     </p>
 
+    <section
+      v-if="!showDebrief && isTaskView"
+      class="task-panel task-panel--compact task-panel-brief task-panel-brief--desktop"
+      :class="{ 'task-panel-brief--pulse': taskFocusPulse }"
+    >
+      <p class="quest-panel__badge task-panel-brief__badge">▸ 当前任务</p>
+      <p v-if="isExtraLevel" class="task-panel__extra-tag">
+        {{ isDailyQuestId(levelId) ? '📅 每日特训' : '🎬 番外关卡' }}
+      </p>
+      <p v-if="deliverable" class="task-panel__deliverable">
+        <span class="task-panel__deliverable-label">今日交付物</span>
+        {{ deliverable }}
+      </p>
+      <div class="task-panel__action">
+        <span class="task-panel__action-icon">📋</span>
+        <p>{{ level.content }}</p>
+      </div>
+      <div v-if="sutEntriesOnLevel.length" class="task-panel__sut-links">
+        <span class="task-panel__sut-label">可选上机实操（不影响通关）：</span>
+        <button
+          v-for="entry in sutEntriesOnLevel"
+          :key="entry.key"
+          type="button"
+          class="task-panel__sut-link"
+          @click="openSutEntry(entry)"
+        >
+          ▶ {{ entry.label }}
+        </button>
+      </div>
+      <details class="task-panel__details">
+        <summary>背景与判定标准</summary>
+        <p class="task-panel__text">{{ level.description }}</p>
+        <p class="task-panel__criteria-inline">{{ validationCriteria }}</p>
+      </details>
+    </section>
+
     <details
       v-if="!showDebrief && isTaskView"
-      class="task-panel-fold"
-      :class="{ 'task-panel-fold--pulse': taskFocusPulse }"
-      :open="isMobile ? undefined : true"
+      class="task-panel-fold task-panel-brief task-panel-brief--mobile"
+      :class="{ 'task-panel-brief--pulse': taskFocusPulse }"
+      :open="taskPanelOpen"
+      @toggle="taskPanelOpen = $event.target.open"
     >
       <summary class="task-panel-fold__summary">
-        <span class="quest-panel__badge task-panel-fold__badge task-panel-fold__badge--inline"
-          >▸ 任务</span
-        >
+        <span class="quest-panel__badge task-panel-fold__badge task-panel-fold__badge--inline">
+          <span class="task-panel-fold__caret" aria-hidden="true"></span>任务
+        </span>
         <span class="task-panel-fold__icon">📋</span>
         <span class="task-panel-fold__text">{{ level.content }}</span>
         <span v-if="xpPreview" class="task-panel-fold__xp">
@@ -844,9 +883,6 @@ onUnmounted(() => {
           <template v-if="xpPreview.canImprove"> · 冲星最多 +{{ xpPreview.maxTotal }}</template>
         </span>
       </summary>
-      <p class="quest-panel__badge task-panel-fold__badge task-panel-fold__badge--desktop">
-        ▸ 当前任务
-      </p>
       <section class="task-panel task-panel--compact">
         <p v-if="isExtraLevel" class="task-panel__extra-tag">
           {{ isDailyQuestId(levelId) ? '📅 每日特训' : '🎬 番外关卡' }}
@@ -855,10 +891,6 @@ onUnmounted(() => {
           <span class="task-panel__deliverable-label">今日交付物</span>
           {{ deliverable }}
         </p>
-        <div class="task-panel__action task-panel__action--full">
-          <span class="task-panel__action-icon">📋</span>
-          <p>{{ level.content }}</p>
-        </div>
         <div v-if="sutEntriesOnLevel.length" class="task-panel__sut-links">
           <span class="task-panel__sut-label">可选上机实操（不影响通关）：</span>
           <button
@@ -871,11 +903,11 @@ onUnmounted(() => {
             ▶ {{ entry.label }}
           </button>
         </div>
-        <details class="task-panel__details">
-          <summary>背景与判定标准</summary>
+        <div class="task-panel__details task-panel__details--open">
+          <p class="task-panel__details-label">背景与判定标准</p>
           <p class="task-panel__text">{{ level.description }}</p>
           <p class="task-panel__criteria-inline">{{ validationCriteria }}</p>
-        </details>
+        </div>
       </section>
     </details>
 

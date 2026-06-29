@@ -284,6 +284,7 @@
   animation: submit-flash-in 0.35s ease;
 }
 
+.task-panel-brief--pulse,
 .task-panel-fold--pulse,
 .workbench__sim-area--pulse {
   animation: task-focus-pulse 1.1s ease;

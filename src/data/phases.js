@@ -1,4 +1,4 @@
-import { levels } from './levels'
+import { getLevelById } from '../utils/levelRegistry'
 
 export const phases = {
   prepare: {
@@ -71,5 +71,5 @@ export function getPhaseProgress(phase, completedLevelIds) {
 }
 
 export function getLevelTitle(levelId) {
-  return levels.find((lv) => lv.id === levelId)?.title || ''
+  return getLevelById(levelId)?.title || ''
 }

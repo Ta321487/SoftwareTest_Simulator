@@ -308,6 +308,14 @@
   font-size: 0.75rem;
 }
 
+.task-panel__details-label {
+  margin: 0 0 8px;
+  color: var(--accent-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
 .task-panel__criteria-inline {
   margin-top: 8px;
   padding: 8px 12px;

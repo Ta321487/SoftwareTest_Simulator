@@ -8,6 +8,10 @@ body {
   overflow-x: hidden;
 }
 
+body.debrief-open {
+  overflow: hidden;
+}
+
 #app,
 .workbench {
   min-height: 100vh;
@@ -709,7 +713,7 @@ body {
     gap: 10px;
   }
 
-  /* 复盘弹层：底部抽屉 */
+  /* 复盘弹层：底部抽屉（Teleport 至 body，需高于底栏 z-index:100） */
   .debrief-overlay {
     padding: 0;
     align-items: flex-end;
@@ -717,8 +721,9 @@ body {
 
   .debrief-panel {
     max-width: 100%;
-    max-height: 92vh;
+    max-height: min(92dvh, 100%);
     border-radius: 16px 16px 0 0;
+    border-bottom: none;
   }
 
   .debrief-panel__header,
@@ -728,6 +733,10 @@ body {
   .debrief-panel__footer {
     padding-left: 16px;
     padding-right: 16px;
+  }
+
+  .debrief-panel__phase-milestone {
+    margin-inline: 16px;
   }
 
   .debrief-panel__footer {

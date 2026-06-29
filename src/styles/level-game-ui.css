@@ -122,6 +122,64 @@
   overflow: hidden;
 }
 
+/* Desktop task brief — plain section, no <details> fold wrapper */
+.workbench--level .task-panel-brief--desktop {
+  position: relative;
+  margin-bottom: 16px;
+  padding: 14px 18px 16px;
+  border-radius: 14px;
+  background: var(--quest-panel-bg);
+  border: 1px solid var(--quest-panel-border);
+  box-shadow: var(--quest-glow);
+  border-bottom: none;
+}
+
+.workbench--level .task-panel-brief--desktop::before,
+.workbench--level .task-panel-brief--desktop::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--accent-cyan);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.workbench--level .task-panel-brief--desktop::before {
+  top: 8px;
+  left: 8px;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 4px 0 0 0;
+}
+
+.workbench--level .task-panel-brief--desktop::after {
+  bottom: 8px;
+  right: 8px;
+  border-left: none;
+  border-top: none;
+  border-radius: 0 0 4px 0;
+}
+
+.workbench--level .task-panel-brief__badge {
+  position: relative;
+  z-index: 2;
+  margin: 0 0 12px;
+}
+
+.workbench--level .task-panel-brief--desktop .task-panel__action p {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+
+@media (min-width: 769px) {
+  .task-panel-brief--mobile {
+    display: none !important;
+  }
+}
+
 .workbench--level .task-panel-fold::before,
 .workbench--level .task-panel-fold::after {
   content: '';
@@ -164,9 +222,31 @@
 .workbench--level .task-panel-fold__badge--inline {
   display: none;
   flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
   margin: 0;
   padding: 2px 8px;
   font-size: 0.625rem;
+}
+
+.task-panel-fold__caret {
+  display: inline-block;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+.task-panel-fold__caret::before {
+  content: '▸';
+}
+
+.task-panel-fold[open] .task-panel-fold__caret {
+  transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .task-panel-fold__caret {
+    transition: none;
+  }
 }
 
 .workbench--level .task-panel-fold .task-panel {
@@ -281,6 +361,10 @@
 
 /* Mobile overrides — wins over level-mobile.css */
 @media (max-width: 768px) {
+  .task-panel-brief--desktop {
+    display: none !important;
+  }
+
   .workbench--level .task-panel-fold__badge--desktop {
     display: none;
   }
