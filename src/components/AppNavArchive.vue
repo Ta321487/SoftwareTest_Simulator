@@ -7,11 +7,11 @@ const route = useRoute()
 const { goHomeSection } = useAppNav()
 
 const items = [
-  { id: 'home-career', label: '职场剧本', tab: 'career' },
-  { id: 'home-progress', label: '我的进度', tab: 'profile' },
-  { id: 'home-side', label: '番外池', tab: 'side' },
+  { id: 'home-career', label: '剧本', tab: 'career' },
+  { id: 'home-progress', label: '档案', tab: 'profile' },
+  { id: 'home-side', label: '番外', tab: 'side' },
   { id: 'home-phases', label: '关卡图', tab: 'map' },
-  { id: 'home-achievements', label: '成就墙', tab: 'achievements' },
+  { id: 'home-achievements', label: '成就', tab: 'achievements' },
 ]
 
 const activeId = computed(() => {

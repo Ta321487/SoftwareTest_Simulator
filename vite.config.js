@@ -50,14 +50,42 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        globPatterns: ['index.html', 'manifest.webmanifest', '**/*.{ico,png,svg,woff2}'],
+        globIgnores: ['**/workbox-*.js'],
         navigateFallback: base === '/' ? 'index.html' : `${base.replace(/\/$/, '')}/index.html`,
         navigateFallbackDenylist: [/^\/api/],
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.startsWith(base.replace(/\/$/, '') || '') && /\.(?:js|css)$/.test(url.pathname),
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'app-chunks',
+              expiration: { maxEntries: 64, maxAgeSeconds: 60 * 60 * 24 * 30 },
+            },
+          },
+        ],
       },
     }),
     ghPagesSpaFallback(),
   ],
   base,
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('vue') || id.includes('pinia') || id.includes('vue-router')) {
+              return 'vendor'
+            }
+            return
+          }
+          if (id.includes('/src/views/Handbook.vue') || id.includes('/src/data/glossary.js')) {
+            return 'handbook'
+          }
+        },
+      },
+    },
+  },
   test: {
     environment: 'node',
     include: ['src/**/*.test.js'],

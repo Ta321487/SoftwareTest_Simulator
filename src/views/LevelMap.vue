@@ -1,15 +1,26 @@
 <script setup>
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, watch, defineAsyncComponent } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useProgressStore } from '../stores/progressStore'
 import { useProjectStore } from '../stores/projectStore'
-import CareerScript from '../components/CareerScript.vue'
-import CareerMap from '../components/CareerMap.vue'
-import PlayerDashboard from '../components/PlayerDashboard.vue'
-import SideQuestHub from '../components/SideQuestHub.vue'
-import AchievementPanel from '../components/AchievementPanel.vue'
-import OnboardingTour from '../components/OnboardingTour.vue'
-import ProgressSettings from '../components/ProgressSettings.vue'
+
+const tabLoading = { template: '<p class="tab-loading" role="status">加载中…</p>' }
+
+function lazyTab(loader) {
+  return defineAsyncComponent({
+    loader,
+    loadingComponent: tabLoading,
+    delay: 100,
+  })
+}
+
+const CareerScript = lazyTab(() => import('../components/CareerScript.vue'))
+const CareerMap = lazyTab(() => import('../components/CareerMap.vue'))
+const SideQuestHub = lazyTab(() => import('../components/SideQuestHub.vue'))
+const PlayerDashboard = lazyTab(() => import('../components/PlayerDashboard.vue'))
+const AchievementPanel = lazyTab(() => import('../components/AchievementPanel.vue'))
+const ProgressSettings = lazyTab(() => import('../components/ProgressSettings.vue'))
+const OnboardingTour = lazyTab(() => import('../components/OnboardingTour.vue'))
 import { getWorkBrief } from '../data/careerScript'
 import { sideLevels } from '../data/sideQuests'
 import { DAILY_LEVEL_ID, getTodayDailyChallenge, getDailyFocusHint } from '../data/dailyChallenges'
@@ -25,8 +36,10 @@ const router = useRouter()
 const route = useRoute()
 const progressStore = useProgressStore()
 const onboardingRef = ref(null)
+const onboardingReady = ref(false)
 const { isMobile } = useMobileLayout()
 const homeTab = ref('quest')
+const visitedTabs = ref(new Set(['quest']))
 
 const HOME_TABS = [
   { id: 'quest', icon: '⚔️', label: '任务' },
@@ -50,6 +63,7 @@ const workBrief = computed(() =>
 )
 
 const reinforcementHint = computed(() => {
+  if (homeTab.value !== 'quest') return null
   const nextId = progressStore.firstAvailableLevelId
   const top = getWeakAreas({
     levelMistakes: progressStore.levelMistakes,
@@ -79,15 +93,16 @@ const nextLevelXp = computed(() => {
   return getLevelById(id)?.xpReward ?? 0
 })
 
-const nextAchievement = computed(() =>
-  getNextAchievementHint({
+const nextAchievement = computed(() => {
+  if (homeTab.value !== 'quest') return null
+  return getNextAchievementHint({
     achievements: progressStore.achievements,
     completedLevelIds: progressStore.completedLevelIds,
     levelMeta: progressStore.levelMeta,
     levelMistakes: progressStore.levelMistakes,
     dailyStreak: progressStore.dailyStreak,
   })
-)
+})
 
 function continueChallenge() {
   const nextId = progressStore.firstAvailableLevelId
@@ -104,11 +119,13 @@ function resetProgress() {
 }
 
 function showOnboarding() {
-  onboardingRef.value?.reopen?.()
+  onboardingReady.value = true
+  queueMicrotask(() => onboardingRef.value?.reopen?.())
 }
 
 function setHomeTab(id) {
   homeTab.value = id
+  visitedTabs.value.add(id)
   const hashMap = {
     quest: '',
     career: '#home-career',
@@ -123,12 +140,15 @@ function setHomeTab(id) {
   }
 }
 
-function sectionVisible(tabId) {
-  if (tabId === 'quest') return homeTab.value === 'quest'
+function tabActive(tabId) {
   return homeTab.value === tabId
 }
 
-onMounted(() => {
+function tabMounted(tabId) {
+  return visitedTabs.value.has(tabId)
+}
+
+function syncHomeTabFromHash(hash) {
   const hashTab = {
     '#home-career': 'career',
     '#home-side': 'side',
@@ -136,35 +156,34 @@ onMounted(() => {
     '#home-progress': 'profile',
     '#home-achievements': 'achievements',
   }
-  if (!route.hash) {
+  if (!hash) {
     homeTab.value = 'quest'
-  } else if (hashTab[route.hash]) {
-    homeTab.value = hashTab[route.hash]
+    visitedTabs.value.add('quest')
+    return
   }
+  if (hashTab[hash]) {
+    homeTab.value = hashTab[hash]
+    visitedTabs.value.add(hashTab[hash])
+  }
+}
+
+onMounted(() => {
+  syncHomeTabFromHash(route.hash)
+  const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 300))
+  idle(() => {
+    onboardingReady.value = true
+  })
 })
 
 watch(
   () => route.hash,
-  (hash) => {
-    const hashTab = {
-      '#home-career': 'career',
-      '#home-side': 'side',
-      '#home-phases': 'map',
-      '#home-progress': 'profile',
-      '#home-achievements': 'achievements',
-    }
-    if (!hash) {
-      homeTab.value = 'quest'
-      return
-    }
-    if (hashTab[hash]) homeTab.value = hashTab[hash]
-  }
+  (hash) => syncHomeTabFromHash(hash)
 )
 </script>
 
 <template>
   <div class="workbench home-map">
-    <OnboardingTour ref="onboardingRef" />
+    <OnboardingTour v-if="onboardingReady" ref="onboardingRef" />
     <header class="workbench__topbar">
       <div class="workbench__topbar-left">
         <div class="workbench__title-block">
@@ -202,7 +221,7 @@ watch(
           </button>
         </nav>
 
-        <div v-show="sectionVisible('quest')" class="game-section game-section--quest">
+        <div v-if="tabActive('quest')" class="game-section game-section--quest">
           <section class="home-map__hero quest-panel">
             <span class="quest-panel__badge">▸ 当前任务</span>
 
@@ -345,13 +364,14 @@ watch(
         </div>
 
         <div
-          v-show="sectionVisible('career')"
+          v-if="tabMounted('career')"
+          v-show="tabActive('career')"
           id="home-career"
           class="game-section game-section--career quest-log"
         >
           <header class="quest-log__head">
             <span class="quest-log__head-icon">📖</span>
-            职场剧本
+            剧本
             <span v-if="workBrief.chapterTitle" class="home-fold__summary-meta">
               · {{ workBrief.chapterTitle }}
             </span>
@@ -361,10 +381,15 @@ watch(
           </div>
         </div>
 
-        <div v-show="sectionVisible('side')" id="home-side" class="game-section game-section--side quest-log">
+        <div
+          v-if="tabMounted('side')"
+          v-show="tabActive('side')"
+          id="home-side"
+          class="game-section game-section--side quest-log"
+        >
           <header class="quest-log__head">
             <span class="quest-log__head-icon">🎬</span>
-            番外 & 特训
+            番外
             <span class="game-tabs__count"
               >{{ progressStore.sideCompletedCount }}/{{ sideLevels.length }}</span
             >
@@ -374,10 +399,15 @@ watch(
           </div>
         </div>
 
-        <div v-show="sectionVisible('map')" id="home-phases" class="game-section game-section--map quest-log">
+        <div
+          v-if="tabMounted('map')"
+          v-show="tabActive('map')"
+          id="home-phases"
+          class="game-section game-section--map quest-log"
+        >
           <header class="quest-log__head">
             <span class="quest-log__head-icon">🗺️</span>
-            关卡地图
+            关卡图
           </header>
           <div class="quest-log__body">
             <CareerMap />
@@ -385,13 +415,14 @@ watch(
         </div>
 
         <div
-          v-show="sectionVisible('profile')"
+          v-if="tabMounted('profile')"
+          v-show="tabActive('profile')"
           id="home-progress"
           class="game-section game-section--profile quest-log"
         >
           <header class="quest-log__head">
             <span class="quest-log__head-icon">👤</span>
-            玩家档案
+            档案
           </header>
           <div class="quest-log__body">
             <PlayerDashboard compact />
@@ -400,13 +431,14 @@ watch(
         </div>
 
         <div
-          v-show="sectionVisible('achievements')"
+          v-if="tabMounted('achievements')"
+          v-show="tabActive('achievements')"
           id="home-achievements"
           class="game-section game-section--achievements quest-log"
         >
           <header class="quest-log__head">
             <span class="quest-log__head-icon">🏆</span>
-            成就墙
+            成就
           </header>
           <div class="quest-log__body">
             <AchievementPanel class="home-map__achievements" />

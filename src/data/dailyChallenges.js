@@ -427,21 +427,29 @@ function pickDailyIndex(dateStr, memo) {
   return baseIdx
 }
 
+let dailyIndexMemo = { dateStr: '', index: 0 }
+
 export function getDailyIndex(dateStr = getTodayDateStr()) {
+  if (dailyIndexMemo.dateStr === dateStr) return dailyIndexMemo.index
+
+  let index
   if (dateStr <= DAILY_INDEX_ANCHOR) {
-    return dateSeed(dateStr) % DAILY_POOL.length
+    index = dateSeed(dateStr) % DAILY_POOL.length
+  } else {
+    const memo = new Map()
+    memo.set(DAILY_INDEX_ANCHOR, dateSeed(DAILY_INDEX_ANCHOR) % DAILY_POOL.length)
+
+    let cursor = DAILY_INDEX_ANCHOR
+    while (cursor < dateStr) {
+      cursor = shiftDateStr(cursor, 1)
+      memo.set(cursor, pickDailyIndex(cursor, memo))
+    }
+
+    index = memo.get(dateStr)
   }
 
-  const memo = new Map()
-  memo.set(DAILY_INDEX_ANCHOR, dateSeed(DAILY_INDEX_ANCHOR) % DAILY_POOL.length)
-
-  let cursor = DAILY_INDEX_ANCHOR
-  while (cursor < dateStr) {
-    cursor = shiftDateStr(cursor, 1)
-    memo.set(cursor, pickDailyIndex(cursor, memo))
-  }
-
-  return memo.get(dateStr)
+  dailyIndexMemo = { dateStr, index }
+  return index
 }
 
 /** 首页/番外卡片展示：hint 首句，不泄答案 */

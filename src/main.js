@@ -6,6 +6,7 @@ import './styles/global.css'
 import './styles/responsive.css'
 import './styles/home-mobile.css'
 import './styles/level-mobile.css'
+import './styles/level-game-ui.css'
 import { useThemeStore } from './stores/themeStore'
 
 if (import.meta.env.PROD) {

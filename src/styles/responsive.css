@@ -227,7 +227,7 @@ body {
     flex-shrink: 0;
   }
 
-  /* 消息收件箱：底部抽屉 */
+  /* 消息收件箱：底部抽屉（Teleport 到 body） */
   .work-inbox__panel {
     position: fixed;
     top: auto;
@@ -239,6 +239,11 @@ body {
     border-radius: 16px 16px 0 0;
     padding-bottom: max(8px, env(safe-area-inset-bottom));
     z-index: 200;
+  }
+
+  .work-inbox__panel--anchored {
+    top: auto;
+    right: auto;
   }
 
   /* 手机底栏留白（Tab 栏 + 关卡 Day 横条） */

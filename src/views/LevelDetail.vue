@@ -1203,6 +1203,9 @@ onUnmounted(() => {
       :open="isMobile ? undefined : true"
     >
       <summary class="task-panel-fold__summary">
+        <span class="quest-panel__badge task-panel-fold__badge task-panel-fold__badge--inline"
+          >▸ 任务</span
+        >
         <span class="task-panel-fold__icon">📋</span>
         <span class="task-panel-fold__text">{{ level.content }}</span>
         <span v-if="xpPreview" class="task-panel-fold__xp">
@@ -1210,6 +1213,9 @@ onUnmounted(() => {
           <template v-if="xpPreview.canImprove"> · 冲星最多 +{{ xpPreview.maxTotal }}</template>
         </span>
       </summary>
+      <p class="quest-panel__badge task-panel-fold__badge task-panel-fold__badge--desktop">
+        ▸ 当前任务
+      </p>
       <section class="task-panel task-panel--compact">
         <p v-if="isExtraLevel" class="task-panel__extra-tag">
           {{ isDailyQuestId(levelId) ? '📅 每日特训' : '🎬 番外关卡' }}
