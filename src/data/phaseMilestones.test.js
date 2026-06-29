@@ -3,12 +3,12 @@ import { getPhaseMilestoneForLevel, isPhaseFinaleLevel } from '../data/phaseMile
 
 describe('phaseMilestones', () => {
   it('detects phase finale level', () => {
-    expect(isPhaseFinaleLevel('prepare', 17)).toBe(true)
+    expect(isPhaseFinaleLevel('prepare', 38)).toBe(true)
     expect(isPhaseFinaleLevel('prepare', 5)).toBe(false)
   })
 
   it('returns milestone for last level in phase', () => {
-    const m = getPhaseMilestoneForLevel(17)
+    const m = getPhaseMilestoneForLevel(38)
     expect(m?.title).toContain('备考')
   })
 

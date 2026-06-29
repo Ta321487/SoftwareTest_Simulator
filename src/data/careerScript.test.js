@@ -34,7 +34,7 @@ describe('careerScript', () => {
   })
 
   it('finds active chapter from progress', () => {
-    expect(findActiveChapter([1, 2, 3, 4, 5]).id).toBe('skills-drill')
+    expect(findActiveChapter([1, 2, 3, 4, 5, 34, 35]).id).toBe('skills-drill')
   })
 
   it('builds work brief for next task', () => {
