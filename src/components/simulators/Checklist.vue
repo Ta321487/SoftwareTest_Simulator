@@ -1,5 +1,6 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useMobileLayout } from '../../composables/useMobileLayout'
 
 defineProps({
   checklistItems: {
@@ -15,22 +16,16 @@ defineProps({
 const emit = defineEmits(['submit'])
 
 const selected = ref([])
+const { isMobile } = useMobileLayout()
 const prdExpanded = ref(true)
-let prdMedia = null
 
-function syncPrdExpanded() {
-  prdExpanded.value = !prdMedia?.matches
-}
-
-onMounted(() => {
-  prdMedia = window.matchMedia('(max-width: 768px)')
-  syncPrdExpanded()
-  prdMedia.addEventListener('change', syncPrdExpanded)
-})
-
-onUnmounted(() => {
-  prdMedia?.removeEventListener('change', syncPrdExpanded)
-})
+watch(
+  isMobile,
+  (mobile) => {
+    prdExpanded.value = !mobile
+  },
+  { immediate: true }
+)
 
 function handleSubmit() {
   emit('submit', { selected: [...selected.value] })
