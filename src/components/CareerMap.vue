@@ -36,10 +36,7 @@ const tabs = computed(() =>
     const phase = phases[id]
     const { done, total } = getPhaseProgress(phase, progressStore.completedLevelIds)
     const locked = id === 'lead' && progressStore.getStatus(LEAD_UNLOCK_LEVEL) === 'locked'
-    const active =
-      !locked &&
-      activePhaseId.value === id &&
-      done < total
+    const active = !locked && activePhaseId.value === id && done < total
     return {
       id,
       icon: phase.icon,
@@ -87,7 +84,10 @@ const phaseNodes = computed(() => {
       </button>
     </div>
 
-    <p v-if="progressStore.getStatus(LEAD_UNLOCK_LEVEL) === 'locked' && activePhaseId === 'lead'" class="career-map__phase-locked-hint">
+    <p
+      v-if="progressStore.getStatus(LEAD_UNLOCK_LEVEL) === 'locked' && activePhaseId === 'lead'"
+      class="career-map__phase-locked-hint"
+    >
       第一季 {{ SEASON1_LEVEL_COUNT }} 关全通后解锁进阶线
     </p>
 

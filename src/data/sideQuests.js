@@ -959,7 +959,13 @@ export const sideArcs = enrichSideArcs([
   ...toolQuestArcs,
 ])
 
-export { sideChapters, TOOLCHAIN_ARC_IDS, isToolchainArc, getToolchainProgress, getNextToolchainLevel } from './sideQuestChapters.js'
+export {
+  sideChapters,
+  TOOLCHAIN_ARC_IDS,
+  isToolchainArc,
+  getToolchainProgress,
+  getNextToolchainLevel,
+} from './sideQuestChapters.js'
 
 export const sideLevelIds = sideLevels.map((l) => l.id)
 

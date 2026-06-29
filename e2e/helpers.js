@@ -50,11 +50,8 @@ export async function openSavePanel(page) {
   const exportBtn = page.getByRole('button', { name: '导出存档' })
   if (await exportBtn.isVisible()) return
 
-  const panel = page.locator('details.home-fold--progress')
-  await panel.evaluate((el) => {
-    el.open = true
-  })
-  await exportBtn.waitFor({ state: 'visible' })
+  await page.goto('/#home-progress')
+  await exportBtn.waitFor({ state: 'visible', timeout: 15000 })
 }
 
 export function buildSampleBackup(completedLevelIds = [1, 2, 3]) {

@@ -12,9 +12,9 @@ describe('sqlValidation', () => {
   }
 
   it('accepts valid select', () => {
-    expect(
-      validateSqlQuery("SELECT * FROM orders WHERE order_id = '8821'", level).isPass
-    ).toBe(true)
+    expect(validateSqlQuery("SELECT * FROM orders WHERE order_id = '8821'", level).isPass).toBe(
+      true
+    )
   })
 
   it('rejects non-select', () => {

@@ -17,7 +17,8 @@ const arcNodes = computed(() =>
     const levels = sideLevels.filter((l) => l.sideArc === arcId)
     const done = levels.filter((l) => progressStore.getSideQuestStatus(l.id) === 'completed').length
     const hasAvailable = levels.some((l) => progressStore.getSideQuestStatus(l.id) === 'available')
-    const allLocked = levels.length > 0 && levels.every((l) => progressStore.getSideQuestStatus(l.id) === 'locked')
+    const allLocked =
+      levels.length > 0 && levels.every((l) => progressStore.getSideQuestStatus(l.id) === 'locked')
     const complete = levels.length > 0 && done >= levels.length
     return {
       id: arcId,
@@ -87,7 +88,9 @@ watch(activeArcId, (id) => {
     <div class="skill-tree__head">
       <div>
         <h3 class="skill-tree__title">排查工具链</h3>
-        <p class="skill-tree__hint">按路线解锁 · {{ totalProgress.done }}/{{ totalProgress.total }} 关</p>
+        <p class="skill-tree__hint">
+          按路线解锁 · {{ totalProgress.done }}/{{ totalProgress.total }} 关
+        </p>
       </div>
       <button type="button" class="skill-tree__continue" @click="continueNext">继续下一关 →</button>
     </div>

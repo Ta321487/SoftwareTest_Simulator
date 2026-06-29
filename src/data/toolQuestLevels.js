@@ -41,9 +41,7 @@ export const toolQuestLevels = [
     sqlTable: 'users',
     sqlSchema: '-- users(id, phone, locked_until, fail_count)',
     sqlMustInclude: ['13800138000'],
-    sqlResultRows: [
-      { phone: '13800138000', fail_count: 5, locked_until: '2026-06-29 11:00:00' },
-    ],
+    sqlResultRows: [{ phone: '13800138000', fail_count: 5, locked_until: '2026-06-29 11:00:00' }],
     correctQuery: "SELECT * FROM users WHERE phone = '13800138000'",
     sqlHint: 'WHERE 条件写手机号；SELECT 只需 locked_until 相关字段或 *。',
     xpReward: 20,
@@ -94,8 +92,7 @@ export const toolQuestLevels = [
     title: '哪一步流水线红了',
     season: 'extra',
     isSideQuest: true,
-    description:
-      '【CI 实操线 · 第1关】发布前 build #4287 失败，测试需判断应优先介入哪一阶段。',
+    description: '【CI 实操线 · 第1关】发布前 build #4287 失败，测试需判断应优先介入哪一阶段。',
     simType: 'cipipeline',
     content: '点击失败的阶段并确认：',
     pipelineStages: [
@@ -226,8 +223,7 @@ export const toolQuestLevels = [
     title: 'Hotfix 从哪条分支切',
     season: 'extra',
     isSideQuest: true,
-    description:
-      '【Git 发布线 · 第1关】生产支付 Bug 需 hotfix，选对基准分支再 cherry-pick。',
+    description: '【Git 发布线 · 第1关】生产支付 Bug 需 hotfix，选对基准分支再 cherry-pick。',
     simType: 'gitrelease',
     content: '选择应用 hotfix 的目标分支：',
     gitMode: 'branch',
@@ -256,7 +252,13 @@ export const toolQuestLevels = [
     gitTitle: 'staging 分支最近提交',
     gitCommits: [
       { id: 'a', sha: 'a1b2c3d', message: 'chore: bump version', author: 'ops', time: '2h ago' },
-      { id: 'b', sha: 'f4e5d6c', message: 'fix(pay): TEST-1008 callback sign verify', author: 'li', time: '5h ago' },
+      {
+        id: 'b',
+        sha: 'f4e5d6c',
+        message: 'fix(pay): TEST-1008 callback sign verify',
+        author: 'li',
+        time: '5h ago',
+      },
       { id: 'c', sha: '9x8y7z6', message: 'feat: new icon set', author: 'ui', time: '1d ago' },
     ],
     correctClick: 'b',
@@ -312,7 +314,12 @@ export const toolQuestLevels = [
     content: '填写最新一条登录验证码：',
     inboxMode: 'sms',
     smsMessages: [
-      { id: '1', from: '10690001', text: '【TestApp】您的验证码 826493，5 分钟内有效。', time: '10:20' },
+      {
+        id: '1',
+        from: '10690001',
+        text: '【TestApp】您的验证码 826493，5 分钟内有效。',
+        time: '10:20',
+      },
       { id: '2', from: '10690001', text: '【TestApp】验证码 112233 已失效。', time: '09:55' },
     ],
     correctCode: '826493',
@@ -325,7 +332,12 @@ export const toolQuestLevels = [
 export const toolQuestArcs = [
   { id: 'sql', name: 'SQL 查库 · 实操', icon: '🗄️', tagline: '灰盒验证 · 接口 200 也要查落库' },
   { id: 'redis', name: 'Redis 缓存 · 实操', icon: '🔴', tagline: 'Session / 验证码 / 限流键排查' },
-  { id: 'cipipeline', name: 'CI 流水线 · 实操', icon: '🔄', tagline: '看流水线 · 读日志 · 判断门禁' },
+  {
+    id: 'cipipeline',
+    name: 'CI 流水线 · 实操',
+    icon: '🔄',
+    tagline: '看流水线 · 读日志 · 判断门禁',
+  },
   { id: 'mock', name: 'Mock 配置 · 实操', icon: '🎭', tagline: '沙箱挂了 · 回调 Mock 保进度' },
   { id: 'apm', name: 'APM 链路 · 实操', icon: '📈', tagline: '链路耗时 · 灰度告警优先级' },
   { id: 'git', name: 'Git 发布 · 实操', icon: '⎇', tagline: 'Hotfix 分支 · 修复 commit 核对' },

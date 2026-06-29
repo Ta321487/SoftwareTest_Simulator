@@ -38,7 +38,9 @@ defineExpose({ reset })
 <template>
   <div class="sim-card mq-inbox">
     <header class="mq-inbox__header">
-      <span>{{ inboxMode === 'mq' ? '📨 RabbitMQ · pay-callback 队列' : '📱 短信网关 · 测试收件箱' }}</span>
+      <span>{{
+        inboxMode === 'mq' ? '📨 RabbitMQ · pay-callback 队列' : '📱 短信网关 · 测试收件箱'
+      }}</span>
       <span class="mq-inbox__env">staging</span>
     </header>
 
@@ -58,7 +60,9 @@ defineExpose({ reset })
         </span>
         <pre class="mq-inbox__payload">{{ msg.payload }}</pre>
       </button>
-      <button type="button" class="sim-btn sim-btn--primary" @click="handleSubmitMq">✓ 确认消息</button>
+      <button type="button" class="sim-btn sim-btn--primary" @click="handleSubmitMq">
+        ✓ 确认消息
+      </button>
     </template>
 
     <template v-else>
@@ -71,8 +75,16 @@ defineExpose({ reset })
         </li>
       </ul>
       <label class="sim-field__label">填写验证码</label>
-      <input v-model="code" class="sim-field__input" type="text" maxlength="6" placeholder="6 位数字" />
-      <button type="button" class="sim-btn sim-btn--primary" @click="handleSubmitSms">✓ 提交验证码</button>
+      <input
+        v-model="code"
+        class="sim-field__input"
+        type="text"
+        maxlength="6"
+        placeholder="6 位数字"
+      />
+      <button type="button" class="sim-btn sim-btn--primary" @click="handleSubmitSms">
+        ✓ 提交验证码
+      </button>
     </template>
 
     <p v-if="mqHint" class="mq-inbox__hint">{{ mqHint }}</p>

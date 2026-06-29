@@ -5,7 +5,7 @@ test('home page loads with continue challenge', async ({ page }) => {
   await seedAppStorage(page)
   await page.goto('/')
   await expect(page.locator('h1.workbench__title')).toHaveText('测试人一生')
-  await expect(page.getByRole('button', { name: /开始今日任务|继续挑战/ })).toBeVisible()
+  await expect(page.getByRole('button', { name: /开始任务/ })).toBeVisible()
 })
 
 test('main level route shows deliverable banner', async ({ page }) => {

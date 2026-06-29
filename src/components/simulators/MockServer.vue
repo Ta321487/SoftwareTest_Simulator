@@ -78,13 +78,22 @@ defineExpose({ reset })
     </div>
 
     <div class="mock-server__actions">
-      <button type="button" class="sim-btn sim-btn--secondary" @click="handleTest">🔌 测试 Mock</button>
-      <button type="button" class="sim-btn sim-btn--primary" :disabled="!testOk" @click="handleSubmit">
+      <button type="button" class="sim-btn sim-btn--secondary" @click="handleTest">
+        🔌 测试 Mock
+      </button>
+      <button
+        type="button"
+        class="sim-btn sim-btn--primary"
+        :disabled="!testOk"
+        @click="handleSubmit"
+      >
         ✓ 保存并提交
       </button>
     </div>
 
-    <p v-if="tested && !testOk" class="mock-server__fail">Mock 探测未通过，请对照任务调整 path/status/body。</p>
+    <p v-if="tested && !testOk" class="mock-server__fail">
+      Mock 探测未通过，请对照任务调整 path/status/body。
+    </p>
     <p v-if="testOk" class="mock-server__ok">✓ Mock 响应符合预期，可提交。</p>
     <p v-if="mockHint && !testOk" class="mock-server__hint">{{ mockHint }}</p>
   </div>

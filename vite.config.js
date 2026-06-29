@@ -56,7 +56,9 @@ export default defineConfig({
         navigateFallbackDenylist: [/^\/api/],
         runtimeCaching: [
           {
-            urlPattern: ({ url }) => url.pathname.startsWith(base.replace(/\/$/, '') || '') && /\.(?:js|css)$/.test(url.pathname),
+            urlPattern: ({ url }) =>
+              url.pathname.startsWith(base.replace(/\/$/, '') || '') &&
+              /\.(?:js|css)$/.test(url.pathname),
             handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'app-chunks',

@@ -144,7 +144,9 @@ export const playbooks = [
       '对照 APM/traceId 与业务现象交叉验证',
     ],
     relatedTermIds: ['gray-box', 'apm'],
-    relatedLevelIds: [5, 23, 46, 115, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136],
+    relatedLevelIds: [
+      5, 23, 46, 115, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136,
+    ],
   },
   {
     id: 'sql-graybox',

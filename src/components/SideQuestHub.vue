@@ -1,12 +1,7 @@
 <script setup>
 import { computed, ref, watch, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import {
-  sideLevels,
-  sideArcs,
-  getUnlockHint,
-  sideChapters,
-} from '../data/sideQuests'
+import { sideLevels, sideArcs, getUnlockHint, sideChapters } from '../data/sideQuests'
 import { DAILY_LEVEL_ID, getTodayDailyChallenge, getDailyFocusHint } from '../data/dailyChallenges'
 import { useProgressStore } from '../stores/progressStore'
 import { useMobileLayout } from '../composables/useMobileLayout'
@@ -260,7 +255,8 @@ onUnmounted(() => {
                 role="tab"
                 class="skill-tree__arc"
                 :class="{
-                  'skill-tree__arc--active': (selectedMindsetArcId || activeMindsetArcId) === arc.id,
+                  'skill-tree__arc--active':
+                    (selectedMindsetArcId || activeMindsetArcId) === arc.id,
                   'skill-tree__arc--available': arc.active,
                   'skill-tree__arc--done': arc.complete,
                   'skill-tree__arc--last': index === mindsetArcs.length - 1,
@@ -273,7 +269,9 @@ onUnmounted(() => {
                 <span class="skill-tree__arc-progress">{{ arc.done }}/{{ arc.total }}</span>
               </button>
             </div>
-            <p v-if="currentMindsetArc" class="skill-tree__arc-tagline">{{ currentMindsetArc.tagline }}</p>
+            <p v-if="currentMindsetArc" class="skill-tree__arc-tagline">
+              {{ currentMindsetArc.tagline }}
+            </p>
             <QuestPathMap v-if="mindsetPathNodes.length" :nodes="mindsetPathNodes" size="sm" />
           </template>
         </div>

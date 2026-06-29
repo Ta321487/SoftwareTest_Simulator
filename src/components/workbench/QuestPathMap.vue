@@ -58,9 +58,7 @@ const colsPerRow = computed(() => {
   return isMobile.value ? 4 : 5
 })
 
-const serpentineNodes = computed(() =>
-  getSerpentineLayout(resolved.value, colsPerRow.value)
-)
+const serpentineNodes = computed(() => getSerpentineLayout(resolved.value, colsPerRow.value))
 
 const rowCount = computed(() => getSerpentineRowCount(resolved.value.length, colsPerRow.value))
 

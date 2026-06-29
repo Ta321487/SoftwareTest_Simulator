@@ -29,11 +29,12 @@ export function validateSqlQuery(query, level) {
   }
 
   if (level.sqlMustIncludeAny?.length) {
-    const hit = level.sqlMustIncludeAny.some((token) =>
-      norm.includes(String(token).toLowerCase())
-    )
+    const hit = level.sqlMustIncludeAny.some((token) => norm.includes(String(token).toLowerCase()))
     if (!hit) {
-      return { isPass: false, message: `需筛选字段或条件：${level.sqlMustIncludeAny.join(' / ')}。` }
+      return {
+        isPass: false,
+        message: `需筛选字段或条件：${level.sqlMustIncludeAny.join(' / ')}。`,
+      }
     }
   }
 

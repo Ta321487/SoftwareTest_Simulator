@@ -44,7 +44,12 @@ const visitedTabs = ref(new Set(['quest']))
 const HOME_TABS = [
   { id: 'quest', icon: '⚔️', label: '任务' },
   { id: 'career', icon: '📖', label: '剧本' },
-  { id: 'side', icon: '🎬', label: '番外', count: () => `${progressStore.sideCompletedCount}/${sideLevels.length}` },
+  {
+    id: 'side',
+    icon: '🎬',
+    label: '番外',
+    count: () => `${progressStore.sideCompletedCount}/${sideLevels.length}`,
+  },
   { id: 'map', icon: '🗺️', label: '关卡图' },
   { id: 'profile', icon: '👤', label: '档案' },
   { id: 'achievements', icon: '🏆', label: '成就' },
@@ -322,13 +327,19 @@ watch(
               >
                 #{{ reinforcementHint.levelId }} {{ reinforcementHint.title }}
               </router-link>
-              <span class="home-map__hero-reinforce-reason">（{{ reinforcementHint.reason }}）</span>
+              <span class="home-map__hero-reinforce-reason"
+                >（{{ reinforcementHint.reason }}）</span
+              >
             </p>
           </section>
 
           <div class="home-map__actions">
             <div class="home-map__action-btns">
-              <button type="button" class="level-map__btn level-map__btn--ghost" @click="resetProgress">
+              <button
+                type="button"
+                class="level-map__btn level-map__btn--ghost"
+                @click="resetProgress"
+              >
                 重置进度
               </button>
             </div>
@@ -344,7 +355,9 @@ watch(
               <h3 class="quest-daily__title">{{ dailyTitle }}</h3>
               <p v-if="dailyFocus" class="quest-daily__meta">{{ dailyFocus }}</p>
               <p v-else class="quest-daily__meta">
-                <span v-if="progressStore.dailyStreak">🔥 连续 {{ progressStore.dailyStreak }} 天 · </span>
+                <span v-if="progressStore.dailyStreak"
+                  >🔥 连续 {{ progressStore.dailyStreak }} 天 ·
+                </span>
                 <span v-if="dailyStatus === 'completed'">今日已完成</span>
                 <span v-else>通关 +{{ dailyXp }} XP</span>
               </p>
@@ -358,9 +371,7 @@ watch(
               {{ dailyStatus === 'completed' ? '明日刷新' : '开始 →' }}
             </button>
           </article>
-          <p v-else class="home-map__daily-locked">
-            📅 每日特训 · 完成第 5 关「登录收官」后解锁
-          </p>
+          <p v-else class="home-map__daily-locked">📅 每日特训 · 完成第 5 关「登录收官」后解锁</p>
         </div>
 
         <div
@@ -457,9 +468,7 @@ watch(
           #{{ progressStore.firstAvailableLevelId }} {{ workBrief.title }}
         </p>
       </div>
-      <button type="button" class="game-playbar__btn" @click="continueChallenge">
-        开始 →
-      </button>
+      <button type="button" class="game-playbar__btn" @click="continueChallenge">开始 →</button>
     </footer>
   </div>
 </template>

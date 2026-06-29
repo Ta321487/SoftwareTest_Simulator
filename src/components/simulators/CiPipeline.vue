@@ -73,7 +73,9 @@ defineExpose({ reset })
     </ol>
 
     <pre v-if="showLog && pipelineLog" class="ci-pipeline__log">{{ pipelineLog }}</pre>
-    <p v-else-if="!selectedStage" class="ci-pipeline__guide">点击各阶段查看状态；失败阶段会展开日志片段。</p>
+    <p v-else-if="!selectedStage" class="ci-pipeline__guide">
+      点击各阶段查看状态；失败阶段会展开日志片段。
+    </p>
 
     <div v-if="causeOptions?.length && showLog" class="ci-pipeline__causes">
       <p class="ci-pipeline__causes-title">根据日志，最可能的失败原因是？</p>

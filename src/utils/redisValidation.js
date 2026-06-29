@@ -8,7 +8,8 @@ function parseRedisCommand(command) {
   const cmd = parts[0]
   if (cmd === 'get' && parts[1]) return { cmd: 'get', key: parts[1] }
   if (cmd === 'ttl' && parts[1]) return { cmd: 'ttl', key: parts[1] }
-  if (cmd === 'keys' && parts[1]) return { cmd: 'keys', pattern: parts[1].replace(/^['"]|['"]$/g, '') }
+  if (cmd === 'keys' && parts[1])
+    return { cmd: 'keys', pattern: parts[1].replace(/^['"]|['"]$/g, '') }
   return null
 }
 
@@ -36,7 +37,11 @@ export function validateRedisCommand(command, level) {
 
   if (user.cmd !== exp.cmd) {
     const hint =
-      exp.cmd === 'get' ? '用 GET 读取键值' : exp.cmd === 'ttl' ? '用 TTL 查看剩余秒数' : '用 KEYS 匹配键名'
+      exp.cmd === 'get'
+        ? '用 GET 读取键值'
+        : exp.cmd === 'ttl'
+          ? '用 TTL 查看剩余秒数'
+          : '用 KEYS 匹配键名'
     return { isPass: false, message: hint }
   }
 

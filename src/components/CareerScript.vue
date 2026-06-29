@@ -127,7 +127,9 @@ function openImmersion(item, levelId) {
         <h3 class="career-script__panel-title">
           第 {{ selectedChapter.chapter }} 章 · {{ selectedChapter.title }}
         </h3>
-        <span v-if="selectedChapter.locked" class="career-script__panel-meta">🔒 第一季结业后解锁</span>
+        <span v-if="selectedChapter.locked" class="career-script__panel-meta"
+          >🔒 第一季结业后解锁</span
+        >
         <span v-else class="career-script__panel-meta">
           {{ selectedChapter.progress.done }}/{{ selectedChapter.progress.total }} ·
           {{ selectedChapter.badge }}
@@ -152,7 +154,10 @@ function openImmersion(item, levelId) {
       </details>
 
       <div v-if="!selectedChapter.locked" class="career-script__beats">
-        <template v-for="(beat, index) in selectedChapter.beats" :key="`${selectedChapter.id}-${index}`">
+        <template
+          v-for="(beat, index) in selectedChapter.beats"
+          :key="`${selectedChapter.id}-${index}`"
+        >
           <p v-if="beat.type === 'project'" class="career-script__beat-label">
             {{ projects[beat.projectId]?.name }}
           </p>
