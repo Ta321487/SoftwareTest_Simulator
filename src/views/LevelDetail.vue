@@ -93,8 +93,13 @@ const taskFocusPulse = ref(false)
 let taskReturnTimer = null
 let taskPulseTimer = null
 
-const { showHint, hintText, sessionHintUsed, resetHints, revealHint: revealLevelHint } =
-  useLevelHints(progressStore)
+const {
+  showHint,
+  hintText,
+  sessionHintUsed,
+  resetHints,
+  revealHint: revealLevelHint,
+} = useLevelHints(progressStore)
 
 const levelId = computed(() => Number(route.params.id))
 const level = computed(() => getLevelById(levelId.value))

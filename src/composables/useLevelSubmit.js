@@ -3,7 +3,11 @@ import { validateSimulation } from '../utils/validator'
 import { getFailureHint } from '../utils/failureHints'
 import { getRankForXp } from '../data/ranks'
 import { getAchievementById } from '../data/achievements'
-import { getPassDebriefNote, shouldRecordMistake, computeArtifactQuality } from '../data/consequences'
+import {
+  getPassDebriefNote,
+  shouldRecordMistake,
+  computeArtifactQuality,
+} from '../data/consequences'
 import { getPhaseMilestoneForLevel } from '../data/phaseMilestones'
 import { isDailyQuestId } from '../utils/levelRegistry'
 import { PAYMENT_MODULE_ID } from '../utils/paymentSut'
