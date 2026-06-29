@@ -40,11 +40,7 @@ const hasProject = computed(() => props.projectItems.length > 0)
 
 const visibleProjectItems = computed(() => {
   const items = props.projectItems
-  if (
-    !isMobile.value ||
-    dockExpanded.value ||
-    items.length <= MOBILE_PROJECT_VISIBLE
-  ) {
+  if (!isMobile.value || dockExpanded.value || items.length <= MOBILE_PROJECT_VISIBLE) {
     return items
   }
   return items.slice(0, MOBILE_PROJECT_VISIBLE - 1)
@@ -145,7 +141,11 @@ function toggleDockExpanded() {
           @click="!item.locked && emit('dock-change', item.levelId)"
         >
           <span class="workbench__dock-text">
-            {{ item.dayLabel ? `${item.dayLabel} ${dockApps[item.simType]?.shortLabel || ''}` : '工具' }}
+            {{
+              item.dayLabel
+                ? `${item.dayLabel} ${dockApps[item.simType]?.shortLabel || ''}`
+                : '工具'
+            }}
           </span>
           <span
             v-if="item.hasArtifact && item.levelId !== taskLevelId"

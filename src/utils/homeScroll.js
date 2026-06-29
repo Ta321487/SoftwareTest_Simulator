@@ -14,7 +14,9 @@ export function scrollToHomeSection(id, offset = 16) {
   }
 
   const top =
-    container.scrollTop + (el.getBoundingClientRect().top - container.getBoundingClientRect().top) - offset
+    container.scrollTop +
+    (el.getBoundingClientRect().top - container.getBoundingClientRect().top) -
+    offset
   container.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
   return true
 }

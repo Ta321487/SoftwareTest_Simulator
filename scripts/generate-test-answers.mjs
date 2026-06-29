@@ -33,9 +33,7 @@ function fmtTerminal(level) {
 }
 
 function fmtConfig(level) {
-  return level.correctValue
-    ? `${level.configKey || '配置项'} = \`${level.correctValue}\``
-    : null
+  return level.correctValue ? `${level.configKey || '配置项'} = \`${level.correctValue}\`` : null
 }
 
 function fmtCalc(level) {
@@ -51,15 +49,15 @@ function fmtRef(levelId) {
 function fmtOpen(level) {
   const parts = []
   if (level.chatStructure) {
-    parts.push(
-      `- **企微/聊天**：满足结构校验 + 关内关键词（见关卡提示）；冲星需匹配更多关键词`,
-    )
+    parts.push(`- **企微/聊天**：满足结构校验 + 关内关键词（见关卡提示）；冲星需匹配更多关键词`)
     if (level.chatKeywords?.length) {
       parts.push(`  - 可写关键词：${level.chatKeywords.slice(0, 8).join('、')}…`)
     }
   }
   if (level.templateFields?.length) {
-    parts.push(`- **模板填空**：每格 ≥ ${level.templateMinLength || 10} 字，含 fieldKeywords 即可过线`)
+    parts.push(
+      `- **模板填空**：每格 ≥ ${level.templateMinLength || 10} 字，含 fieldKeywords 即可过线`
+    )
     for (const f of level.templateFields) {
       if (f.fieldKeywords?.length) {
         parts.push(`  - ${f.scenario || f.label}：含 ${f.fieldKeywords.slice(0, 6).join('、')}`)
@@ -78,11 +76,7 @@ function answerBlock(level) {
   lines.push(`**类型**：${sim}`)
 
   const exact =
-    fmtChecks(level) ||
-    fmtClick(level) ||
-    fmtTerminal(level) ||
-    fmtConfig(level) ||
-    fmtCalc(level)
+    fmtChecks(level) || fmtClick(level) || fmtTerminal(level) || fmtConfig(level) || fmtCalc(level)
 
   if (exact) {
     lines.push('', '**过关答案**：', `- ${exact}`)

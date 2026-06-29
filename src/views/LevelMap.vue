@@ -99,7 +99,10 @@ function showOnboarding() {
 }
 
 onMounted(() => scrollToHomeHash(route.hash))
-watch(() => route.hash, (hash) => scrollToHomeHash(hash))
+watch(
+  () => route.hash,
+  (hash) => scrollToHomeHash(hash)
+)
 </script>
 
 <template>
@@ -197,7 +200,10 @@ watch(() => route.hash, (hash) => scrollToHomeHash(hash))
               </div>
             </div>
 
-            <div v-if="!allCompleted && progressStore.firstAvailableLevelId" class="home-map__hero-cta">
+            <div
+              v-if="!allCompleted && progressStore.firstAvailableLevelId"
+              class="home-map__hero-cta"
+            >
               <button
                 type="button"
                 class="level-map__btn level-map__btn--primary home-map__hero-cta-btn"
@@ -234,14 +240,15 @@ watch(() => route.hash, (hash) => scrollToHomeHash(hash))
               <span v-if="nextLevelXp" class="home-map__action-xp">+{{ nextLevelXp }} XP</span>
               →
             </button>
-            <button type="button" class="level-map__btn level-map__btn--ghost" @click="resetProgress">
+            <button
+              type="button"
+              class="level-map__btn level-map__btn--ghost"
+              @click="resetProgress"
+            >
               重置进度
             </button>
           </div>
-          <div
-            v-if="dailyStatus !== 'locked'"
-            class="home-map__daily-wrap home-map__daily--mobile"
-          >
+          <div v-if="dailyStatus !== 'locked'" class="home-map__daily-wrap home-map__daily--mobile">
             <button
               type="button"
               class="level-map__btn level-map__btn--ghost home-map__daily-chip"
