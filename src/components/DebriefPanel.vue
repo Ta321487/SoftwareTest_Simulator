@@ -215,7 +215,9 @@ onUnmounted(() => document.body.classList.remove('debrief-open'))
               <span class="debrief-panel__skill-icon">{{ debrief.skill.icon }}</span>
               {{ debrief.skill.label }}
             </p>
-            <p v-if="debrief.spiralNote" class="debrief-panel__spiral-note">{{ debrief.spiralNote }}</p>
+            <p v-if="debrief.spiralNote" class="debrief-panel__spiral-note">
+              {{ debrief.spiralNote }}
+            </p>
           </section>
 
           <section class="debrief-section">

@@ -102,9 +102,7 @@ const dailyEntries = computed(() => getDailyHandbookEntries(DAILY_POOL))
 
 const skillProgress = computed(() => getSkillProgress(progressStore.completedLevelIds))
 
-const skillsByCategory = computed(() =>
-  getSkillsByCategory(progressStore.completedLevelIds)
-)
+const skillsByCategory = computed(() => getSkillsByCategory(progressStore.completedLevelIds))
 
 const mainEntries = computed(() =>
   phaseOrder.flatMap((phaseId) => {
@@ -1318,7 +1316,9 @@ watch(allEntries, () => {
                 {{ getSkillCategory(selectedSkill.category)?.icon }}
                 {{ getSkillCategory(selectedSkill.category)?.name }}
               </span>
-              <h2 class="handbook-modal__title">{{ selectedSkill.icon }} {{ selectedSkill.label }}</h2>
+              <h2 class="handbook-modal__title">
+                {{ selectedSkill.icon }} {{ selectedSkill.label }}
+              </h2>
             </div>
             <button
               type="button"

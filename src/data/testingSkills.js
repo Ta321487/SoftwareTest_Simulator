@@ -153,7 +153,7 @@ export const skillCatalog = {
     icon: '🎧',
     category: 'ops',
   },
-  'estimate': {
+  estimate: {
     id: 'estimate',
     label: '我会评估测试工时',
     icon: '⏱️',
@@ -250,7 +250,12 @@ export const levelSkillEntries = [
   { levelId: 5, skillId: 'log-tail' },
   { levelId: 6, skillId: 'env-config' },
   { levelId: 7, skillId: 'collab-chat' },
-  { levelId: 8, skillId: 'bug-review', spiralFrom: 3, spiralHint: '帮新人补全 Bug 单，标准和你第 3 关自己写的一样。' },
+  {
+    levelId: 8,
+    skillId: 'bug-review',
+    spiralFrom: 3,
+    spiralHint: '帮新人补全 Bug 单，标准和你第 3 关自己写的一样。',
+  },
   { levelId: 9, skillId: 'release-branch' },
   { levelId: 10, skillId: 'daily-report' },
   { levelId: 11, skillId: 'estimate' },
@@ -263,34 +268,114 @@ export const levelSkillEntries = [
   { levelId: 18, skillId: 'hr-interview' },
   { levelId: 19, skillId: 'test-strategy-time' },
   { levelId: 20, skillId: 'defect-density' },
-  { levelId: 21, skillId: 'regression-scope', spiralFrom: 4, spiralHint: '小版本改头像上传，仍是「改动面 + 高风险 FAIL 优先」。' },
+  {
+    levelId: 21,
+    skillId: 'regression-scope',
+    spiralFrom: 4,
+    spiralHint: '小版本改头像上传，仍是「改动面 + 高风险 FAIL 优先」。',
+  },
   { levelId: 22, skillId: 'prod-bug' },
-  { levelId: 23, skillId: 'grep-log', spiralFrom: 5, spiralHint: '上线救火：先 tail 看概况，再 grep 精筛 ERROR。' },
+  {
+    levelId: 23,
+    skillId: 'grep-log',
+    spiralFrom: 5,
+    spiralHint: '上线救火：先 tail 看概况，再 grep 精筛 ERROR。',
+  },
   { levelId: 24, skillId: 'escalate-risk' },
   { levelId: 25, skillId: 'month-summary' },
-  { levelId: 26, skillId: 'api-assert', spiralFrom: 16, spiralHint: '上次圈了接口维度，这次对着真实响应写断言。' },
+  {
+    levelId: 26,
+    skillId: 'api-assert',
+    spiralFrom: 16,
+    spiralHint: '上次圈了接口维度，这次对着真实响应写断言。',
+  },
   { levelId: 27, skillId: 'api-case-design' },
   { levelId: 28, skillId: 'review-cases' },
-  { levelId: 29, skillId: 'bug-review', spiralFrom: 8, spiralHint: '从「自己写单」到「帮实习生改单」——Lead 的日常。' },
-  { levelId: 30, skillId: 'schedule-calc', spiralFrom: 11, spiralHint: '和第 11 关一样用数字说话，只是规模变成大版本排期。' },
+  {
+    levelId: 29,
+    skillId: 'bug-review',
+    spiralFrom: 8,
+    spiralHint: '从「自己写单」到「帮实习生改单」——Lead 的日常。',
+  },
+  {
+    levelId: 30,
+    skillId: 'schedule-calc',
+    spiralFrom: 11,
+    spiralHint: '和第 11 关一样用数字说话，只是规模变成大版本排期。',
+  },
   { levelId: 31, skillId: 'packet-debug' },
   { levelId: 32, skillId: 'security-audit' },
   { levelId: 33, skillId: 'go-nogo' },
-  { levelId: 34, skillId: 'prd-testpoints', spiralFrom: 1, spiralHint: '验证码 PRD 补充，仍是圈必测维度——别漏锁定与过期。' },
-  { levelId: 35, skillId: 'testcase-expected', spiralFrom: 2, spiralHint: '锁定/解锁场景补预期，和第 2 关补用例表同一套路。' },
-  { levelId: 36, skillId: 'boundary-value', spiralFrom: 17, spiralHint: '手机号等价类，边界值思维的换题复现。' },
-  { levelId: 37, skillId: 'api-status', spiralFrom: 16, spiralHint: '接口层：密码错该返回什么 HTTP 码。' },
-  { levelId: 38, skillId: 'security-audit', spiralFrom: 32, spiralHint: '登录接口上线前的安全必测清单。' },
-  { levelId: 39, skillId: 'hr-interview', spiralFrom: 18, spiralHint: '终面自我介绍，仍是讲清楚为什么做测试。' },
+  {
+    levelId: 34,
+    skillId: 'prd-testpoints',
+    spiralFrom: 1,
+    spiralHint: '验证码 PRD 补充，仍是圈必测维度——别漏锁定与过期。',
+  },
+  {
+    levelId: 35,
+    skillId: 'testcase-expected',
+    spiralFrom: 2,
+    spiralHint: '锁定/解锁场景补预期，和第 2 关补用例表同一套路。',
+  },
+  {
+    levelId: 36,
+    skillId: 'boundary-value',
+    spiralFrom: 17,
+    spiralHint: '手机号等价类，边界值思维的换题复现。',
+  },
+  {
+    levelId: 37,
+    skillId: 'api-status',
+    spiralFrom: 16,
+    spiralHint: '接口层：密码错该返回什么 HTTP 码。',
+  },
+  {
+    levelId: 38,
+    skillId: 'security-audit',
+    spiralFrom: 32,
+    spiralHint: '登录接口上线前的安全必测清单。',
+  },
+  {
+    levelId: 39,
+    skillId: 'hr-interview',
+    spiralFrom: 18,
+    spiralHint: '终面自我介绍，仍是讲清楚为什么做测试。',
+  },
   { levelId: 40, skillId: 'test-methodology' },
-  { levelId: 41, skillId: 'test-strategy-time', spiralFrom: 19, spiralHint: '800 条用例 2 小时跑不完——冒烟策略与限时排期同一类判断。' },
-  { levelId: 42, skillId: 'api-case-design', spiralFrom: 27, spiralHint: '支付回调：除「能收到通知」外的必测维度。' },
+  {
+    levelId: 41,
+    skillId: 'test-strategy-time',
+    spiralFrom: 19,
+    spiralHint: '800 条用例 2 小时跑不完——冒烟策略与限时排期同一类判断。',
+  },
+  {
+    levelId: 42,
+    skillId: 'api-case-design',
+    spiralFrom: 27,
+    spiralHint: '支付回调：除「能收到通知」外的必测维度。',
+  },
   { levelId: 43, skillId: 'state-machine' },
-  { levelId: 44, skillId: 'api-assert', spiralFrom: 26, spiralHint: '订单查询接口：200 与 404 两场景的断言要点。' },
+  {
+    levelId: 44,
+    skillId: 'api-assert',
+    spiralFrom: 26,
+    spiralHint: '订单查询接口：200 与 404 两场景的断言要点。',
+  },
   { levelId: 45, skillId: 'oncall-triage' },
-  { levelId: 46, skillId: 'log-follow', spiralFrom: 23, spiralHint: 'grep 之后切 tail -f，实时盯用户复现时的 ERROR。' },
+  {
+    levelId: 46,
+    skillId: 'log-follow',
+    spiralFrom: 23,
+    spiralHint: 'grep 之后切 tail -f，实时盯用户复现时的 ERROR。',
+  },
   { levelId: 47, skillId: 'task-assign' },
-  { levelId: 48, skillId: 'go-nogo', spiralFrom: 33, spiralHint: '压测报告拍板：核心链路指标超标时 No-Go。' },
+  {
+    levelId: 48,
+    skillId: 'go-nogo',
+    spiralFrom: 33,
+    spiralHint: '压测报告拍板：核心链路指标超标时 No-Go。',
+  },
 ]
 
 const levelSkillById = new Map(levelSkillEntries.map((e) => [e.levelId, e]))
@@ -310,7 +395,12 @@ export function getSkillForLevel(levelId) {
   if (!entry) return null
   const def = getSkillDefinition(entry.skillId)
   if (!def) return null
-  return { ...def, levelId: entry.levelId, spiralFrom: entry.spiralFrom, spiralHint: entry.spiralHint }
+  return {
+    ...def,
+    levelId: entry.levelId,
+    spiralFrom: entry.spiralFrom,
+    spiralHint: entry.spiralHint,
+  }
 }
 
 export function getSpiralNote(levelId) {
@@ -362,9 +452,7 @@ export function getSkillProgress(completedLevelIds = []) {
   return {
     done: unlocked.length,
     total: MAINLINE_SKILL_COUNT,
-    percent: MAINLINE_SKILL_COUNT
-      ? Math.round((unlocked.length / MAINLINE_SKILL_COUNT) * 100)
-      : 0,
+    percent: MAINLINE_SKILL_COUNT ? Math.round((unlocked.length / MAINLINE_SKILL_COUNT) * 100) : 0,
     skills: unlocked,
   }
 }
