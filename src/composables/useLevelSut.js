@@ -34,6 +34,13 @@ import {
   isOnboardWeek2Project,
   DEFAULT_PROD_LOGS,
 } from '../utils/onboardSut'
+import {
+  SEASON2_LEAD_ID,
+  getLeadMode,
+  shouldShowLeadDock,
+  getLeadSutLead,
+  isSeason2LeadProject,
+} from '../utils/leadSut'
 
 /** 上机实操（SUT）模式状态与事件处理 */
 export function useLevelSut({
@@ -58,6 +65,7 @@ export function useLevelSut({
   const orderSutState = computed(() => projectStore.getOrderSut(ORDER_MODULE_ID))
   const onCallMode = computed(() => (level.value ? getOnCallMode(level.value.id) : 'release-board'))
   const onboardSutState = computed(() => projectStore.getOnboardSut(ONBOARD_WEEK2_ID))
+  const leadSutState = computed(() => projectStore.getLeadSut(SEASON2_LEAD_ID))
   const onCallLogLines = computed(() =>
     level.value?.storyLogs?.length ? level.value.storyLogs : DEFAULT_PROD_LOGS
   )
@@ -101,6 +109,17 @@ export function useLevelSut({
       shouldShowOnCallDock(level.value.id)
   )
   const onCallLead = computed(() => (level.value ? getOnCallLead(level.value.id) : ''))
+
+  const leadMode = computed(() => (level.value ? getLeadMode(level.value.id) : 'gonogo'))
+  const showInlineLead = computed(
+    () =>
+      isSutMode.value &&
+      sutDockQuery.value === 'lead' &&
+      isSeason2LeadProject(project.value) &&
+      level.value &&
+      shouldShowLeadDock(level.value.id)
+  )
+  const leadSutLead = computed(() => (level.value ? getLeadSutLead(level.value.id) : ''))
 
   const sutSteps = computed(() => {
     if (!sutEntry.value || !project.value) return []
@@ -236,6 +255,37 @@ export function useLevelSut({
     showSutCompleteToast('✓ 日志已核对 · 可返回主线 grep 终端')
   }
 
+  function onLeadMetricsFlagged() {
+    const { entry } = sutContext()
+    if (entry?.key === 'gonogoReviewed') advanceSutSteps(2)
+  }
+
+  function onLeadGonogoReviewed() {
+    finishSutImmersion()
+    projectStore.patchLeadSut(SEASON2_LEAD_ID, { gonogoReviewed: true })
+    progressStore.recordLeadGonogoReviewed()
+    showSutCompleteToast('✓ Go/No-Go 已记录 · 可返回主线选发布建议')
+  }
+
+  function onLeadTasksDraftUpdated() {
+    const { entry } = sutContext()
+    if (entry?.key === 'tasksAssigned') advanceSutSteps(2)
+  }
+
+  function onLeadTasksAssigned() {
+    finishSutImmersion()
+    projectStore.patchLeadSut(SEASON2_LEAD_ID, { tasksAssigned: true })
+    progressStore.recordLeadTasksAssigned()
+    showSutCompleteToast('✓ 任务已分派 · 可返回主线填写说明')
+  }
+
+  function onLeadLoadReportReviewed() {
+    finishSutImmersion()
+    projectStore.patchLeadSut(SEASON2_LEAD_ID, { loadReportReviewed: true })
+    progressStore.recordLeadLoadReportReviewed()
+    showSutCompleteToast('✓ 压测报告已确认 · 可返回主线拍板')
+  }
+
   watch(
     () => [
       paymentSutState.value.dbConnected,
@@ -255,11 +305,13 @@ export function useLevelSut({
     paymentSutState,
     orderSutState,
     onboardSutState,
+    leadSutState,
     sutToast,
     loginBuild,
     paymentScenario,
     orderObsMode,
     onCallMode,
+    leadMode,
     onCallLogLines,
     showInlineLoginSut,
     loginSutLead,
@@ -269,6 +321,8 @@ export function useLevelSut({
     orderObsLead,
     showInlineOnCall,
     onCallLead,
+    showInlineLead,
+    leadSutLead,
     sutSteps,
     paymentConfigArtifact,
     showDbConnectedMainLink,
@@ -286,6 +340,11 @@ export function useLevelSut({
     onProdLoginStarted,
     onProdSlowReproduced,
     onLogReviewed,
+    onLeadMetricsFlagged,
+    onLeadGonogoReviewed,
+    onLeadTasksDraftUpdated,
+    onLeadTasksAssigned,
+    onLeadLoadReportReviewed,
     buildMainLevelRoute,
   }
 }

@@ -9,6 +9,7 @@ const STORAGE_KEYS = {
   paymentSut: 'payment_sut',
   orderSut: 'order_sut',
   onboardSut: 'onboard_sut',
+  leadSut: 'lead_sut',
   theme: 'theme',
 }
 
@@ -36,6 +37,9 @@ export function buildBackup(progressStore, projectStore) {
       orderBottleneckIdentified: progressStore.orderBottleneckIdentified,
       prodSlowReproduced: progressStore.prodSlowReproduced,
       logReviewed: progressStore.logReviewed,
+      leadGonogoReviewed: progressStore.leadGonogoReviewed,
+      leadTasksAssigned: progressStore.leadTasksAssigned,
+      leadLoadReportReviewed: progressStore.leadLoadReportReviewed,
     },
     project: {
       artifacts: projectStore.artifacts,
@@ -43,6 +47,7 @@ export function buildBackup(progressStore, projectStore) {
       paymentSut: projectStore.paymentSut,
       orderSut: projectStore.orderSut,
       onboardSut: projectStore.onboardSut,
+      leadSut: projectStore.leadSut,
     },
     theme: getItem(STORAGE_KEYS.theme, 'light'),
   }
@@ -85,6 +90,9 @@ export function applyBackup(data, progressStore, projectStore, themeStore) {
     orderBottleneckIdentified: Boolean(p.orderBottleneckIdentified),
     prodSlowReproduced: Boolean(p.prodSlowReproduced),
     logReviewed: Boolean(p.logReviewed),
+    leadGonogoReviewed: Boolean(p.leadGonogoReviewed),
+    leadTasksAssigned: Boolean(p.leadTasksAssigned),
+    leadLoadReportReviewed: Boolean(p.leadLoadReportReviewed),
   })
 
   const proj = data.project || {}
@@ -94,6 +102,7 @@ export function applyBackup(data, progressStore, projectStore, themeStore) {
     paymentSut: proj.paymentSut || {},
     orderSut: proj.orderSut || {},
     onboardSut: proj.onboardSut || {},
+    leadSut: proj.leadSut || {},
   })
 
   if (data.theme && themeStore) {

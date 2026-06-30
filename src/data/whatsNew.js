@@ -1,19 +1,27 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.17.4'
+export const APP_VERSION = '1.18.0'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
-    title: '手机输入不被键盘挡住',
+    title: 'Lead 线接入上机实操',
     items: [
-      '聚焦输入框后自动滚入可视区，并根据软键盘高度增加底部留白',
-      '关卡 Jira/终端/模板等模拟器在手机上更易输入',
-      '提示池进一步绑定本题；每日特训查看思路不再扣星级',
+      '测试 Lead 线新增 Go/No-Go 看板、任务分派与压测报告三项实操',
+      '与登录/支付/订单/值班并列，五条项目线均可选上机（不影响通关）',
+      '完成任一项 Lead 实操解锁成就「Lead 看板上手」',
     ],
   },
   {
-    version: '1.17.3',
+    version: '1.17.5',
+    title: '清理死代码与 lint 警告',
+    items: [
+      '删除未引用的 CareerMap 与旧 Tab 样式',
+      'ESLint 未使用变量清零，工程更易维护',
+    ],
+  },
+  {
+    version: '1.17.4',
     title: '手机关卡页可读完整任务说明',
     items: [
       '修复窄屏/手机任务条两行省略后无法看到 PRD 全文的问题',

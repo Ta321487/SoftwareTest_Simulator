@@ -41,6 +41,9 @@ function snapshot(state) {
     orderBottleneckIdentified: Boolean(state.orderBottleneckIdentified),
     prodSlowReproduced: Boolean(state.prodSlowReproduced),
     logReviewed: Boolean(state.logReviewed),
+    leadGonogoReviewed: Boolean(state.leadGonogoReviewed),
+    leadTasksAssigned: Boolean(state.leadTasksAssigned),
+    leadLoadReportReviewed: Boolean(state.leadLoadReportReviewed),
   }
 }
 
@@ -65,6 +68,9 @@ function defaultState() {
     orderBottleneckIdentified: Boolean(saved.orderBottleneckIdentified),
     prodSlowReproduced: Boolean(saved.prodSlowReproduced),
     logReviewed: Boolean(saved.logReviewed),
+    leadGonogoReviewed: Boolean(saved.leadGonogoReviewed),
+    leadTasksAssigned: Boolean(saved.leadTasksAssigned),
+    leadLoadReportReviewed: Boolean(saved.leadLoadReportReviewed),
   }
   try {
     if (state.completedLevelIds.length && !state.achievements.length) {
@@ -346,6 +352,27 @@ export const useProgressStore = defineStore('progress', {
       this.persist()
     },
 
+    recordLeadGonogoReviewed() {
+      if (this.leadGonogoReviewed) return
+      this.leadGonogoReviewed = true
+      this.syncAchievements()
+      this.persist()
+    },
+
+    recordLeadTasksAssigned() {
+      if (this.leadTasksAssigned) return
+      this.leadTasksAssigned = true
+      this.syncAchievements()
+      this.persist()
+    },
+
+    recordLeadLoadReportReviewed() {
+      if (this.leadLoadReportReviewed) return
+      this.leadLoadReportReviewed = true
+      this.syncAchievements()
+      this.persist()
+    },
+
     importSnapshot(data) {
       this.completedLevelIds = sanitizeIds(data.completedLevelIds)
       this.levelMeta = sanitizeRecord(data.levelMeta)
@@ -364,6 +391,9 @@ export const useProgressStore = defineStore('progress', {
       this.orderBottleneckIdentified = Boolean(data.orderBottleneckIdentified)
       this.prodSlowReproduced = Boolean(data.prodSlowReproduced)
       this.logReviewed = Boolean(data.logReviewed)
+      this.leadGonogoReviewed = Boolean(data.leadGonogoReviewed)
+      this.leadTasksAssigned = Boolean(data.leadTasksAssigned)
+      this.leadLoadReportReviewed = Boolean(data.leadLoadReportReviewed)
       this.syncAchievements()
       this.persist()
     },
@@ -386,6 +416,9 @@ export const useProgressStore = defineStore('progress', {
       this.orderBottleneckIdentified = false
       this.prodSlowReproduced = false
       this.logReviewed = false
+      this.leadGonogoReviewed = false
+      this.leadTasksAssigned = false
+      this.leadLoadReportReviewed = false
       removeItem(STORAGE_KEY)
     },
 
@@ -408,6 +441,9 @@ export const useProgressStore = defineStore('progress', {
         orderBottleneckIdentified: this.orderBottleneckIdentified,
         prodSlowReproduced: this.prodSlowReproduced,
         logReviewed: this.logReviewed,
+        leadGonogoReviewed: this.leadGonogoReviewed,
+        leadTasksAssigned: this.leadTasksAssigned,
+        leadLoadReportReviewed: this.leadLoadReportReviewed,
       })
       if (result.ok) {
         scheduleAutoBackup()

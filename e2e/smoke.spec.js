@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { seedAppStorage } from './helpers.js'
+import { seedAppStorage, LEAD_GONOGO_PROGRESS } from './helpers.js'
 
 test('home page loads with continue challenge', async ({ page }) => {
   await seedAppStorage(page)
@@ -28,4 +28,14 @@ test('sut route shows immersion steps and tag', async ({ page }) => {
   )
   await expect(page.locator('.sut-mode__steps')).toBeVisible()
   await expect(page.locator('.sut-mode__goal')).toHaveText('App 复现 Bug')
+})
+
+test('lead sut route shows Go/No-Go board', async ({ page }) => {
+  await seedAppStorage(page, { progress: LEAD_GONOGO_PROGRESS })
+  await page.goto('/level/33/sut/lead')
+  await expect(page.locator('.workbench__topbar-right .workbench__level-tag')).toHaveText(
+    '上机 · #33'
+  )
+  await expect(page.locator('.sut-mode__goal')).toHaveText('Go/No-Go 看板')
+  await expect(page.locator('.lead-panel')).toBeVisible()
 })

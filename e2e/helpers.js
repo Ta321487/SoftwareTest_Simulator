@@ -1,7 +1,7 @@
 export const PROGRESS_KEY = 'app_progress_user_progress'
 export const ONBOARDING_KEY = 'app_progress_onboarding_v1'
 export const WHATS_NEW_KEY = 'app_progress_whats_new_seen_version'
-export const WHATS_NEW_SEEN_VERSION = '1.17.4'
+export const WHATS_NEW_SEEN_VERSION = '1.18.0'
 
 export const EMPTY_PROGRESS = {
   completedLevelIds: [],
@@ -21,6 +21,18 @@ export const EMPTY_PROGRESS = {
   orderBottleneckIdentified: false,
   prodSlowReproduced: false,
   logReviewed: false,
+  leadGonogoReviewed: false,
+  leadTasksAssigned: false,
+  leadLoadReportReviewed: false,
+}
+
+/** 已解锁 Lead #33 Go/No-Go 关（完成 #32 及之前全部主线） */
+export const LEAD_GONOGO_PROGRESS = {
+  ...EMPTY_PROGRESS,
+  completedLevelIds: [
+    1, 2, 3, 4, 5, 34, 35, 16, 26, 17, 36, 37, 38, 6, 18, 19, 39, 40, 41, 7, 8, 9, 10, 20, 27, 21,
+    42, 11, 12, 13, 14, 15, 43, 44, 22, 23, 24, 25, 45, 46, 28, 29, 30, 31, 32,
+  ],
 }
 
 export const PROGRESS_SEED = {
@@ -83,6 +95,7 @@ export function buildSampleBackup(completedLevelIds = [1, 2, 3]) {
       paymentSut: {},
       orderSut: {},
       onboardSut: {},
+      leadSut: {},
     },
     theme: 'light',
   }

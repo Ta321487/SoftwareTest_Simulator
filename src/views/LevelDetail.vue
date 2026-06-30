@@ -42,6 +42,7 @@ import {
   PaymentAppMock,
   OrderObsPanel,
   OnCallPanel,
+  LeadPanel,
 } from '../components/simulators/loadSimulators.js'
 
 const route = useRoute()
@@ -223,9 +224,11 @@ const {
   paymentSutState,
   orderSutState,
   onboardSutState,
+  leadSutState,
   sutToast,
   loginBuild,
   paymentScenario,
+  orderObsMode,
   showInlineLoginSut,
   loginSutLead,
   showInlinePaymentSut,
@@ -236,6 +239,9 @@ const {
   onCallLead,
   onCallLogLines,
   onCallMode,
+  showInlineLead,
+  leadSutLead,
+  leadMode,
   sutSteps,
   paymentConfigArtifact,
   showDbConnectedMainLink,
@@ -253,6 +259,11 @@ const {
   onProdLoginStarted,
   onProdSlowReproduced,
   onLogReviewed,
+  onLeadMetricsFlagged,
+  onLeadGonogoReviewed,
+  onLeadTasksDraftUpdated,
+  onLeadTasksAssigned,
+  onLeadLoadReportReviewed,
 } = useLevelSut({
   level,
   project,
@@ -507,6 +518,21 @@ onUnmounted(() => {
           @prod-login-started="onProdLoginStarted"
           @prod-slow-reproduced="onProdSlowReproduced"
           @log-reviewed="onLogReviewed"
+        />
+      </div>
+
+      <div v-else-if="showInlineLead" class="sut-mode__panel">
+        <p class="login-sut-panel__lead">{{ leadSutLead || '在 Lead 看板中完成上述步骤。' }}</p>
+        <LeadPanel
+          :mode="leadMode"
+          :initial-gonogo-reviewed="leadSutState.gonogoReviewed"
+          :initial-tasks-assigned="leadSutState.tasksAssigned"
+          :initial-load-report-reviewed="leadSutState.loadReportReviewed"
+          @metrics-flagged="onLeadMetricsFlagged"
+          @gonogo-reviewed="onLeadGonogoReviewed"
+          @tasks-draft-updated="onLeadTasksDraftUpdated"
+          @tasks-assigned="onLeadTasksAssigned"
+          @load-report-reviewed="onLeadLoadReportReviewed"
         />
       </div>
     </section>

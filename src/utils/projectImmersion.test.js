@@ -7,6 +7,7 @@ describe('projectImmersion', () => {
     getPaymentSut: () => ({}),
     getOrderSut: () => ({}),
     getOnboardSut: () => ({}),
+    getLeadSut: () => ({}),
   }
 
   it('counts login module immersion items', () => {
@@ -22,10 +23,11 @@ describe('projectImmersion', () => {
     expect(immersion.label).toContain('可选')
   })
 
-  it('includes season2-lead on home with no immersion entries', () => {
+  it('includes season2-lead immersion entries on home', () => {
     expect(HOME_PROJECT_IDS).toContain('season2-lead')
     const immersion = getProjectImmersion('season2-lead', store)
-    expect(immersion.total).toBe(0)
-    expect(immersion.entries).toEqual([])
+    expect(immersion.total).toBe(3)
+    expect(immersion.done).toBe(0)
+    expect(immersion.entries.map((e) => e.levelId).sort()).toEqual([33, 47, 48])
   })
 })

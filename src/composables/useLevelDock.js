@@ -9,6 +9,12 @@ import {
 } from '../utils/paymentSut'
 import { ORDER_OBS_DOCK_ID, shouldShowOrderObsDock, isOrderModuleProject } from '../utils/orderSut'
 import { ONCALL_DOCK_ID, shouldShowOnCallDock, isOnboardWeek2Project } from '../utils/onboardSut'
+import {
+  LEAD_DOCK_ID,
+  shouldShowLeadDock,
+  isSeason2LeadProject,
+  SEASON2_LEAD_ID,
+} from '../utils/leadSut'
 
 import { LOGIN_MODULE_ID } from '../utils/loginSut'
 import { PAYMENT_MODULE_ID } from '../utils/paymentSut'
@@ -35,6 +41,7 @@ export function useLevelDock({
   const paymentSutState = computed(() => projectStore.getPaymentSut(PAYMENT_MODULE_ID))
   const orderSutState = computed(() => projectStore.getOrderSut(ORDER_MODULE_ID))
   const onboardSutState = computed(() => projectStore.getOnboardSut(ONBOARD_WEEK2_ID))
+  const leadSutState = computed(() => projectStore.getLeadSut(SEASON2_LEAD_ID))
 
   const dockItems = computed(() => {
     if (!level.value) return []
@@ -122,6 +129,24 @@ export function useLevelDock({
         sutDock: 'oncall',
         hasArtifact: Boolean(
           onboardSutState.value.prodSlowReproduced || onboardSutState.value.logReviewed
+        ),
+      })
+    }
+
+    if (isSeason2LeadProject(project.value) && shouldShowLeadDock(level.value.id)) {
+      items.push({
+        levelId: LEAD_DOCK_ID,
+        simType: 'leadboard',
+        shortLabel: '看板',
+        dayLabel: '实操',
+        locked: false,
+        lockReason: '',
+        isSutEntry: true,
+        sutDock: 'lead',
+        hasArtifact: Boolean(
+          leadSutState.value.gonogoReviewed ||
+            leadSutState.value.tasksAssigned ||
+            leadSutState.value.loadReportReviewed
         ),
       })
     }

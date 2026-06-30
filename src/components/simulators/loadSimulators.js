@@ -27,3 +27,4 @@ export const LoginAppMock = defineAsyncComponent(() => import('./LoginAppMock.vu
 export const PaymentAppMock = defineAsyncComponent(() => import('./PaymentAppMock.vue'))
 export const OrderObsPanel = defineAsyncComponent(() => import('./OrderObsPanel.vue'))
 export const OnCallPanel = defineAsyncComponent(() => import('./OnCallPanel.vue'))
+export const LeadPanel = defineAsyncComponent(() => import('./LeadPanel.vue'))

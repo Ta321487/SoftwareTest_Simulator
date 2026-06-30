@@ -159,6 +159,16 @@ export const achievements = [
     check: (s) => s.logReviewed === true,
   },
   {
+    id: 'lead_board',
+    icon: '🎯',
+    title: 'Lead 看板上手',
+    desc: 'Lead 线完成任一项上机实操（Go/No-Go、分派或压测报告）',
+    check: (s) =>
+      s.leadGonogoReviewed === true ||
+      s.leadTasksAssigned === true ||
+      s.leadLoadReportReviewed === true,
+  },
+  {
     id: 'lead_graduate',
     icon: '🚀',
     title: '进阶结业',

@@ -2,6 +2,7 @@ import { LOGIN_SUT_DOCK_ID, LOGIN_MODULE_ID } from './loginSut.js'
 import { PAYMENT_SUT_DOCK_ID, PAYMENT_MODULE_ID } from './paymentSut.js'
 import { ORDER_OBS_DOCK_ID, ORDER_MODULE_ID } from './orderSut.js'
 import { ONCALL_DOCK_ID, ONBOARD_WEEK2_ID } from './onboardSut.js'
+import { LEAD_DOCK_ID, SEASON2_LEAD_ID } from './leadSut.js'
 
 export const SUT_MODE = 'sut'
 
@@ -11,6 +12,7 @@ export const DOCK_QUERY_TO_ID = {
   pay: PAYMENT_SUT_DOCK_ID,
   obs: ORDER_OBS_DOCK_ID,
   oncall: ONCALL_DOCK_ID,
+  lead: LEAD_DOCK_ID,
 }
 
 export const DOCK_ID_TO_QUERY = Object.fromEntries(
@@ -83,6 +85,29 @@ export const IMMERSION_BY_PROJECT = {
       steps: ['阅读 error.log 摘要', '在终端 grep 关键字验证'],
     },
   ],
+  [SEASON2_LEAD_ID]: [
+    {
+      key: 'gonogoReviewed',
+      label: 'Go/No-Go 看板',
+      levelId: 33,
+      dock: 'lead',
+      steps: ['查看压测指标看板', '确认库存错误率超标', '记录 No-Go 决定'],
+    },
+    {
+      key: 'tasksAssigned',
+      label: '任务分派看板',
+      levelId: 47,
+      dock: 'lead',
+      steps: ['打开分派面板', '填写范围与交付标准', '确认截止时间'],
+    },
+    {
+      key: 'loadReportReviewed',
+      label: '压测报告',
+      levelId: 48,
+      dock: 'lead',
+      steps: ['阅读压测报告摘要', '对照支付超时率目标', '记录发布建议'],
+    },
+  ],
 }
 
 export function getImmersionEntries(projectId) {
@@ -150,6 +175,8 @@ export function getSutState(projectStore, projectId) {
       return projectStore.getOrderSut(projectId)
     case ONBOARD_WEEK2_ID:
       return projectStore.getOnboardSut(projectId)
+    case SEASON2_LEAD_ID:
+      return projectStore.getLeadSut(projectId)
     default:
       return {}
   }
@@ -168,6 +195,9 @@ function patchSutState(projectStore, projectId, patch) {
       break
     case ONBOARD_WEEK2_ID:
       projectStore.patchOnboardSut(projectId, patch)
+      break
+    case SEASON2_LEAD_ID:
+      projectStore.patchLeadSut(projectId, patch)
       break
     default:
       break
@@ -216,6 +246,9 @@ export function initPassiveSutStep(entry, projectStore, projectId) {
     'bottleneckIdentified',
     'prodSlowReproduced',
     'logReviewed',
+    'gonogoReviewed',
+    'tasksAssigned',
+    'loadReportReviewed',
   ]
   if (passiveFirst.includes(entry.key)) {
     setImmersionStepProgress(entry, projectStore, projectId, 1)

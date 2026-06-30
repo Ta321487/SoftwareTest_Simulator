@@ -97,6 +97,7 @@ export const dockApps = {
   paymentapp: { id: 'payapp', icon: '💳', label: '支付 App', shortLabel: '支付' },
   orderobs: { id: 'obs', icon: '📈', label: 'APM / 监控', shortLabel: '监控' },
   oncall: { id: 'oncall', icon: '🚨', label: '值班面板', shortLabel: '值班' },
+  leadboard: { id: 'lead', icon: '🎯', label: 'Lead 看板', shortLabel: '看板' },
 }
 
 export function getProjectForLevel(levelId) {

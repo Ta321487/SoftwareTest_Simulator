@@ -35,6 +35,13 @@ describe('sutImmersion', () => {
     expect(getSutDockQuery({ query: { dock: 'pay' } })).toBe('pay')
   })
 
+  it('lists season2 lead immersion entries', () => {
+    const entries = getImmersionEntries('season2-lead')
+    expect(entries).toHaveLength(3)
+    expect(entries.map((e) => e.levelId).sort()).toEqual([33, 47, 48])
+    expect(getSutDockQuery({ query: { dock: 'lead' } })).toBe('lead')
+  })
+
   it('tracks step progress and completes on final step', () => {
     const entry = getImmersionEntries('login-module')[0]
     const store = {
