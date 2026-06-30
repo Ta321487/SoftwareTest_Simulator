@@ -1,19 +1,19 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.17.2'
+export const APP_VERSION = '1.17.3'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
-    title: '关卡提示支持换一条，且绑定本题',
+    title: '修复刷新偶发白屏',
     items: [
-      '多次点击提示可随机换一条，首次仍扣星级',
-      '提示池来自本题 hint、debrief 与关卡字段，不再混入无关题型套话',
-      '番外/每日/终端题同样接入对应 debrief 与 terminalHint',
+      '修复 Service Worker 中未定义变量导致 JS/CSS 加载失败',
+      '改为预缓存全部带 hash 的前端资源，发版后与 index 同步更新',
+      '页面先渲染再提示 IndexedDB 恢复，避免长时间空白',
     ],
   },
   {
-    version: '1.17.1',
+    version: '1.17.2',
     title: '手机关卡页可读完整任务说明',
     items: [
       '修复窄屏/手机任务条两行省略后无法看到 PRD 全文的问题',

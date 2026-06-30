@@ -47,8 +47,8 @@ async function bootstrap() {
     const progressStore = useProgressStore(pinia)
     const projectStore = useProjectStore(pinia)
     registerAutoBackupStores({ progressStore, projectStore, themeStore })
-    await tryRestoreFromIndexedDB(progressStore, projectStore, themeStore)
     app.mount('#app')
+    tryRestoreFromIndexedDB(progressStore, projectStore, themeStore).catch(() => {})
   } catch (err) {
     app.config.errorHandler(err, null, 'bootstrap')
   }

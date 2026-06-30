@@ -16,6 +16,7 @@ function ghPagesSpaFallback() {
 }
 
 const base = process.env.BASE_PATH || '/'
+const basePath = base.replace(/\/$/, '')
 
 export default defineConfig({
   plugins: [
@@ -50,22 +51,14 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['index.html', 'manifest.webmanifest', '**/*.{ico,png,svg,woff2}'],
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
+        // 预缓存带 hash 的 js/css，与 index 同步更新；勿用运行时闭包（SW 里 base 未定义会白屏）
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webmanifest}'],
         globIgnores: ['**/workbox-*.js'],
-        navigateFallback: base === '/' ? 'index.html' : `${base.replace(/\/$/, '')}/index.html`,
-        navigateFallbackDenylist: [/^\/api/],
-        runtimeCaching: [
-          {
-            urlPattern: ({ url }) =>
-              url.pathname.startsWith(base.replace(/\/$/, '') || '') &&
-              /\.(?:js|css)$/.test(url.pathname),
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'app-chunks',
-              expiration: { maxEntries: 64, maxAgeSeconds: 60 * 60 * 24 * 30 },
-            },
-          },
-        ],
+        navigateFallback: basePath ? `${basePath}/index.html` : '/index.html',
+        navigateFallbackDenylist: [/^\/api/, /\/[^/?]+\.[^/]+$/],
       },
     }),
     ghPagesSpaFallback(),
