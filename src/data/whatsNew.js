@@ -1,10 +1,19 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.18.1'
+export const APP_VERSION = '1.18.2'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
+    title: '主线 48 关职场沉浸补全',
+    items: [
+      '全部主线关卡接入 inbox / envStatus，登录 Day 6–7 与 Lead 线不再「裸关」',
+      '加练、面试、笔试、值班等稀疏关补 PRD 与导师/面试官消息',
+      '跨关动态衔接：HR→技术面、grep→tail -f、状态机→接口断言等',
+    ],
+  },
+  {
+    version: '1.18.1',
     title: '工具链番外解锁顺序修正',
     items: [
       'Git 发布线 #147 改为完成 APM #146 后解锁，不再跳至主线第 9 关',
