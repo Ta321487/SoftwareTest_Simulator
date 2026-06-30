@@ -33,7 +33,14 @@ export async function seedAppStorage(
   { skipOnboarding = true, progress = PROGRESS_SEED } = {}
 ) {
   await page.addInitScript(
-    ({ progressKey, onboardingKey, whatsNewKey, whatsNewVersion, progressData, dismissOnboarding }) => {
+    ({
+      progressKey,
+      onboardingKey,
+      whatsNewKey,
+      whatsNewVersion,
+      progressData,
+      dismissOnboarding,
+    }) => {
       localStorage.setItem(progressKey, JSON.stringify(progressData))
       if (dismissOnboarding) {
         localStorage.setItem(onboardingKey, JSON.stringify(true))

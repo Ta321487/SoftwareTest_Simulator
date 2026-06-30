@@ -218,10 +218,7 @@ function handleSaveShareImage() {
         <li v-for="card in weakDrillCards" :key="card.simType" class="player-dashboard__drill-item">
           <span class="player-dashboard__drill-type">{{ card.simLabel }}</span>
           <span class="player-dashboard__drill-meta">{{ card.weakCount }} 关待加强</span>
-          <router-link
-            :to="`/level/${card.retryLevelId}`"
-            class="player-dashboard__drill-btn"
-          >
+          <router-link :to="`/level/${card.retryLevelId}`" class="player-dashboard__drill-btn">
             冲星 #{{ card.retryLevelId }}
           </router-link>
           <router-link

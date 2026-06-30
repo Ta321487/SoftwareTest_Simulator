@@ -16,9 +16,7 @@ const props = defineProps({
 
 const router = useRouter()
 
-const path = computed(() =>
-  getLearningPathForLevel(props.levelId, props.completedLevelIds)
-)
+const path = computed(() => getLearningPathForLevel(props.levelId, props.completedLevelIds))
 
 function openTerm(termId) {
   router.push({ path: '/handbook', query: { view: 'glossary', term: termId } })

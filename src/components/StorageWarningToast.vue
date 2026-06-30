@@ -4,12 +4,7 @@ import { storageWarning, clearStorageWarning } from '../utils/storageWarning'
 
 <template>
   <Teleport to="body">
-    <div
-      v-if="storageWarning"
-      class="storage-warning"
-      role="alert"
-      aria-live="assertive"
-    >
+    <div v-if="storageWarning" class="storage-warning" role="alert" aria-live="assertive">
       <p class="storage-warning__text">{{ storageWarning }}</p>
       <button type="button" class="storage-warning__close" @click="clearStorageWarning">
         知道了

@@ -12,9 +12,7 @@ const SIM_TYPE_LEVELS = [
   { simType: 'chat', levelId: 7, marker: '发送' },
 ]
 
-const UNLOCK_BEFORE_CHAT = [
-  1, 2, 3, 4, 5, 34, 35, 16, 26, 17, 36, 37, 38, 6, 18, 19, 39, 40, 41,
-]
+const UNLOCK_BEFORE_CHAT = [1, 2, 3, 4, 5, 34, 35, 16, 26, 17, 36, 37, 38, 6, 18, 19, 39, 40, 41]
 
 const UNLOCK_SEED = {
   ...PROGRESS_SEED,

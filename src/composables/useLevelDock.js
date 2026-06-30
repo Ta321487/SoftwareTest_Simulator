@@ -1,39 +1,19 @@
 import { ref, computed, nextTick } from 'vue'
 import { levels } from '../utils/levelRegistry'
 import { getDockShortLabel } from '../data/projects'
-import {
-  LOGIN_SUT_DOCK_ID,
-  shouldShowLoginAppDock,
-  isLoginModuleProject,
-} from '../utils/loginSut'
+import { LOGIN_SUT_DOCK_ID, shouldShowLoginAppDock, isLoginModuleProject } from '../utils/loginSut'
 import {
   PAYMENT_SUT_DOCK_ID,
   shouldShowPaymentAppDock,
   isPaymentModuleProject,
 } from '../utils/paymentSut'
-import {
-  ORDER_OBS_DOCK_ID,
-  shouldShowOrderObsDock,
-  isOrderModuleProject,
-} from '../utils/orderSut'
-import {
-  ONCALL_DOCK_ID,
-  shouldShowOnCallDock,
-  isOnboardWeek2Project,
-} from '../utils/onboardSut'
+import { ORDER_OBS_DOCK_ID, shouldShowOrderObsDock, isOrderModuleProject } from '../utils/orderSut'
+import { ONCALL_DOCK_ID, shouldShowOnCallDock, isOnboardWeek2Project } from '../utils/onboardSut'
 
-import {
-  LOGIN_MODULE_ID,
-} from '../utils/loginSut'
-import {
-  PAYMENT_MODULE_ID,
-} from '../utils/paymentSut'
-import {
-  ORDER_MODULE_ID,
-} from '../utils/orderSut'
-import {
-  ONBOARD_WEEK2_ID,
-} from '../utils/onboardSut'
+import { LOGIN_MODULE_ID } from '../utils/loginSut'
+import { PAYMENT_MODULE_ID } from '../utils/paymentSut'
+import { ORDER_MODULE_ID } from '../utils/orderSut'
+import { ONBOARD_WEEK2_ID } from '../utils/onboardSut'
 
 /** 关卡 Dock 导航与任务区回焦反馈 */
 export function useLevelDock({
@@ -109,9 +89,9 @@ export function useLevelDock({
         sutDock: 'pay',
         hasArtifact: Boolean(
           paymentSutState.value.callbackMiss ||
-            paymentSutState.value.payErrorReproduced ||
-            paymentSutState.value.payVerified ||
-            paymentSutState.value.dbConnected
+          paymentSutState.value.payErrorReproduced ||
+          paymentSutState.value.payVerified ||
+          paymentSutState.value.dbConnected
         ),
       })
     }

@@ -7,9 +7,7 @@ const emit = defineEmits(['go-settings'])
 
 const progressStore = useProgressStore()
 
-const visible = computed(() =>
-  shouldShowBackupReminder(progressStore.completedLevelIds.length)
-)
+const visible = computed(() => shouldShowBackupReminder(progressStore.completedLevelIds.length))
 
 function dismiss() {
   dismissBackupReminder()
@@ -23,7 +21,8 @@ function goExport() {
 <template>
   <div v-if="visible" class="backup-reminder" role="status">
     <p class="backup-reminder__text">
-      你已通关 {{ progressStore.completedLevelIds.length }} 关，建议导出存档以防换设备或清缓存丢进度。
+      你已通关
+      {{ progressStore.completedLevelIds.length }} 关，建议导出存档以防换设备或清缓存丢进度。
     </p>
     <div class="backup-reminder__actions">
       <button type="button" class="level-map__btn level-map__btn--ghost" @click="goExport">
