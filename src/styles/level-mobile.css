@@ -91,10 +91,20 @@
   }
 
   .task-panel-fold__text {
+    flex: 1;
+    min-width: 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  .task-panel-fold[open] .task-panel-fold__text {
+    display: none;
+  }
+
+  .task-panel-fold[open] .task-panel-fold__icon {
+    display: none;
   }
 
   .task-panel-fold__xp {
@@ -118,7 +128,17 @@
   }
 
   .task-panel-fold .task-panel__action--full {
-    display: none;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .task-panel-fold .task-panel__action--full p {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--text-primary);
   }
 
   .workbench--level .workbench__sim-area {

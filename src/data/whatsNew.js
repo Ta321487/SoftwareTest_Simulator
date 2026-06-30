@@ -1,20 +1,18 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.17.0'
+export const APP_VERSION = '1.17.1'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
-    title: '统一导航与首页 RPG 式任务流',
+    title: '手机关卡页可读完整任务说明',
     items: [
-      '侧栏/底栏共用一套导航：首页、进关卡、番外、档案、成就、手札',
-      '首页合并当前任务与章节路径，去掉重复 Tab 与窗口套窗口',
-      '成就/任务日志/番外改为扁平列表与路径布局，PC 与手机均已适配',
-      '修复横向拖拽与 Tab 点击冲突、备份提醒「稍后」无效',
+      '修复窄屏/手机任务条两行省略后无法看到 PRD 全文的问题',
+      '展开任务面板时在内容区显示完整题干，收起时保留两行预览',
     ],
   },
   {
-    version: '1.16.0',
+    version: '1.17.0',
     title: '存档更可靠，学习路径更清晰',
     items: [
       '进度自动备份到 IndexedDB，localStorage 丢失时可恢复',

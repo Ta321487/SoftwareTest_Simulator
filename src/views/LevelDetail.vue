@@ -561,6 +561,10 @@ onUnmounted(() => {
         </span>
       </summary>
       <section class="task-panel task-panel--compact">
+        <div class="task-panel__action task-panel__action--full">
+          <span class="task-panel__action-icon">📋</span>
+          <p>{{ level.content }}</p>
+        </div>
         <p v-if="isExtraLevel" class="task-panel__extra-tag">
           {{ isDailyQuestId(levelId) ? '📅 每日特训' : '🎬 番外关卡' }}
         </p>

@@ -377,7 +377,7 @@
     color: var(--text-primary);
     font-weight: 500;
     border-bottom-color: var(--quest-panel-border);
-    align-items: center;
+    align-items: flex-start;
     gap: 6px;
   }
 
