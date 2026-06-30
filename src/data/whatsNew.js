@@ -1,5 +1,5 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.19.0'
+export const APP_VERSION = '1.19.1'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
