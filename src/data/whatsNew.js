@@ -15,10 +15,7 @@ export const WHATS_NEW_ENTRIES = [
   {
     version: '1.17.5',
     title: '清理死代码与 lint 警告',
-    items: [
-      '删除未引用的 CareerMap 与旧 Tab 样式',
-      'ESLint 未使用变量清零，工程更易维护',
-    ],
+    items: ['删除未引用的 CareerMap 与旧 Tab 样式', 'ESLint 未使用变量清零，工程更易维护'],
   },
   {
     version: '1.17.4',

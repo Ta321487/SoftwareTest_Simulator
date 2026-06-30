@@ -145,8 +145,8 @@ export function useLevelDock({
         sutDock: 'lead',
         hasArtifact: Boolean(
           leadSutState.value.gonogoReviewed ||
-            leadSutState.value.tasksAssigned ||
-            leadSutState.value.loadReportReviewed
+          leadSutState.value.tasksAssigned ||
+          leadSutState.value.loadReportReviewed
         ),
       })
     }

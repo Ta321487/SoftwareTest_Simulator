@@ -130,9 +130,7 @@ function confirmLoadReport() {
       <div>
         <p class="lead-panel__brand">
           Lead 管理台 ·
-          {{
-            mode === 'gonogo' ? 'Go/No-Go' : mode === 'roster' ? '任务分派' : '压测报告'
-          }}
+          {{ mode === 'gonogo' ? 'Go/No-Go' : mode === 'roster' ? '任务分派' : '压测报告' }}
         </p>
         <p class="lead-panel__version">season2-lead · 大促发布前</p>
       </div>
