@@ -10,8 +10,6 @@
   --game-gradient: linear-gradient(135deg, #22d3ee 0%, #34d399 50%, #a78bfa 100%);
   --hud-bg: rgba(10, 14, 23, 0.75);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --game-tab-active: rgba(34, 211, 238, 0.14);
-  --game-tab-border: rgba(34, 211, 238, 0.45);
 }
 
 [data-theme='light'] {
@@ -283,81 +281,6 @@
   cursor: not-allowed;
 }
 
-/* Home section tabs — game menu */
-.game-tabs {
-  display: flex;
-  gap: 6px;
-  min-width: 0;
-  max-width: 100%;
-  overflow-x: auto;
-  padding: 4px 0 10px;
-  margin-bottom: 12px;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: contain;
-}
-
-.game-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.game-tabs__btn {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: 1px solid var(--border-subtle);
-  background: var(--surface-muted);
-  color: var(--text-secondary);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    border-color var(--transition),
-    background var(--transition),
-    color var(--transition);
-  white-space: nowrap;
-}
-
-.game-tabs__btn:hover {
-  border-color: var(--btn-ghost-hover);
-  color: var(--text-primary);
-}
-
-.game-tabs__btn--active {
-  border-color: var(--game-tab-border);
-  background: var(--game-tab-active);
-  color: var(--accent-cyan);
-  box-shadow: 0 0 16px rgba(34, 211, 238, 0.12);
-}
-
-.game-tabs__icon {
-  font-size: 1rem;
-  line-height: 1;
-}
-
-.game-tabs__count {
-  font-size: 0.6875rem;
-  padding: 1px 6px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-muted);
-}
-
-.game-tabs__btn--active .game-tabs__count {
-  background: rgba(34, 211, 238, 0.15);
-  color: var(--accent-cyan);
-}
-
-.home-section-hint {
-  margin: 0 0 14px;
-  font-size: 0.78rem;
-  line-height: 1.5;
-  color: var(--text-muted);
-}
-
 .home-map__hero-cta {
   display: flex;
   flex-wrap: wrap;
@@ -570,64 +493,6 @@
   margin-bottom: 8px;
 }
 
-.quest-log__head-sub {
-  margin-left: 8px;
-  font-size: 0.75rem;
-  font-weight: 400;
-  color: var(--text-muted);
-}
-
-/* Quest log panels (replaces plain folds) */
-.quest-log {
-  margin-bottom: 16px;
-  border-radius: 12px;
-  border: 1px solid var(--border-subtle);
-  background: var(--surface-muted);
-  overflow: hidden;
-}
-
-.quest-log__head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 14px;
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  border-bottom: 1px solid var(--border-subtle);
-  background: rgba(0, 0, 0, 0.15);
-}
-
-[data-theme='light'] .quest-log__head {
-  background: #f1f5f9;
-}
-
-.quest-log__head-icon {
-  font-size: 1.1rem;
-}
-
-.quest-log__body {
-  padding: 14px;
-}
-
-.home-fold.quest-log {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.home-fold.quest-log > summary {
-  display: none;
-}
-
-.home-fold.quest-log > .home-fold__body {
-  padding: 0;
-}
-
-.home-fold.quest-log > .home-fold__body > .quest-log__head {
-  display: none;
-}
-
 /* Side hub — quest route */
 .side-hub {
   margin-top: 0;
@@ -690,12 +555,6 @@
 
 .phase-timeline__title {
   font-family: var(--font-display);
-}
-
-.career-map__tab--active {
-  border-color: var(--game-tab-border);
-  background: var(--game-tab-active);
-  color: var(--accent-cyan);
 }
 
 /* Sticky mobile play bar */

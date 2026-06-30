@@ -313,11 +313,6 @@ function openRelatedTerm(termId) {
   if (term) openTerm(term)
 }
 
-function openRelatedPlaybook(playbookId) {
-  const pb = getPlaybook(playbookId)
-  if (pb) openPlaybook(pb)
-}
-
 function getTermCategory(term) {
   return getGlossaryCategory(term?.category)
 }
@@ -332,11 +327,6 @@ function cardLocked(kind, item) {
   if (kind === 'glossary') return isGlossaryHandbookLocked(item, progressStore)
   if (kind === 'daily') return isDailyHandbookLocked(progressStore)
   return false
-}
-
-function onHandbookCardClick(kind, item, opener) {
-  if (cardLocked(kind, item)) return
-  opener(item)
 }
 
 function noteCardSummary(entry) {

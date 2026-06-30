@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildBackup, applyBackup, BACKUP_VERSION } from './progressBackup.js'
+import { buildBackup, applyBackup } from './progressBackup.js'
 
 describe('progressBackup', () => {
   const progressStore = {

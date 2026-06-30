@@ -21,10 +21,6 @@ function arraysEqual(a, b) {
   )
 }
 
-function normalizeCommand(command) {
-  return command.trim().replace(/\s+/g, ' ').toLowerCase()
-}
-
 function normalizeCalcAnswer(raw) {
   const cleaned = String(raw || '')
     .trim()

@@ -50,7 +50,7 @@ const currentArcId = computed(() => selectedArcId.value || activeArcId.value)
 const currentArc = computed(() => arcNodes.value.find((a) => a.id === currentArcId.value))
 
 const levelNodes = computed(() =>
-  (currentArc.value?.levels || []).map((level, index) => ({
+  (currentArc.value?.levels || []).map((level) => ({
     levelId: level.id,
     label: `EX-${level.id - 100}`,
     title: level.title,

@@ -3,12 +3,7 @@ import { getItem, setItem, removeItem } from '../utils/storage'
 import { scheduleAutoBackup } from '../utils/autoBackup'
 import { levelOrder } from '../data/levels'
 import { getSideLevel, isSideQuestUnlocked, isSideQuestId } from '../data/sideQuests'
-import {
-  getTodayDateStr,
-  getDailyUnlockLevelId,
-  DAILY_LEVEL_ID,
-  isDailyQuestId,
-} from '../data/dailyChallenges'
+import { getTodayDateStr, getDailyUnlockLevelId, isDailyQuestId } from '../data/dailyChallenges'
 import { getLevelById, isMainQuestId } from '../utils/levelRegistry'
 import { countMainlineCompleted, TOTAL_MAIN_LEVELS } from '../data/mainlineMeta'
 import { calculateStars, calculateBonusXp } from '../utils/validator'

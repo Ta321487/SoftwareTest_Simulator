@@ -10,30 +10,6 @@ const lines = src.split(/\r?\n/)
 const isDebriefLine = (line) =>
   /\.debrief-|debrief-section|debrief-reference|debrief-overlay/.test(line)
 
-function slice(startLine, endLine, filter) {
-  const chunk = lines.slice(startLine - 1, endLine)
-  if (!filter) return chunk
-  const out = []
-  let skipBlock = false
-  for (const line of chunk) {
-    if (isDebriefLine(line)) {
-      skipBlock = true
-      continue
-    }
-    if (skipBlock) {
-      if (line.trim() === '' || line.startsWith('[') || line.startsWith('/*')) {
-        skipBlock = false
-      } else if (line.match(/^\.[a-z-]+|^@/)) {
-        skipBlock = false
-        if (!isDebriefLine(line)) out.push(line)
-      }
-      continue
-    }
-    out.push(line)
-  }
-  return out
-}
-
 /** Remove debrief rule blocks more reliably */
 function stripDebrief(chunk) {
   const out = []

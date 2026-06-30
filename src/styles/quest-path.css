@@ -573,16 +573,6 @@
   cursor: not-allowed;
 }
 
-.career-map__path-hint {
-  margin: 8px 0 0;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
-.career-map--path .career-map__head {
-  display: none;
-}
-
 .side-hub--compact .side-hub__header,
 .side-hub--compact .side-hub__daily {
   display: none;

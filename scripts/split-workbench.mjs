@@ -31,11 +31,6 @@ const chunks = {
     slice(1510, 1965),
     slice(2285, 2604),
   ],
-  'home-career.css': [
-    ['/* ===== Career phase timeline ===== */'],
-    slice(737, 886),
-    slice(1455, 1508),
-  ],
   'handbook.css': [slice(964, 1269)],
   'side-hub.css': [slice(1271, 1453)],
   'app-mocks.css': [
@@ -55,7 +50,6 @@ write('workbench.css', [
   "@import './project-map.css';",
   "@import './context-panel.css';",
   "@import './sim-workspace.css';",
-  "@import './home-career.css';",
   "@import './handbook.css';",
   "@import './side-hub.css';",
   "@import './app-mocks.css';",

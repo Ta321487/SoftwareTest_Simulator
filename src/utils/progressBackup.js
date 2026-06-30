@@ -1,4 +1,4 @@
-import { getItem, setItem, removeItem } from './storage'
+import { getItem } from './storage'
 
 export const BACKUP_VERSION = 2
 

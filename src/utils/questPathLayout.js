@@ -2,7 +2,6 @@
 export function getSerpentineLayout(nodes, cols) {
   const count = Math.max(1, cols)
   const total = nodes.length
-  const rows = Math.ceil(total / count) || 1
 
   return nodes.map((node, index) => {
     const row = Math.floor(index / count)

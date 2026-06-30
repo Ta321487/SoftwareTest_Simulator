@@ -200,7 +200,7 @@ function beatLabelForLevel(beat, levelId) {
   return index >= 0 ? `任务 ${index + 1}` : ''
 }
 
-export function getWorkBrief({ firstAvailableLevelId, completedLevelIds, getStatus }) {
+export function getWorkBrief({ firstAvailableLevelId, getStatus }) {
   if (!firstAvailableLevelId) {
     return {
       complete: true,
