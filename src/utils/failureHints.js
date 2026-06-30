@@ -1,4 +1,4 @@
-import { debriefs } from '../data/debriefs'
+import { debriefs, getDebrief } from '../data/debriefs'
 
 function diffChecklist(selected, correct, items) {
   const missed = correct.filter((id) => !selected.includes(id))
@@ -87,12 +87,19 @@ export function getFailureHint(level, data, result) {
   }
 }
 
-export function getLevelHint(level) {
-  if (level.hint) return level.hint
+function uniqueHintStrings(list) {
+  const seen = new Set()
+  const out = []
+  for (const item of list) {
+    const text = String(item || '').trim()
+    if (!text || seen.has(text)) continue
+    seen.add(text)
+    out.push(text)
+  }
+  return out
+}
 
-  const debrief = debriefs[level.id]
-  if (debrief?.workplace) return debrief.workplace
-
+function simTypeFallbackHint(level) {
   switch (level.simType) {
     case 'template':
       return level.templateFields?.[0]?.validationHint || level.fillHint || ''
@@ -104,12 +111,64 @@ export function getLevelHint(level) {
       return '优先选功能性、边界、异常、安全相关项；UI 审美类通常是干扰项。'
     case 'apiclient':
       if (level.checklistItems?.length) {
-        return (
-          level.hint || '优先选 HTTP 层验证项：状态码、响应体、响应头、异常场景；UI 细节是干扰项。'
-        )
+        return '优先选 HTTP 层验证项：状态码、响应体、响应头、异常场景；UI 细节是干扰项。'
       }
       return level.templateFields?.[0]?.validationHint || level.fillHint || ''
     default:
       return ''
   }
+}
+
+function levelFieldHints(level) {
+  const parts = []
+  if (level.terminalHint) parts.push(level.terminalHint)
+  if (level.fillHint) parts.push(level.fillHint)
+  if (Array.isArray(level.templateFields)) {
+    for (const field of level.templateFields) {
+      if (field.validationHint) parts.push(field.validationHint)
+    }
+  }
+  return parts
+}
+
+/** 关卡内可轮换的提示池（均为本题或本题 debrief，不含无关题型通则） */
+export function getLevelHintPool(level) {
+  if (!level) return []
+
+  const debrief = getDebrief(level.id, level.dailyKey)
+  const parts = []
+
+  if (Array.isArray(level.hints)) {
+    parts.push(...level.hints)
+  }
+  if (level.hint) parts.push(level.hint)
+  parts.push(...levelFieldHints(level))
+  if (debrief?.workplace) parts.push(debrief.workplace)
+  if (debrief?.pitfalls) parts.push(`常见遗漏：${debrief.pitfalls}`)
+
+  // 仅有 debrief、无 hint 的关（如部分终端题）可补一条「为什么」
+  if (!level.hint && debrief?.why) {
+    parts.push(debrief.why)
+  }
+
+  // 完全没有本题资料时，才退回题型通则
+  if (!parts.length) {
+    const fallback = simTypeFallbackHint(level)
+    if (fallback) parts.push(fallback)
+  }
+
+  return uniqueHintStrings(parts)
+}
+
+export function getLevelHint(level) {
+  return getLevelHintPool(level)[0] || ''
+}
+
+/** 再次点击提示时随机换一条（尽量不重复上一条） */
+export function pickNextLevelHint(pool, currentText = '') {
+  if (!pool.length) return ''
+  if (pool.length === 1) return pool[0]
+  const others = pool.filter((text) => text !== currentText)
+  const candidates = others.length ? others : pool
+  return candidates[Math.floor(Math.random() * candidates.length)]
 }

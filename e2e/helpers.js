@@ -1,7 +1,7 @@
 export const PROGRESS_KEY = 'app_progress_user_progress'
 export const ONBOARDING_KEY = 'app_progress_onboarding_v1'
 export const WHATS_NEW_KEY = 'app_progress_whats_new_seen_version'
-export const WHATS_NEW_SEEN_VERSION = '1.17.1'
+export const WHATS_NEW_SEEN_VERSION = '1.17.2'
 
 export const EMPTY_PROGRESS = {
   completedLevelIds: [],

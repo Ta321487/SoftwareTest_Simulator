@@ -60,6 +60,7 @@ const {
   showHint,
   hintText,
   sessionHintUsed,
+  hintPoolSize,
   resetHints,
   revealHint: revealLevelHint,
 } = useLevelHints(progressStore)
@@ -622,12 +623,18 @@ onUnmounted(() => {
           {{
             isDailyQuestId(levelId)
               ? sessionHintUsed
-                ? '再看思路'
+                ? hintPoolSize > 1
+                  ? '换一条思路'
+                  : '再看思路'
                 : '思路提示'
               : levelStatus === 'completed'
-                ? '冲星提示'
+                ? sessionHintUsed && hintPoolSize > 1
+                  ? '换一条冲星提示'
+                  : '冲星提示'
                 : sessionHintUsed
-                  ? '再看提示'
+                  ? hintPoolSize > 1
+                    ? '换一条提示'
+                    : '再看提示'
                   : '提示（影响星级）'
           }}
         </button>
