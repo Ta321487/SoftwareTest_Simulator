@@ -1,4 +1,4 @@
-import { debriefs, getDebrief } from '../data/debriefs'
+import { getDebrief } from '../data/debriefs'
 
 function diffChecklist(selected, correct, items) {
   const missed = correct.filter((id) => !selected.includes(id))
@@ -30,9 +30,49 @@ function diffReport(selected, correct, items) {
   return parts.join('。')
 }
 
-export function getFailureHint(level, data, result) {
-  const debrief = debriefs[level.id]
-  const pitfall = debrief?.pitfalls
+function getPitfall(level) {
+  return getDebrief(level?.id, level?.dailyKey)?.pitfalls || ''
+}
+
+function findSelectionLabel(level, selectedId) {
+  if (!selectedId || !level) return null
+
+  const pools = [
+    level.clickOptions,
+    level.apmMetrics,
+    level.causeOptions,
+    level.gitOptions,
+    level.pipelineStages?.map((s) => ({ id: s.id, label: s.name })),
+    level.traceNodes?.map((n) => ({ id: n.id, label: n.label })),
+    level.gitCommits?.map((c) => ({ id: c.id, label: c.message || c.sha })),
+    level.mqMessages?.map((m) => ({
+      id: m.id,
+      label: `${m.routingKey || m.from || '消息'} · ${(m.payload || m.text || '').slice(0, 40)}`,
+    })),
+  ]
+
+  for (const pool of pools) {
+    if (!Array.isArray(pool)) continue
+    const picked = pool.find((o) => o.id === selectedId)
+    if (picked) return picked.label || picked.name || picked.message || picked.text
+  }
+  return null
+}
+
+function clickSelectionFailure(level, selectedId, pitfall, defaultMsg) {
+  const label = findSelectionLabel(level, selectedId)
+  return label ? `你选了「${label}」。${pitfall || defaultMsg}` : pitfall || ''
+}
+
+function pitfallOrFieldHint(level, pitfall) {
+  const fieldHint = levelFieldHints(level)[0]
+  return pitfall || fieldHint || ''
+}
+
+export function getFailureHint(level, data, _result) {
+  if (!level) return ''
+
+  const pitfall = getPitfall(level)
 
   switch (level.simType) {
     case 'checklist': {
@@ -52,7 +92,7 @@ export function getFailureHint(level, data, result) {
         )
         return detail || pitfall || ''
       }
-      return pitfall || ''
+      return pitfallOrFieldHint(level, pitfall)
     }
     case 'report': {
       const detail = diffReport(
@@ -62,12 +102,13 @@ export function getFailureHint(level, data, result) {
       )
       return detail || pitfall || ''
     }
-    case 'clickcard': {
-      const picked = level.clickOptions?.find((o) => o.id === data.selected)
-      return picked
-        ? `你选了「${picked.label}」。${pitfall || '请结合场景中的数据与环境背景重新分析。'}`
-        : pitfall || ''
-    }
+    case 'clickcard':
+      return clickSelectionFailure(
+        level,
+        data.selected,
+        pitfall,
+        '请结合场景中的数据与环境背景重新分析。'
+      )
     case 'packet': {
       const picked = level.packetRequests?.find((o) => o.id === data.selected)
       return picked
@@ -76,14 +117,55 @@ export function getFailureHint(level, data, result) {
     }
     case 'jira':
       return pitfall ? `常见坑：${pitfall}` : ''
-    case 'template':
     case 'chat':
+      return level.chatFailHint || pitfall || ''
+    case 'template':
     case 'terminal':
     case 'config':
     case 'calculator':
-      return pitfall || ''
+      return pitfallOrFieldHint(level, pitfall)
+    case 'sqlclient':
+    case 'redis':
+    case 'mockserver':
+      return pitfallOrFieldHint(level, pitfall)
+    case 'cipipeline': {
+      if (level.correctCause && data.selectedCause && data.selectedCause !== level.correctCause) {
+        return clickSelectionFailure(
+          level,
+          data.selectedCause,
+          pitfall,
+          '请对照日志关键字与环境信息重新分析。'
+        )
+      }
+      if (level.correctStage && data.selectedStage && data.selectedStage !== level.correctStage) {
+        const stage = level.pipelineStages?.find((s) => s.id === data.selectedStage)
+        return stage
+          ? `你点了「${stage.name}」。${pitfall || '集成/回归失败通常是测试最该介入的环节。'}`
+          : pitfall || ''
+      }
+      return pitfallOrFieldHint(level, pitfall)
+    }
+    case 'apmtrace':
+    case 'gitrelease':
+      return clickSelectionFailure(
+        level,
+        data.selected,
+        pitfall,
+        '请结合场景中的数据与环境背景重新分析。'
+      )
+    case 'mqinbox': {
+      if (level.correctMessageId && data.selectedMessageId) {
+        return clickSelectionFailure(
+          level,
+          data.selectedMessageId,
+          pitfall,
+          '对照业务单号/时间与 payload 重新找。'
+        )
+      }
+      return pitfallOrFieldHint(level, pitfall)
+    }
     default:
-      return ''
+      return pitfall || ''
   }
 }
 
@@ -123,6 +205,11 @@ function levelFieldHints(level) {
   const parts = []
   if (level.terminalHint) parts.push(level.terminalHint)
   if (level.fillHint) parts.push(level.fillHint)
+  if (level.chatHint) parts.push(level.chatHint)
+  if (level.sqlHint) parts.push(level.sqlHint)
+  if (level.redisHint) parts.push(level.redisHint)
+  if (level.mockHint) parts.push(level.mockHint)
+  if (level.mqHint) parts.push(level.mqHint)
   if (Array.isArray(level.templateFields)) {
     for (const field of level.templateFields) {
       if (field.validationHint) parts.push(field.validationHint)

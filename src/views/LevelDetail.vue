@@ -67,6 +67,7 @@ const {
 
 const levelId = computed(() => Number(route.params.id))
 const level = computed(() => getLevelById(levelId.value))
+const hasLevelHint = computed(() => (level.value ? Boolean(getLevelHint(level.value)) : false))
 const isSutMode = computed(() => isSutModeRoute(route))
 const sutDockQuery = computed(() => getSutDockQuery(route))
 const isExtraLevel = computed(
@@ -170,6 +171,20 @@ const nextLevelAfterPass = computed(() => {
 const levelStatus = computed(() =>
   level.value ? progressStore.getStatus(level.value.id) : 'locked'
 )
+
+const hintButtonLabel = computed(() => {
+  if (isDailyQuestId(levelId.value)) {
+    if (!sessionHintUsed.value) return '思路提示'
+    return hintPoolSize.value > 1 ? '换一条思路' : '再看思路'
+  }
+  if (levelStatus.value === 'completed') {
+    return sessionHintUsed.value && hintPoolSize.value > 1 ? '换一条冲星提示' : '冲星提示'
+  }
+  if (sessionHintUsed.value) {
+    return hintPoolSize.value > 1 ? '换一条提示' : '再看提示'
+  }
+  return '提示（影响星级）'
+})
 
 const simGuide = computed(() => (level.value ? getSimGuide(level.value.simType) : null))
 const validationCriteria = computed(() => (level.value ? getValidationCriteria(level.value) : ''))
@@ -614,29 +629,12 @@ onUnmounted(() => {
           {{ existingStars ? `★${existingStars} · 冲星重玩` : '已通关' }}
         </span>
         <button
-          v-if="getLevelHint(level)"
+          v-if="hasLevelHint"
           type="button"
           class="level-detail__hint-btn"
           @click="revealHint"
         >
-          💡
-          {{
-            isDailyQuestId(levelId)
-              ? sessionHintUsed
-                ? hintPoolSize > 1
-                  ? '换一条思路'
-                  : '再看思路'
-                : '思路提示'
-              : levelStatus === 'completed'
-                ? sessionHintUsed && hintPoolSize > 1
-                  ? '换一条冲星提示'
-                  : '冲星提示'
-                : sessionHintUsed
-                  ? hintPoolSize > 1
-                    ? '换一条提示'
-                    : '再看提示'
-                  : '提示（影响星级）'
-          }}
+          💡 {{ hintButtonLabel }}
         </button>
       </div>
 

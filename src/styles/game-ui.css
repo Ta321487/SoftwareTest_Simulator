@@ -710,7 +710,7 @@
   }
 
   .home-map__main {
-    padding-bottom: calc(64px + var(--safe-bottom));
+    padding-bottom: calc(64px + var(--safe-bottom) + var(--keyboard-inset));
   }
 
   .home-continue {

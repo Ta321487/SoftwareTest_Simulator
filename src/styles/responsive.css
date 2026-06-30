@@ -165,6 +165,10 @@ body.debrief-open {
 
 /* ===== 手机 (≤768px) ===== */
 @media (max-width: 768px) {
+  :root {
+    --keyboard-inset: 0px;
+  }
+
   /* 顶栏 */
   .workbench__topbar {
     flex-direction: column;
@@ -252,14 +256,14 @@ body.debrief-open {
     right: auto;
   }
 
-  /* 手机底栏留白（Tab 栏 + 关卡 Day 横条） */
+  /* 手机底栏留白（Tab 栏 + 关卡 Day 横条）+ 软键盘 */
   .home-map .workbench__main,
   .handbook .workbench__main {
-    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+    padding-bottom: calc(72px + env(safe-area-inset-bottom) + var(--keyboard-inset));
   }
 
   .workbench--level .workbench__main {
-    padding-bottom: calc(120px + env(safe-area-inset-bottom));
+    padding-bottom: calc(120px + env(safe-area-inset-bottom) + var(--keyboard-inset));
   }
 
   /* 首页内容 */

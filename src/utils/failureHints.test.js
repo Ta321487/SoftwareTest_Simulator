@@ -33,6 +33,18 @@ describe('getFailureHint', () => {
     expect(hint).not.toBe(msg)
     expect(hint.length).toBeGreaterThan(0)
   })
+
+  it('side quest failure uses side debrief pitfalls', () => {
+    const level = getSideLevel(101)
+    const hint = getFailureHint(level, { selected: ['a'] }, { message: '勾选不正确' })
+    expect(hint).toMatch(/XSS|存储型|SQL/)
+  })
+
+  it('sql side quest failure returns debrief or sqlHint', () => {
+    const level = getSideLevel(137)
+    const hint = getFailureHint(level, { query: 'SELECT 1' }, { message: '查询不对' })
+    expect(hint).toMatch(/order_id|接口 200|SELECT/)
+  })
 })
 
 describe('getLevelHintPool', () => {
@@ -58,6 +70,19 @@ describe('getLevelHintPool', () => {
     const pool = getLevelHintPool(level)
     expect(pool.some((t) => t.includes('tail') || t.includes('末尾'))).toBe(true)
     expect(pool.some((t) => t.includes('日志') || t.includes('SSH'))).toBe(true)
+  })
+
+  it('chat level without hint field includes chatHint', () => {
+    const level = levels.find((lv) => lv.id === 7)
+    const pool = getLevelHintPool(level)
+    expect(pool.some((t) => t.includes('李工') || t.includes('测试环境'))).toBe(true)
+  })
+
+  it('sql tool quest includes sqlHint in pool', () => {
+    const level = getSideLevel(137)
+    const pool = getLevelHintPool(level)
+    expect(pool.some((t) => t.includes('SELECT') && t.includes('order_id'))).toBe(true)
+    expect(pool.some((t) => t.includes('接口 200') || t.includes('落库'))).toBe(true)
   })
 
   it('pickNextLevelHint avoids repeating current when pool has alternatives', () => {

@@ -1,19 +1,19 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.17.3'
+export const APP_VERSION = '1.17.4'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
-    title: '修复刷新偶发白屏',
+    title: '手机输入不被键盘挡住',
     items: [
-      '修复 Service Worker 中未定义变量导致 JS/CSS 加载失败',
-      '改为预缓存全部带 hash 的前端资源，发版后与 index 同步更新',
-      '页面先渲染再提示 IndexedDB 恢复，避免长时间空白',
+      '聚焦输入框后自动滚入可视区，并根据软键盘高度增加底部留白',
+      '关卡 Jira/终端/模板等模拟器在手机上更易输入',
+      '提示池进一步绑定本题；每日特训查看思路不再扣星级',
     ],
   },
   {
-    version: '1.17.2',
+    version: '1.17.3',
     title: '手机关卡页可读完整任务说明',
     items: [
       '修复窄屏/手机任务条两行省略后无法看到 PRD 全文的问题',

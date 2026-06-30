@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { getLevelHintPool, pickNextLevelHint } from '../utils/failureHints'
+import { isDailyQuestId } from '../utils/levelRegistry'
 
 /** 关卡内提示状态与展示 */
 export function useLevelHints(progressStore) {
@@ -27,7 +28,9 @@ export function useLevelHints(progressStore) {
 
     if (!sessionHintUsed.value) {
       sessionHintUsed.value = true
-      progressStore.useHint(level.id)
+      if (!isDailyQuestId(level.id)) {
+        progressStore.useHint(level.id)
+      }
     }
 
     hintText.value = next
