@@ -237,7 +237,7 @@ export const toolQuestLevels = [
     correctClick: 'b',
     hint: 'Hotfix 从与生产一致的 release 分支切，别从 main 或 feature 直接上。',
     xpReward: 18,
-    unlock: { type: 'level', levelId: 9 },
+    unlock: { type: 'sideLevel', sideLevelId: 146 },
   },
   {
     id: 148,
@@ -300,7 +300,7 @@ export const toolQuestLevels = [
     correctMessageId: 'b',
     mqHint: '找 pay.callback + orderId=8821 + SUCCESS。',
     xpReward: 20,
-    unlock: { type: 'sideLevel', sideLevelId: 8 },
+    unlock: { type: 'sideLevel', sideLevelId: 148 },
   },
   {
     id: 150,

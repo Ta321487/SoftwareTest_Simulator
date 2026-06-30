@@ -1,19 +1,19 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.18.0'
+export const APP_VERSION = '1.18.1'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
-    title: 'Lead 线接入上机实操',
+    title: '工具链番外解锁顺序修正',
     items: [
-      '测试 Lead 线新增 Go/No-Go 看板、任务分派与压测报告三项实操',
-      '与登录/支付/订单/值班并列，五条项目线均可选上机（不影响通关）',
-      '完成任一项 Lead 实操解锁成就「Lead 看板上手」',
+      'Git 发布线 #147 改为完成 APM #146 后解锁，不再跳至主线第 9 关',
+      '异步消息线 #149 改为完成 Git #148 后解锁，与推荐路线一致',
+      '解锁提示文案与链式进度对齐，新手不再迷路',
     ],
   },
   {
-    version: '1.17.5',
+    version: '1.18.0',
     title: '清理死代码与 lint 警告',
     items: ['删除未引用的 CareerMap 与旧 Tab 样式', 'ESLint 未使用变量清零，工程更易维护'],
   },
