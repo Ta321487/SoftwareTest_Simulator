@@ -13,8 +13,7 @@
   width: 100%;
 }
 
-.app-nav-global,
-.app-nav-archive {
+.app-nav-global {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -118,11 +117,46 @@
   line-height: 1;
 }
 
-.app-nav__done .workbench__dock-text {
+.app-nav__count {
+  display: block;
+  margin-top: 1px;
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  font-weight: 500;
   color: var(--text-muted);
+  line-height: 1.2;
 }
 
-/* 桌面侧栏：纯文字，无 Tab 图标 */
+.app-tab__badge--count {
+  font-size: 0.45rem;
+  padding: 1px 3px;
+  right: -12px;
+  min-width: 24px;
+}
+
+@media (min-width: 769px) {
+  .app-tab__badge--count {
+    display: none;
+  }
+
+  .app-nav__count {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-nav__count {
+    display: none;
+  }
+
+  .app-mobile-dock .app-tab__badge--count {
+    display: block;
+    background: color-mix(in srgb, var(--text-muted) 30%, transparent);
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+}
+
 .app-tab__icon-wrap,
 .app-tab__icon,
 .app-tab__badge {
@@ -133,7 +167,7 @@
   .home-map .workbench__dock,
   .handbook .workbench__dock,
   .workbench--level .app-sidebar {
-    width: 104px;
+    width: 112px;
     padding: 12px 6px;
   }
 
@@ -203,7 +237,6 @@
 
   .app-mobile-dock .workbench__dock-label,
   .app-mobile-dock .app-nav__group,
-  .app-mobile-dock .app-nav-archive,
   .app-mobile-dock .app-sidebar__project {
     display: none !important;
   }

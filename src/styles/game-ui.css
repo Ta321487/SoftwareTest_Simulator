@@ -351,6 +351,232 @@
   color: var(--accent-cyan);
 }
 
+.home-section-hint {
+  margin: 0 0 14px;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.home-map__hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.home-map__hero-cta-level {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  opacity: 0.92;
+}
+
+.home-map__hero-map-link {
+  font-size: 0.85rem;
+}
+
+.home-quest-log {
+  margin-top: 4px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.home-continue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.home-continue__body {
+  flex: 1;
+  min-width: min(100%, 240px);
+}
+
+.home-continue__chapter {
+  margin: 0 0 4px;
+  font-size: 0.78rem;
+  color: var(--accent-cyan);
+}
+
+.home-continue__title {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
+.home-continue__beat {
+  font-size: 0.92em;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.home-continue__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.home-continue__btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.home-stats-fold {
+  margin: 16px 0;
+  border-radius: 10px;
+  border: 1px dashed var(--border-subtle);
+  background: var(--surface-muted);
+}
+
+.home-stats-fold__summary {
+  padding: 10px 14px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  list-style: none;
+}
+
+.home-stats-fold__summary::-webkit-details-marker {
+  display: none;
+}
+
+.home-stats-fold__summary::before {
+  content: '▸ ';
+  color: var(--accent-cyan);
+}
+
+.home-stats-fold[open] .home-stats-fold__summary::before {
+  content: '▾ ';
+}
+
+.home-stats-fold__body {
+  padding: 0 14px 14px;
+}
+
+.home-quest-log .career-script--flat,
+.home-quest-log .career-script {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.career-script--flat .career-script__panel {
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 0;
+}
+
+.career-script--flat .career-script__panel--active {
+  border: none;
+  box-shadow: none;
+}
+
+.career-script--flat .career-script__panel-head {
+  margin-bottom: 10px;
+}
+
+.career-script--flat .career-script__lore {
+  margin-bottom: 10px;
+}
+
+.career-script--flat .career-script__beats {
+  margin-top: 4px;
+}
+
+.home-map__main > .game-section--side .side-hub--compact,
+.home-map__main > .game-section--profile .player-dashboard,
+.home-map__main > .game-section--achievements .achievement-panel--flat {
+  margin-top: 0;
+  padding: 0;
+  border-bottom: none;
+}
+
+.achievement-panel--flat .achievement-panel__header {
+  margin-bottom: 10px;
+}
+
+.achievement-panel__meta {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.achievement-panel__list--flat {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  grid-template-columns: none;
+}
+
+.achievement-panel--flat .achievement-panel__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 0;
+  padding: 12px 0;
+}
+
+.achievement-panel--flat .achievement-panel__item:last-child {
+  border-bottom: none;
+}
+
+.achievement-panel--flat .achievement-panel__item--locked {
+  opacity: 0.5;
+}
+
+.achievement-panel--flat .achievement-panel__item--unlocked .achievement-panel__name {
+  color: var(--text-primary);
+}
+
+.achievement-panel__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.achievement-panel__status {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  color: var(--accent-green);
+  line-height: 1.6;
+}
+
+.save-panel--embedded {
+  margin-top: 24px;
+  padding: 24px 0 0;
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  border-radius: 0;
+  background: transparent;
+}
+
+.career-script__panel-head--compact {
+  padding-top: 0;
+  border-bottom: none;
+  margin-bottom: 8px;
+}
+
+.quest-log__head-sub {
+  margin-left: 8px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
 /* Quest log panels (replaces plain folds) */
 .quest-log {
   margin-bottom: 16px;
@@ -478,87 +704,65 @@
 }
 
 @media (max-width: 768px) {
+  .home-map .workbench__main {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
   .home-map__main {
-    padding-bottom: calc(72px + var(--safe-bottom));
+    padding-bottom: calc(64px + var(--safe-bottom));
   }
 
-  .game-tabs {
-    touch-action: pan-x;
-    scroll-snap-type: x proximity;
-    scroll-padding-inline: 14px;
-    margin-inline: -14px;
-    padding-inline: 14px;
-    padding-bottom: 10px;
-    cursor: grab;
+  .home-continue {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .game-tabs:active {
-    cursor: grabbing;
+  .home-continue__btn {
+    width: 100%;
+    min-height: 44px;
+    justify-content: center;
   }
 
-  .game-tabs__btn {
-    touch-action: pan-x;
-    scroll-snap-align: start;
-    -webkit-user-select: none;
-    user-select: none;
+  .home-quest-log {
+    padding-top: 14px;
   }
 
-  .game-playbar {
-    display: flex;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 100;
-    gap: 8px;
-    padding: 10px 12px calc(10px + var(--safe-bottom));
-    background: var(--hud-bg);
-    backdrop-filter: blur(16px);
-    border-top: 1px solid var(--quest-panel-border);
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.25);
+  .chapter-strip {
+    margin-left: -2px;
+    margin-right: -2px;
+    -webkit-overflow-scrolling: touch;
   }
 
-  .game-playbar__main {
-    flex: 1;
-    min-width: 0;
+  .chapter-strip__node {
+    min-height: 44px;
+    padding: 6px 8px;
   }
 
-  .game-playbar__label {
-    font-size: 0.6875rem;
-    color: var(--text-muted);
-    margin-bottom: 2px;
+  .achievement-panel--flat .achievement-panel__item {
+    padding: 14px 0;
   }
 
-  .game-playbar__title {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .side-hub--compact .side-hub__chapter-summary {
+    min-height: 44px;
+    align-items: center;
   }
 
-  .game-playbar__btn {
-    flex-shrink: 0;
-    align-self: center;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.875rem;
-    background: var(--game-gradient);
-    color: var(--btn-primary-text);
-    box-shadow: var(--shadow-btn);
-    cursor: pointer;
+  .side-hub--compact .skill-tree__head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .side-hub--compact .skill-tree__continue {
+    width: 100%;
+    min-height: 44px;
+    text-align: center;
   }
 
   .quest-panel {
     padding: 16px 14px 14px;
     margin-bottom: 12px;
     border-bottom: none;
-  }
-
-  .quest-panel .home-map__hero-cta {
-    display: none;
   }
 
   .home-map__action-primary--mobile {
@@ -581,6 +785,10 @@
 }
 
 @media (min-width: 769px) {
+  .home-map__main > .game-section--achievements .achievement-panel--flat {
+    max-width: 720px;
+  }
+
   .quest-panel {
     padding: 22px 24px 20px;
     margin-bottom: 20px;

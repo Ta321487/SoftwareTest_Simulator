@@ -14,7 +14,15 @@ import { useProgressStore } from '../stores/progressStore'
 import { useProjectStore } from '../stores/projectStore'
 import { getProjectImmersion } from '../utils/projectImmersion'
 import { buildSutRoute } from '../utils/sutImmersion'
+import { getPhaseForLevel } from '../data/phases'
 import QuestPathMap from './workbench/QuestPathMap.vue'
+
+defineProps({
+  flat: {
+    type: Boolean,
+    default: false,
+  },
+})
 
 const router = useRouter()
 const progressStore = useProgressStore()
@@ -56,26 +64,26 @@ function selectChapter(chapter) {
 
 function beatNodes(beat) {
   const ids = getBeatLevelIds(beat)
+  const mapNode = (levelId, label) => {
+    const level = getLevelById(levelId)
+    const phase = getPhaseForLevel(levelId)
+    return {
+      levelId,
+      label,
+      title: level?.title || '',
+      tag: phase ? `${phase.icon} ${phase.name}` : '',
+    }
+  }
+
   if (beat.type === 'project') {
     const project = projects[beat.projectId]
     return ids.map((levelId) => {
       const day = project?.days?.find((d) => d.levelId === levelId)
-      const level = getLevelById(levelId)
-      return {
-        levelId,
-        label: day?.label || `#${levelId}`,
-        title: day?.title || level?.title || '',
-      }
+      return mapNode(levelId, day?.label || `#${levelId}`)
     })
   }
-  return ids.map((levelId) => {
-    const level = getLevelById(levelId)
-    return {
-      levelId,
-      label: beat.labels?.[levelId] || `#${levelId}`,
-      title: level?.title || '',
-    }
-  })
+
+  return ids.map((levelId) => mapNode(levelId, beat.labels?.[levelId] || `#${levelId}`))
 }
 
 function immersionForBeat(beat) {
@@ -90,7 +98,11 @@ function openImmersion(item, levelId) {
 </script>
 
 <template>
-  <section class="career-script career-script--compact" aria-label="职场全流程剧本">
+  <section
+    class="career-script career-script--compact"
+    :class="{ 'career-script--flat': flat }"
+    aria-label="任务日志"
+  >
     <nav class="chapter-strip" aria-label="章节选择">
       <button
         v-for="(chapter, index) in chapters"
@@ -123,14 +135,12 @@ function openImmersion(item, levelId) {
       class="career-script__panel"
       :class="{ 'career-script__panel--active': selectedChapter.active }"
     >
-      <header class="career-script__panel-head">
-        <h3 class="career-script__panel-title">
-          第 {{ selectedChapter.chapter }} 章 · {{ selectedChapter.title }}
-        </h3>
-        <span v-if="selectedChapter.locked" class="career-script__panel-meta"
-          >🔒 第一季结业后解锁</span
-        >
-        <span v-else class="career-script__panel-meta">
+      <header v-if="selectedChapter.locked" class="career-script__panel-head">
+        <span class="career-script__panel-meta">🔒 第一季结业后解锁</span>
+      </header>
+
+      <header v-else class="career-script__panel-head career-script__panel-head--compact">
+        <span class="career-script__panel-meta">
           {{ selectedChapter.progress.done }}/{{ selectedChapter.progress.total }} ·
           {{ selectedChapter.badge }}
         </span>

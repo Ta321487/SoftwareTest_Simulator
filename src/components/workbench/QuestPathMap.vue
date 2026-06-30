@@ -46,6 +46,7 @@ const resolved = computed(() =>
       levelId: node.levelId,
       label: node.label ?? `#${node.levelId}`,
       title: node.title ?? level?.title ?? '',
+      tag: node.tag ?? '',
       status,
       stars: meta?.stars || 0,
     }
@@ -181,6 +182,7 @@ function starDisplay(n) {
         </span>
         <span class="quest-path__label">{{ node.label }}</span>
         <span v-if="node.title" class="quest-path__title">{{ node.title }}</span>
+        <span v-if="node.tag" class="quest-path__tag">{{ node.tag }}</span>
         <span v-if="node.stars" class="quest-path__stars">{{ starDisplay(node.stars) }}</span>
       </button>
     </div>
@@ -208,6 +210,7 @@ function starDisplay(n) {
       </span>
       <span class="quest-path__label">{{ node.label }}</span>
       <span v-if="node.title" class="quest-path__title">{{ node.title }}</span>
+      <span v-if="node.tag" class="quest-path__tag">{{ node.tag }}</span>
       <span v-if="node.stars" class="quest-path__stars">{{ starDisplay(node.stars) }}</span>
     </button>
   </div>

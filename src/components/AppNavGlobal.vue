@@ -1,7 +1,7 @@
 <script setup>
-import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppNav } from '../composables/useAppNav'
+import { isNavDisabled, resolveNavActive } from '../data/appNavigation'
 
 const props = defineProps({
   current: {
@@ -19,73 +19,64 @@ const props = defineProps({
   },
 })
 
-const { mainLevelId, dailyOpen, dailyDone, goHome, goMain, goDaily, goHandbook } = useAppNav()
 const route = useRoute()
+const { mainLevelId, navItems, navCount, activateNavItem } = useAppNav()
 
-const mainTaskActive = computed(
-  () =>
-    props.highlightMainTask &&
-    props.current === 'level' &&
-    props.activeLevelId != null &&
-    props.activeLevelId === mainLevelId.value
-)
+function navContext() {
+  return {
+    route,
+    current: props.current,
+    activeLevelId: props.activeLevelId,
+    highlightMainTask: props.highlightMainTask,
+    mainLevelId: mainLevelId.value,
+  }
+}
+
+function itemActive(item) {
+  return resolveNavActive(item, navContext())
+}
+
+function itemDisabled(item) {
+  return isNavDisabled(item, itemActive(item))
+}
+
+function itemTitle(item) {
+  if (item.kind === 'home') return '当前任务与章节关卡'
+  if (item.kind === 'main') return '打开当前关卡工作台'
+  return item.label
+}
 </script>
 
 <template>
   <nav class="app-nav-global" aria-label="主导航">
     <button
+      v-for="item in navItems"
+      :key="item.id"
       type="button"
       class="workbench__dock-item app-tab"
-      :class="{ 'workbench__dock-item--active': current === 'home' && !route.hash }"
-      :disabled="current === 'home' && !route.hash"
-      @click="goHome"
+      :class="{
+        'workbench__dock-item--active': itemActive(item),
+        'app-tab--level': item.kind === 'main',
+      }"
+      :disabled="itemDisabled(item) || undefined"
+      :title="itemTitle(item)"
+      @click="activateNavItem(item)"
     >
       <span class="app-tab__icon-wrap">
-        <span class="app-tab__icon" aria-hidden="true">🏠</span>
+        <span class="app-tab__icon" aria-hidden="true">{{ item.icon }}</span>
+        <span v-if="item.kind === 'main' && mainLevelId" class="app-tab__badge"
+          >#{{ mainLevelId }}</span
+        >
+        <span v-else-if="navCount(item)" class="app-tab__badge app-tab__badge--count">{{
+          navCount(item)
+        }}</span>
       </span>
-      <span class="workbench__dock-text app-tab__label">任务台</span>
-    </button>
-
-    <button
-      v-if="mainLevelId"
-      type="button"
-      class="workbench__dock-item app-tab"
-      :class="{ 'workbench__dock-item--active': mainTaskActive }"
-      @click="goMain"
-    >
-      <span class="app-tab__icon-wrap">
-        <span class="app-tab__icon" aria-hidden="true">▶️</span>
-        <span class="app-tab__badge">#{{ mainLevelId }}</span>
+      <span class="workbench__dock-text app-tab__label">
+        {{ item.label }}
+        <span v-if="navCount(item)" class="app-nav__count app-nav__count--desktop">{{
+          navCount(item)
+        }}</span>
       </span>
-      <span class="workbench__dock-text app-tab__label">关卡</span>
-    </button>
-
-    <button
-      v-if="dailyOpen"
-      type="button"
-      class="workbench__dock-item app-tab"
-      :class="{ 'app-tab--done': dailyDone }"
-      @click="goDaily"
-    >
-      <span class="app-tab__icon-wrap">
-        <span class="app-tab__icon" aria-hidden="true">📅</span>
-        <span v-if="dailyDone" class="app-tab__badge app-tab__badge--done">✓</span>
-        <span v-else class="app-tab__badge app-tab__badge--pending">!</span>
-      </span>
-      <span class="workbench__dock-text app-tab__label">每日</span>
-    </button>
-
-    <button
-      type="button"
-      class="workbench__dock-item app-tab"
-      :class="{ 'workbench__dock-item--active': current === 'handbook' }"
-      :disabled="current === 'handbook'"
-      @click="goHandbook"
-    >
-      <span class="app-tab__icon-wrap">
-        <span class="app-tab__icon" aria-hidden="true">📖</span>
-      </span>
-      <span class="workbench__dock-text app-tab__label">手札</span>
     </button>
   </nav>
 </template>

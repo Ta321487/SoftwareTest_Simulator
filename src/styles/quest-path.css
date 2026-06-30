@@ -211,6 +211,16 @@
   letter-spacing: 0.5px;
 }
 
+.quest-path__tag {
+  font-size: 0.625rem;
+  line-height: 1.2;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
 .quest-path--sm.quest-path--linear .quest-path__node {
   min-width: 64px;
   max-width: 88px;
@@ -579,6 +589,52 @@
 }
 
 .side-hub--compact {
+  margin-top: 0;
+  padding: 0;
+  border-bottom: none;
+}
+
+.side-hub--compact .side-hub__chapter {
+  margin-bottom: 0;
+}
+
+.side-hub--compact .side-hub__chapter-fold {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.side-hub--compact .side-hub__chapter:last-child .side-hub__chapter-fold {
+  border-bottom: none;
+}
+
+.side-hub--compact .side-hub__chapter--recommended > .side-hub__chapter-fold {
+  border-color: var(--border-subtle);
+}
+
+.side-hub--compact .side-hub__chapter-summary {
+  padding: 14px 0;
+}
+
+.side-hub--compact .side-hub__chapter-body {
+  padding-bottom: 16px;
+}
+
+.side-hub--compact .skill-tree {
+  margin-bottom: 0;
+}
+
+.side-hub--compact .skill-tree__head {
+  margin-bottom: 8px;
+}
+
+.side-hub--compact .skill-tree__title {
+  display: none;
+}
+
+.side-hub--compact .skill-tree__hint {
   margin-top: 0;
 }
 

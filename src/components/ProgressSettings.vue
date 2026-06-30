@@ -15,6 +15,13 @@ import { trackBackupExport, trackBackupImport } from '../utils/analytics'
 
 const emit = defineEmits(['show-onboarding'])
 
+defineProps({
+  embedded: {
+    type: Boolean,
+    default: false,
+  },
+})
+
 const progressStore = useProgressStore()
 const projectStore = useProjectStore()
 const themeStore = useThemeStore()
@@ -64,7 +71,7 @@ function triggerImport() {
 </script>
 
 <template>
-  <section class="save-panel">
+  <section class="save-panel" :class="{ 'save-panel--embedded': embedded }">
     <h2 class="save-panel__title">存档管理</h2>
     <p class="save-panel__desc">
       进度保存在浏览器本地。换设备或清缓存前请先导出；支持 JSON 存档导入恢复。 当前存档格式 v{{

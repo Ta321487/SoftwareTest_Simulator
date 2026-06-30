@@ -2,7 +2,6 @@
 import { computed, ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { dockApps } from '../data/projects'
 import AppNavGlobal from './AppNavGlobal.vue'
-import AppNavArchive from './AppNavArchive.vue'
 import { useMobileLayout } from '../composables/useMobileLayout'
 import { useHorizontalDragScroll } from '../composables/useHorizontalDragScroll'
 
@@ -131,11 +130,6 @@ onUnmounted(() => unbindProjectStripDragScroll?.())
           :active-level-id="activeLevelId"
           :highlight-main-task="!hasProject"
         />
-
-        <template v-if="!isMobile">
-          <p class="app-nav__group">档案</p>
-          <AppNavArchive />
-        </template>
       </div>
 
       <div v-if="hasProject && !isMobile" class="app-sidebar__project">

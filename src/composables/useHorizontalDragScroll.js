@@ -8,35 +8,46 @@ export function useHorizontalDragScroll(options = {}) {
   function bind(el) {
     if (!el) return () => {}
 
+    // Desktop / wide layouts: skip when tabs already fit (avoids breaking clicks).
+    if (el.scrollWidth <= el.clientWidth) return () => {}
+
     let startX = 0
     let scrollLeft = 0
     let active = false
     let dragged = false
+    let captured = false
 
     const onPointerDown = (e) => {
       if (e.pointerType === 'mouse' && e.button !== 0) return
       active = true
       dragged = false
+      captured = false
       startX = e.clientX
       scrollLeft = el.scrollLeft
-      el.setPointerCapture(e.pointerId)
     }
 
     const onPointerMove = (e) => {
       if (!active) return
       const dx = e.clientX - startX
       if (!dragged && Math.abs(dx) <= threshold) return
-      dragged = true
+      if (!captured) {
+        captured = true
+        dragged = true
+        el.setPointerCapture(e.pointerId)
+      }
       el.scrollLeft = scrollLeft - dx
     }
 
     const end = (e) => {
       if (!active) return
       active = false
-      try {
-        el.releasePointerCapture(e.pointerId)
-      } catch {
-        /* already released */
+      if (captured) {
+        try {
+          el.releasePointerCapture(e.pointerId)
+        } catch {
+          /* already released */
+        }
+        captured = false
       }
     }
 

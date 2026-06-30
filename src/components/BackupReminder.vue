@@ -1,16 +1,22 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useProgressStore } from '../stores/progressStore'
+import { getItem } from '../utils/storage'
 import { shouldShowBackupReminder, dismissBackupReminder } from '../utils/bootstrapRestore'
 
 const emit = defineEmits(['go-settings'])
 
 const progressStore = useProgressStore()
+const dismissed = ref(getItem('backup_reminder_dismissed', false))
 
-const visible = computed(() => shouldShowBackupReminder(progressStore.completedLevelIds.length))
+const visible = computed(() => {
+  if (dismissed.value) return false
+  return shouldShowBackupReminder(progressStore.completedLevelIds.length)
+})
 
 function dismiss() {
   dismissBackupReminder()
+  dismissed.value = true
 }
 
 function goExport() {

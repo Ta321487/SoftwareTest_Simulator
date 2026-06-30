@@ -208,7 +208,7 @@ export function getWorkBrief({ firstAvailableLevelId, completedLevelIds, getStat
       title: '第一季职场剧本已通关',
       chapterTitle: '',
       beatLabel: '',
-      desc: '番外、每日特训或进阶 Lead 线等你回顾；也可打开下方章节重温任一天。',
+      desc: '番外、每日特训或进阶 Lead 线等你回顾；也可在「主线」里重温任一天。',
       status: 'completed',
     }
   }

@@ -93,6 +93,7 @@ body.debrief-open {
     --home-content-max: 100%;
   }
 
+  .home-map__main > .game-section,
   .home-map__main > .home-map__rank,
   .home-map__main > .player-dashboard,
   .home-map__main > .career-script,
@@ -139,6 +140,7 @@ body.debrief-open {
     --home-content-max: 100%;
   }
 
+  .home-map__main > .game-section,
   .home-map__main > .home-map__rank,
   .home-map__main > .player-dashboard,
   .home-map__main > .career-script,
@@ -357,6 +359,16 @@ body.debrief-open {
     padding: 16px;
   }
 
+  .home-map__main .side-hub--compact {
+    margin-top: 0;
+    padding: 0;
+  }
+
+  .home-map__main .achievement-panel--flat {
+    margin-top: 0;
+    padding: 0;
+  }
+
   .side-hub__header {
     flex-direction: column;
     gap: 8px;
@@ -383,7 +395,7 @@ body.debrief-open {
   }
 
   /* 成就 */
-  .achievement-panel {
+  .achievement-panel:not(.achievement-panel--flat) {
     margin-top: 20px;
     padding: 16px;
   }

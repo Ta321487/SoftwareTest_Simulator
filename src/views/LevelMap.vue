@@ -1,8 +1,7 @@
 <script setup>
-import { computed, ref, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue'
+import { computed, ref, onMounted, watch, nextTick, defineAsyncComponent } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useProgressStore } from '../stores/progressStore'
-import { useProjectStore } from '../stores/projectStore'
 
 const tabLoading = { template: '<p class="tab-loading" role="status">加载中…</p>' }
 
@@ -15,14 +14,12 @@ function lazyTab(loader) {
 }
 
 const CareerScript = lazyTab(() => import('../components/CareerScript.vue'))
-const CareerMap = lazyTab(() => import('../components/CareerMap.vue'))
 const SideQuestHub = lazyTab(() => import('../components/SideQuestHub.vue'))
 const PlayerDashboard = lazyTab(() => import('../components/PlayerDashboard.vue'))
 const AchievementPanel = lazyTab(() => import('../components/AchievementPanel.vue'))
 const ProgressSettings = lazyTab(() => import('../components/ProgressSettings.vue'))
 const OnboardingTour = lazyTab(() => import('../components/OnboardingTour.vue'))
 import { getWorkBrief } from '../data/careerScript'
-import { sideLevels } from '../data/sideQuests'
 import { DAILY_LEVEL_ID, getTodayDailyChallenge, getDailyFocusHint } from '../data/dailyChallenges'
 import { getRankForXp, getRankProgress } from '../data/ranks'
 import { getWeakAreas } from '../utils/weakAreas'
@@ -32,35 +29,18 @@ import ThemeToggle from '../components/ThemeToggle.vue'
 import AppNavDock from '../components/AppNavDock.vue'
 import BackupReminder from '../components/BackupReminder.vue'
 import WhatsNewModal from '../components/WhatsNewModal.vue'
-import { useMobileLayout } from '../composables/useMobileLayout'
-import { useHorizontalDragScroll } from '../composables/useHorizontalDragScroll'
+import { useAppNav } from '../composables/useAppNav'
+import { HOME_HASH_TO_TAB } from '../data/appNavigation'
 
 const router = useRouter()
 const route = useRoute()
 const progressStore = useProgressStore()
+const { goHomeSection } = useAppNav()
 const onboardingRef = ref(null)
 const whatsNewRef = ref(null)
 const onboardingReady = ref(false)
-const { isMobile } = useMobileLayout()
 const homeTab = ref('quest')
 const visitedTabs = ref(new Set(['quest']))
-const gameTabsRef = ref(null)
-const { bind: bindGameTabsDragScroll } = useHorizontalDragScroll()
-let unbindGameTabsDragScroll = null
-
-const HOME_TABS = [
-  { id: 'quest', icon: '⚔️', label: '任务' },
-  { id: 'career', icon: '📖', label: '剧本' },
-  {
-    id: 'side',
-    icon: '🎬',
-    label: '番外',
-    count: () => `${progressStore.sideCompletedCount}/${sideLevels.length}`,
-  },
-  { id: 'map', icon: '🗺️', label: '关卡图' },
-  { id: 'profile', icon: '👤', label: '档案' },
-  { id: 'achievements', icon: '🏆', label: '成就' },
-]
 
 const allCompleted = computed(
   () => progressStore.completedLevelIds.length >= progressStore.totalLevelCount
@@ -123,33 +103,35 @@ function continueChallenge() {
   }
 }
 
-function resetProgress() {
-  if (window.confirm('确定重置所有进度？职级、XP、通关记录和项目档案将被清空。')) {
-    progressStore.resetProgress()
-    useProjectStore().resetAll()
-  }
-}
-
 function showOnboarding() {
   onboardingReady.value = true
   queueMicrotask(() => onboardingRef.value?.reopen?.())
 }
 
-function setHomeTab(id) {
-  homeTab.value = id
-  visitedTabs.value.add(id)
-  const hashMap = {
-    quest: '',
-    career: '#home-career',
-    side: '#home-side',
-    map: '#home-phases',
-    profile: '#home-progress',
-    achievements: '#home-achievements',
+function syncHomeTabFromHash(hash) {
+  const tab = HOME_HASH_TO_TAB[hash || '']
+  if (tab) {
+    homeTab.value = tab
+    visitedTabs.value.add(tab)
+    if (
+      (hash === '#home-career' || hash === '#home-mainline' || hash === '#home-phases') &&
+      route.hash
+    ) {
+      router.replace({ hash: '', query: {} })
+    }
+    if (hash === '#home-career' || hash === '#home-mainline' || hash === '#home-phases') {
+      scrollToQuestLog()
+    }
+    return
   }
-  const hash = hashMap[id] || ''
-  if (route.hash !== hash) {
-    router.replace({ hash })
-  }
+  homeTab.value = 'quest'
+  visitedTabs.value.add('quest')
+}
+
+function scrollToQuestLog() {
+  nextTick(() => {
+    document.getElementById('quest-log')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  })
 }
 
 function tabActive(tabId) {
@@ -160,41 +142,17 @@ function tabMounted(tabId) {
   return visitedTabs.value.has(tabId)
 }
 
-function syncHomeTabFromHash(hash) {
-  const hashTab = {
-    '#home-career': 'career',
-    '#home-side': 'side',
-    '#home-phases': 'map',
-    '#home-progress': 'profile',
-    '#home-achievements': 'achievements',
-  }
-  if (!hash) {
-    homeTab.value = 'quest'
-    visitedTabs.value.add('quest')
-    return
-  }
-  if (hashTab[hash]) {
-    homeTab.value = hashTab[hash]
-    visitedTabs.value.add(hashTab[hash])
-  }
-}
-
 function goToSettings() {
-  setHomeTab('profile')
+  goHomeSection('home-progress')
 }
 
 onMounted(() => {
   syncHomeTabFromHash(route.hash)
-  unbindGameTabsDragScroll = bindGameTabsDragScroll(gameTabsRef.value)
   const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 300))
   idle(() => {
     onboardingReady.value = true
     queueMicrotask(() => whatsNewRef.value?.open?.())
   })
-})
-
-onUnmounted(() => {
-  unbindGameTabsDragScroll?.()
 })
 
 watch(
@@ -227,142 +185,111 @@ watch(
       <AppNavDock current="home" />
 
       <main class="workbench__main home-map__main">
-        <nav ref="gameTabsRef" class="game-tabs" role="tablist" aria-label="首页分区">
-          <button
-            v-for="tab in HOME_TABS"
-            :key="tab.id"
-            type="button"
-            role="tab"
-            class="game-tabs__btn"
-            :class="{ 'game-tabs__btn--active': homeTab === tab.id }"
-            :aria-selected="homeTab === tab.id"
-            @click="setHomeTab(tab.id)"
-          >
-            <span class="game-tabs__icon" aria-hidden="true">{{ tab.icon }}</span>
-            {{ tab.label }}
-            <span v-if="tab.count" class="game-tabs__count">{{ tab.count() }}</span>
-          </button>
-        </nav>
-
         <div v-if="tabActive('quest')" class="game-section game-section--quest">
           <BackupReminder @go-settings="goToSettings" />
-          <section class="home-map__hero quest-panel">
-            <span class="quest-panel__badge">▸ 当前任务</span>
 
-            <div class="home-map__hero-head">
-              <div class="home-map__hero-rank-pill">
-                <span class="home-map__hero-rank-icon" aria-hidden="true">{{ rank.icon }}</span>
-                <span>{{ rank.title }}</span>
-              </div>
-              <p class="home-map__hero-rank-meta">
-                XP {{ progressStore.totalXp }} · ★ {{ progressStore.totalStars }} · 主线
-                {{ progressStore.mainCompletedCount }}/{{ progressStore.totalLevelCount }}
+          <section class="home-continue quest-panel">
+            <div class="home-continue__body">
+              <span class="quest-panel__badge">▸ 当前任务</span>
+              <template v-if="workBrief.complete">
+                <h2 class="home-continue__title">🎉 {{ workBrief.title }}</h2>
+              </template>
+              <template v-else>
+                <p v-if="workBrief.chapterTitle" class="home-continue__chapter">
+                  {{ workBrief.chapterTitle }}
+                </p>
+                <h2 class="home-continue__title">
+                  <template v-if="progressStore.firstAvailableLevelId">
+                    #{{ progressStore.firstAvailableLevelId }}
+                  </template>
+                  {{ workBrief.title }}
+                  <span v-if="workBrief.beatLabel" class="home-continue__beat"
+                    >· {{ workBrief.beatLabel }}</span
+                  >
+                </h2>
+              </template>
+              <p class="home-continue__meta">
+                <span>{{ rank.icon }} {{ rank.title }}</span>
+                <span>XP {{ progressStore.totalXp }}</span>
+                <span>★ {{ progressStore.totalStars }}</span>
+                <span
+                  >{{ progressStore.mainCompletedCount }}/{{ progressStore.totalLevelCount }}</span
+                >
               </p>
             </div>
-
-            <p v-if="workBrief.chapterTitle" class="home-map__hero-tag">
-              {{ workBrief.chapterTitle }}
-            </p>
-            <h2 class="home-map__hero-title">
-              <template v-if="workBrief.complete">🎉 {{ workBrief.title }}</template>
-              <template v-else>
-                <template v-if="progressStore.firstAvailableLevelId">
-                  #{{ progressStore.firstAvailableLevelId }}
-                </template>
-                {{ workBrief.title }}
-                <span v-if="workBrief.beatLabel" class="home-map__hero-beat"
-                  >· {{ workBrief.beatLabel }}</span
-                >
-              </template>
-            </h2>
-            <p class="home-map__hero-desc">{{ workBrief.desc }}</p>
-
-            <div class="home-map__hero-foot">
-              <div class="home-map__hero-metrics">
-                <div v-if="rankProgress.next" class="home-map__hero-xp">
-                  <div class="home-map__hero-xp-head">
-                    <span>升职进度</span>
-                    <span class="home-map__hero-xp-target">
-                      {{ rankProgress.next.icon }} {{ rankProgress.next.title }}
-                    </span>
-                  </div>
-                  <div
-                    class="home-map__hero-xp-bar"
-                    role="progressbar"
-                    :aria-valuenow="rankProgress.percent"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  >
-                    <div
-                      class="home-map__hero-xp-fill"
-                      :style="{ width: `${Math.max(rankProgress.percent, 2)}%` }"
-                    />
-                  </div>
-                  <p class="home-map__hero-xp-meta">
-                    <span>{{ progressStore.totalXp }} / {{ rankProgress.next.minXp }} XP</span>
-                    <span class="home-map__hero-xp-need">还差 {{ rankProgress.xpToNext }} XP</span>
-                  </p>
-                </div>
-                <p v-else class="home-map__hero-xp-max">🛡️ 已达最高职级 · 质量 Owner</p>
-
-                <div v-if="nextAchievement" class="home-map__hero-achievement">
-                  <div class="home-map__hero-achievement-head">
-                    <span>🏆 {{ nextAchievement.icon }} {{ nextAchievement.title }}</span>
-                    <span class="home-map__hero-achievement-meta"
-                      >{{ nextAchievement.current }}/{{ nextAchievement.target }}</span
-                    >
-                  </div>
-                  <div class="home-map__hero-achievement-bar">
-                    <div
-                      class="home-map__hero-achievement-fill"
-                      :style="{ width: `${Math.max(nextAchievement.percent, 2)}%` }"
-                    />
-                  </div>
-                  <p class="home-map__hero-achievement-desc">{{ nextAchievement.desc }}</p>
-                </div>
-              </div>
-
-              <div
-                v-if="!allCompleted && progressStore.firstAvailableLevelId"
-                class="home-map__hero-cta"
-              >
-                <button
-                  type="button"
-                  class="level-map__btn level-map__btn--primary level-map__btn--game quest-panel__play home-map__hero-cta-btn"
-                  @click="continueChallenge"
-                >
-                  开始任务
-                  <span v-if="nextLevelXp" class="home-map__action-xp">+{{ nextLevelXp }} XP</span>
-                  →
-                </button>
-              </div>
-            </div>
-
-            <p v-if="reinforcementHint" class="home-map__hero-reinforce">
-              有空可重温
-              <router-link
-                :to="`/level/${reinforcementHint.levelId}`"
-                class="home-map__hero-reinforce-link"
-              >
-                #{{ reinforcementHint.levelId }} {{ reinforcementHint.title }}
-              </router-link>
-              <span class="home-map__hero-reinforce-reason"
-                >（{{ reinforcementHint.reason }}）</span
-              >
-            </p>
+            <button
+              v-if="!allCompleted && progressStore.firstAvailableLevelId"
+              type="button"
+              class="level-map__btn level-map__btn--primary level-map__btn--game home-continue__btn"
+              @click="continueChallenge"
+            >
+              进入关卡
+              <span v-if="nextLevelXp" class="home-map__action-xp">+{{ nextLevelXp }} XP</span>
+              →
+            </button>
           </section>
 
-          <div class="home-map__actions">
-            <div class="home-map__action-btns">
-              <button
-                type="button"
-                class="level-map__btn level-map__btn--ghost"
-                @click="resetProgress"
-              >
-                重置进度
-              </button>
+          <section id="quest-log" class="home-quest-log">
+            <CareerScript flat />
+          </section>
+
+          <details v-if="rankProgress.next || nextAchievement" class="home-stats-fold">
+            <summary class="home-stats-fold__summary">升职 / 成就</summary>
+            <div class="home-stats-fold__body">
+              <div v-if="rankProgress.next" class="home-map__hero-xp">
+                <div class="home-map__hero-xp-head">
+                  <span>升职进度</span>
+                  <span class="home-map__hero-xp-target">
+                    {{ rankProgress.next.icon }} {{ rankProgress.next.title }}
+                  </span>
+                </div>
+                <div
+                  class="home-map__hero-xp-bar"
+                  role="progressbar"
+                  :aria-valuenow="rankProgress.percent"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  <div
+                    class="home-map__hero-xp-fill"
+                    :style="{ width: `${Math.max(rankProgress.percent, 2)}%` }"
+                  />
+                </div>
+                <p class="home-map__hero-xp-meta">
+                  <span>{{ progressStore.totalXp }} / {{ rankProgress.next.minXp }} XP</span>
+                  <span class="home-map__hero-xp-need">还差 {{ rankProgress.xpToNext }} XP</span>
+                </p>
+              </div>
+              <p v-else class="home-map__hero-xp-max">🛡️ 已达最高职级 · 质量 Owner</p>
+
+              <div v-if="nextAchievement" class="home-map__hero-achievement">
+                <div class="home-map__hero-achievement-head">
+                  <span>🏆 {{ nextAchievement.icon }} {{ nextAchievement.title }}</span>
+                  <span class="home-map__hero-achievement-meta"
+                    >{{ nextAchievement.current }}/{{ nextAchievement.target }}</span
+                  >
+                </div>
+                <div class="home-map__hero-achievement-bar">
+                  <div
+                    class="home-map__hero-achievement-fill"
+                    :style="{ width: `${Math.max(nextAchievement.percent, 2)}%` }"
+                  />
+                </div>
+                <p class="home-map__hero-achievement-desc">{{ nextAchievement.desc }}</p>
+              </div>
             </div>
-          </div>
+          </details>
+
+          <p v-if="reinforcementHint" class="home-map__hero-reinforce">
+            有空可重温
+            <router-link
+              :to="`/level/${reinforcementHint.levelId}`"
+              class="home-map__hero-reinforce-link"
+            >
+              #{{ reinforcementHint.levelId }} {{ reinforcementHint.title }}
+            </router-link>
+            <span class="home-map__hero-reinforce-reason">（{{ reinforcementHint.reason }}）</span>
+          </p>
 
           <article
             v-if="dailyStatus !== 'locked'"
@@ -394,100 +321,33 @@ watch(
         </div>
 
         <div
-          v-if="tabMounted('career')"
-          v-show="tabActive('career')"
-          id="home-career"
-          class="game-section game-section--career quest-log"
-        >
-          <header class="quest-log__head">
-            <span class="quest-log__head-icon">📖</span>
-            剧本
-            <span v-if="workBrief.chapterTitle" class="home-fold__summary-meta">
-              · {{ workBrief.chapterTitle }}
-            </span>
-          </header>
-          <div class="quest-log__body">
-            <CareerScript />
-          </div>
-        </div>
-
-        <div
           v-if="tabMounted('side')"
           v-show="tabActive('side')"
           id="home-side"
-          class="game-section game-section--side quest-log"
+          class="game-section game-section--side"
         >
-          <header class="quest-log__head">
-            <span class="quest-log__head-icon">🎬</span>
-            番外
-            <span class="game-tabs__count"
-              >{{ progressStore.sideCompletedCount }}/{{ sideLevels.length }}</span
-            >
-          </header>
-          <div class="quest-log__body">
-            <SideQuestHub compact />
-          </div>
-        </div>
-
-        <div
-          v-if="tabMounted('map')"
-          v-show="tabActive('map')"
-          id="home-phases"
-          class="game-section game-section--map quest-log"
-        >
-          <header class="quest-log__head">
-            <span class="quest-log__head-icon">🗺️</span>
-            关卡图
-          </header>
-          <div class="quest-log__body">
-            <CareerMap />
-          </div>
+          <SideQuestHub compact />
         </div>
 
         <div
           v-if="tabMounted('profile')"
           v-show="tabActive('profile')"
           id="home-progress"
-          class="game-section game-section--profile quest-log"
+          class="game-section game-section--profile"
         >
-          <header class="quest-log__head">
-            <span class="quest-log__head-icon">👤</span>
-            档案
-          </header>
-          <div class="quest-log__body">
-            <PlayerDashboard compact />
-            <ProgressSettings @show-onboarding="showOnboarding" />
-          </div>
+          <PlayerDashboard compact />
+          <ProgressSettings embedded @show-onboarding="showOnboarding" />
         </div>
 
         <div
           v-if="tabMounted('achievements')"
           v-show="tabActive('achievements')"
           id="home-achievements"
-          class="game-section game-section--achievements quest-log"
+          class="game-section game-section--achievements"
         >
-          <header class="quest-log__head">
-            <span class="quest-log__head-icon">🏆</span>
-            成就
-          </header>
-          <div class="quest-log__body">
-            <AchievementPanel class="home-map__achievements" />
-          </div>
+          <AchievementPanel flat class="home-map__achievements" />
         </div>
       </main>
     </div>
-
-    <footer
-      v-if="isMobile && !allCompleted && progressStore.firstAvailableLevelId"
-      class="game-playbar"
-    >
-      <div class="game-playbar__main">
-        <p class="game-playbar__label">当前任务</p>
-        <p class="game-playbar__title">
-          #{{ progressStore.firstAvailableLevelId }} {{ workBrief.title }}
-        </p>
-      </div>
-      <button type="button" class="game-playbar__btn" @click="continueChallenge">开始 →</button>
-    </footer>
   </div>
 </template>
