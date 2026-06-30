@@ -16,7 +16,7 @@ describe('testingSkills', () => {
     for (const id of levelOrder) {
       expect(mapped.has(id), `level ${id}`).toBe(true)
     }
-    expect(levelSkillEntries).toHaveLength(48)
+    expect(levelSkillEntries).toHaveLength(51)
   })
 
   it('resolves skill for level with spiral note', () => {

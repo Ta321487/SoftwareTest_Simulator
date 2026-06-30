@@ -299,6 +299,24 @@ export const sideDebriefs = {
     pitfalls: '用过期短信；位数抄错；取旧码不取最新。',
     workplace: '测试环境：短信网关 Mock 收件箱 + 脚本读码。',
   },
+  151: {
+    summary: '你理解 UAT 与测试签字分工不同、两者都要。',
+    why: '业务 UAT 验需求满足；测试签字保质量门禁——不是二选一或互相替代。',
+    pitfalls: 'UAT 过了就跳过测试签字；测试替业务做 UAT。',
+    workplace: '上线 checklist：UAT 签字 + 测试报告 + 已知风险留痕。',
+  },
+  152: {
+    summary: '你圈出了 UAT 必须覆盖的主流程与业务规则项。',
+    why: 'UAT 资源有限时优先业务可感知的主流程、锁定/验证码规则、跳转结果。',
+    pitfalls: 'UAT 去验单元测试覆盖率；纠结品牌色阶。',
+    workplace: 'UAT 清单由业务写「验收标准」，测试帮圈风险项。',
+  },
+  153: {
+    summary: '你识别主流程阻塞应定为 UAT 阻塞项。',
+    why: '登录后不跳转属于主流程失败，应挡验收；纯视觉/文案可排期。',
+    pitfalls: '把所有 UAT 问题都当阻塞；主流程失败却放行。',
+    workplace: 'UAT 缺陷三分：阻塞 / 严重 / 建议——与业务对齐定义。',
+  },
 }
 
 export const dailyDebriefs = {

@@ -11,10 +11,10 @@ import {
 import { SEASON1_LEVEL_IDS } from './mainlineMeta.js'
 
 describe('careerScript', () => {
-  it('covers all 48 mainline levels across chapters', () => {
+  it('covers all 51 mainline levels across chapters', () => {
     const ids = careerChapters.flatMap(getChapterLevelIds)
-    expect(ids).toHaveLength(48)
-    expect(new Set(ids).size).toBe(48)
+    expect(ids).toHaveLength(51)
+    expect(new Set(ids).size).toBe(51)
   })
 
   it('tracks chapter progress', () => {

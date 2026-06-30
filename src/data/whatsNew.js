@@ -1,10 +1,19 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.19.1'
+export const APP_VERSION = '1.20.0'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
+    title: '螺旋复现加深 + UAT 验收选修',
+    items: [
+      '主线新增 3 关：退款状态机、小事故复盘、灰度指标拍板（#49–#51）',
+      'Review 用例、满月总结等关增加 spiral 提示，与 #35、#10 联动',
+      '番外新增 UAT 验收选修 3 关（#151–#153），Go/No-Go 后解锁',
+    ],
+  },
+  {
+    version: '1.19.1',
     title: '通关解锁「测试能力」成长线',
     items: [
       '通关 debrief 展示「我会…」能力句，螺旋复现关会提示与哪关同类',

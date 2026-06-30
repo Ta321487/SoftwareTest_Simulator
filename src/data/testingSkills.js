@@ -263,6 +263,18 @@ export const levelSkillEntries = [
   { levelId: 13, skillId: 'auto-select' },
   { levelId: 14, skillId: 'gray-metrics' },
   { levelId: 15, skillId: 'p0-review' },
+  {
+    levelId: 50,
+    skillId: 'p0-review',
+    spiralFrom: 15,
+    spiralHint: '短信网关超时 5 分钟——比缓存 P0 轻，但复盘仍要监控/降级/告警可落地。',
+  },
+  {
+    levelId: 51,
+    skillId: 'go-nogo',
+    spiralFrom: 14,
+    spiralHint: '灰度第 2 小时错误率飙高——用第 14 关定的指标做 No-Go，别被 CPU 正常迷惑。',
+  },
   { levelId: 16, skillId: 'api-checklist' },
   { levelId: 17, skillId: 'boundary-value' },
   { levelId: 18, skillId: 'hr-interview' },
@@ -282,7 +294,12 @@ export const levelSkillEntries = [
     spiralHint: '上线救火：先 tail 看概况，再 grep 精筛 ERROR。',
   },
   { levelId: 24, skillId: 'escalate-risk' },
-  { levelId: 25, skillId: 'month-summary' },
+  {
+    levelId: 25,
+    skillId: 'month-summary',
+    spiralFrom: 10,
+    spiralHint: '从日报到满月总结——仍是成果、问题、计划三件套，只是时间尺度变了。',
+  },
   {
     levelId: 26,
     skillId: 'api-assert',
@@ -290,7 +307,12 @@ export const levelSkillEntries = [
     spiralHint: '上次圈了接口维度，这次对着真实响应写断言。',
   },
   { levelId: 27, skillId: 'api-case-design' },
-  { levelId: 28, skillId: 'review-cases' },
+  {
+    levelId: 28,
+    skillId: 'review-cases',
+    spiralFrom: 35,
+    spiralHint: '评审新人用例时，重点查锁定/边界——和你 Day 7 补预期是同一类缺口。',
+  },
   {
     levelId: 29,
     skillId: 'bug-review',
@@ -356,6 +378,12 @@ export const levelSkillEntries = [
     spiralHint: '支付回调：除「能收到通知」外的必测维度。',
   },
   { levelId: 43, skillId: 'state-machine' },
+  {
+    levelId: 49,
+    skillId: 'state-machine',
+    spiralFrom: 43,
+    spiralHint: '退款链路：已退款不能回已支付——和第 43 关「状态只能沿合法箭头走」同一判断。',
+  },
   {
     levelId: 44,
     skillId: 'api-assert',

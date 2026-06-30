@@ -48,6 +48,9 @@ export const levelDeliverables = {
   46: 'tail -f 实时日志命令',
   47: '新人测试任务说明',
   48: '压测 Go/No-Go 决策',
+  49: '退款状态机判断',
+  50: '短信超时小事故复盘',
+  51: '灰度指标异常拍板',
 }
 
 export function getLevelDeliverable(levelId) {

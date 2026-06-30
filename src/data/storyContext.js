@@ -97,13 +97,22 @@ export function getStoryContext(levelId, projectStore, progressStore = null) {
     })
   }
 
-  if (levelId === 44 && projectStore.hasArtifact('order-module', 43)) {
+  if (levelId === 44 && progressStore?.completedLevelIds?.includes(49)) {
+    inbox.unshift({
+      id: 'refund-done',
+      from: '组长 · 阿Ken',
+      avatar: '🧑‍🔧',
+      time: '11:28',
+      text: '退款状态机过了。接口断言是最后一题：200/404 两场景都要写清楚。',
+      read: true,
+    })
+  } else if (levelId === 44 && projectStore.hasArtifact('order-module', 43)) {
     inbox.unshift({
       id: 'fsm-done',
       from: '组长 · 阿Ken',
       avatar: '🧑‍🔧',
       time: '11:25',
-      text: '状态机题对了。接口断言是 Day 7 交付，200/404 两场景都要写清楚。',
+      text: '状态机题对了。接口断言是 Day 10 交付，200/404 两场景都要写清楚。',
       read: true,
     })
   }
@@ -115,6 +124,50 @@ export function getStoryContext(levelId, projectStore, progressStore = null) {
       avatar: '👩‍💼',
       time: '03:15',
       text: 'grep 结果看到了。用户还在复现，切 tail -f 实时盯 error.log。',
+      read: true,
+    })
+  }
+
+  if (levelId === 51 && progressStore?.completedLevelIds?.includes(14)) {
+    inbox.unshift({
+      id: 'gray-spike',
+      from: '运维小陈',
+      avatar: '🛠️',
+      time: '22:40',
+      text: '灰度 5% 第 2 小时创建接口错误率 2.4%，你 Day 4 定的监控清单里这项超阈值了——拍板要不要继续放量。',
+      read: false,
+    })
+  }
+
+  if (levelId === 50 && progressStore?.completedLevelIds?.includes(15)) {
+    inbox.unshift({
+      id: 'sms-p0',
+      from: '组长 · 阿Ken',
+      avatar: '🧑‍🔧',
+      time: '14:10',
+      text: '短信网关超时 5 分钟，比上周缓存 P0 轻，但复盘格式一样——3 条可落地改进，别写「加强测试」。',
+      read: true,
+    })
+  }
+
+  if (levelId === 49 && progressStore?.completedLevelIds?.includes(43)) {
+    inbox.unshift({
+      id: 'refund-fsm',
+      from: '产品经理',
+      avatar: '📋',
+      time: '10:35',
+      text: '退款需求评审过了：已支付→退款中→已退款。接着练一题——哪些流转不合法。',
+      read: true,
+    })
+  }
+
+  if (levelId === 28 && progressStore?.completedLevelIds?.includes(35)) {
+    inbox.unshift({
+      id: 'review-spiral',
+      from: '测试总监 · 周总',
+      avatar: '🚀',
+      time: '09:02',
+      text: '小赵的用例缺锁定/边界——对照你培训营 Day 7 的锁定场景，指出缺口并给可写进用例表的建议。',
       read: true,
     })
   }
@@ -1099,6 +1152,55 @@ Content-Type: application/json
     envStatus: [
       { label: '下单 P99', value: '420ms ✓', tone: 'ok' },
       { label: '支付超时率', value: '1.8% ✗', tone: 'error' },
+    ],
+  },
+  49: {
+    inbox: [
+      {
+        id: 'refund-prd',
+        from: '产品经理',
+        avatar: '📋',
+        time: '10:30',
+        text: '退款需求：已支付→退款中→已退款；已发货要先退货。帮圈一下不合理的状态跳转。',
+        read: false,
+      },
+    ],
+    envStatus: [
+      { label: '新需求', value: '退款状态机', tone: 'warn' },
+      { label: '关联', value: 'Day 8 订单状态', tone: 'neutral' },
+    ],
+  },
+  50: {
+    inbox: [
+      {
+        id: 'sms-incident',
+        from: 'On-call 群',
+        avatar: '🚨',
+        time: '13:55',
+        text: '短信网关超时 5 分钟已恢复，影响登录约 800 人。CTO 要小复盘：3 条改进，格式同 Day 6 P0。',
+        read: false,
+      },
+    ],
+    envStatus: [
+      { label: '事故等级', value: 'P2', tone: 'warn' },
+      { label: '影响时长', value: '5 min', tone: 'warn' },
+    ],
+  },
+  51: {
+    inbox: [
+      {
+        id: 'gray-alert',
+        from: '运维小陈',
+        avatar: '🛠️',
+        time: '22:35',
+        text: '灰度 5% 第 2 小时：创建接口错误率 2.4%（基线 0.2%），CPU 正常。等你拍板是否暂停放量。',
+        read: false,
+      },
+    ],
+    envStatus: [
+      { label: '灰度比例', value: '5%', tone: 'warn' },
+      { label: '创建错误率', value: '2.4% ✗', tone: 'error' },
+      { label: 'CPU', value: '正常', tone: 'ok' },
     ],
   },
 }

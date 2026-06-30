@@ -411,9 +411,9 @@ export const levels = [
     title: '订单 P0 事故复盘',
     season: 'gold',
     projectId: 'order-module',
-    projectDay: 5,
+    projectDay: 6,
     description:
-      '【入职 · 第5天】刚入职就赶上 P0：订单缓存雪崩，DB 连接池打满，宕机 30 分钟。复盘会要交 3 条改进措施——写「加强测试」的会被组长瞪。',
+      '【入职 · 第6天】刚入职就赶上 P0：订单缓存雪崩，DB 连接池打满，宕机 30 分钟。复盘会要交 3 条改进措施——写「加强测试」的会被组长瞪。',
     simType: 'template',
     content: '请写出 3 条针对此次订单事故的改进措施：',
     templateMinLength: 12,
@@ -809,7 +809,7 @@ export const levels = [
     projectId: 'season2-lead',
     projectDay: 1,
     description:
-      '【进阶 · 第1关】你带的第一批实习生提交了登录用例，但边界场景明显不足——写出评审意见。',
+      '【进阶 · 第1关】你带的第一批实习生提交了登录用例，但边界场景明显不足——对照 Day 7 锁定/边界加练（#35、#36），写出评审意见。',
     simType: 'template',
     content: '阅读新人用例片段，填写评审指出的问题与改进建议：',
     requirement: '用户名必填；密码 6–12 位字母数字；密码错误 5 次锁定',
@@ -1191,7 +1191,7 @@ export const levels = [
     title: '订单状态机判断',
     season: 'gold',
     projectId: 'order-module',
-    projectDay: 6,
+    projectDay: 8,
     description:
       '【入职 · 加练】订单状态：待支付 → 已支付 → 已发货 → 已完成；待支付可取消。以下哪种流转不合理？',
     simType: 'clickcard',
@@ -1212,7 +1212,7 @@ export const levels = [
     title: '订单查询接口断言',
     season: 'gold',
     projectId: 'order-module',
-    projectDay: 7,
+    projectDay: 10,
     description:
       '【入职 · 加练】GET /api/order/{id} 返回订单详情。根据响应样本，写出测试应断言的要点。',
     simType: 'apiclient',
@@ -1332,12 +1332,89 @@ export const levels = [
     hint: '支付是核心链路，超时率超标比 P99 略好更致命；No-Go 要有复测标准。',
     xpReward: 30,
   },
+  {
+    id: 49,
+    title: '退款状态机判断',
+    season: 'gold',
+    projectId: 'order-module',
+    projectDay: 9,
+    description:
+      '【入职 · 加练】订单新增退款：已支付 → 退款中 → 已退款；已发货需先走退货。以下哪种流转不合理？',
+    simType: 'clickcard',
+    content: '请点击【不符合状态机规则】的流转：',
+    clickVariant: 'trace',
+    clickOptions: [
+      { id: 'a', label: '已支付 → 退款中 → 已退款（用户申请退款）' },
+      { id: 'b', label: '已退款 → 已支付（退款完成后回退）' },
+      { id: 'c', label: '待支付 → 已取消（超时未支付）' },
+      { id: 'd', label: '已发货 → 已完成（用户确认收货）' },
+    ],
+    correctClick: 'b',
+    hint: '已退款是终态，不应回退到已支付；和第 43 关一样——状态只能沿合法箭头走。',
+    xpReward: 28,
+  },
+  {
+    id: 50,
+    title: '短信网关超时小事故复盘',
+    season: 'gold',
+    projectId: 'order-module',
+    projectDay: 7,
+    description:
+      '【入职 · 加练】短信验证码网关超时 5 分钟，约 800 用户无法登录——比 Day 6 的缓存 P0 轻，但复盘格式相同：3 条可落地改进。',
+    simType: 'template',
+    content: '请写出 3 条针对此次短信超时事故的改进措施：',
+    templateMinLength: 10,
+    templateFields: [
+      {
+        field: 'measure1',
+        label: '改进措施 1',
+        placeholder: '用一句话描述改进措施…',
+        rows: 2,
+        fieldKeywords: ['超时', '重试', '降级', '监控', '告警', '熔断', '备用', '阈值', '网关'],
+      },
+      {
+        field: 'measure2',
+        label: '改进措施 2',
+        placeholder: '用一句话描述改进措施…',
+        rows: 2,
+        fieldKeywords: ['超时', '重试', '降级', '监控', '告警', '熔断', '备用', '阈值', '网关'],
+      },
+      {
+        field: 'measure3',
+        label: '改进措施 3',
+        placeholder: '用一句话描述改进措施…',
+        rows: 2,
+        fieldKeywords: ['超时', '重试', '降级', '监控', '告警', '熔断', '备用', '阈值', '网关'],
+      },
+    ],
+    hint: '小 P0 也要 actionable：更早发现（监控/告警）、减少影响（降级/备用通道）、防止再发（超时/重试策略）。',
+    xpReward: 28,
+  },
+  {
+    id: 51,
+    title: '灰度指标异常拍板',
+    season: 'gold',
+    projectId: 'order-module',
+    projectDay: 5,
+    description:
+      '【入职 · 加练】订单 v3.0 灰度 5% 第 2 小时：创建接口错误率 2.4%（基线 0.2%），CPU 正常。你是值班测试——选下一步。',
+    simType: 'clickcard',
+    content: '点击【最合理的灰度决策】：',
+    clickOptions: [
+      { id: 'a', label: 'CPU 正常，继续放量到 20%' },
+      { id: 'b', label: '错误率超阈值，暂停放量/回滚灰度，排查后再决策' },
+      { id: 'c', label: '直接全量发布，大促不能等' },
+    ],
+    correctClick: 'b',
+    hint: '和第 14 关定的监控指标一致：业务错误率超标比 CPU 正常更致命——先止血再放量。',
+    xpReward: 30,
+  },
 ]
 
 /** 闯关顺序：项目剧本优先连续，独立关插入阶段间隙；28+ 为进阶线（需先通第一季） */
 export const levelOrder = [
   1, 2, 3, 4, 5, 34, 35, 16, 26, 17, 36, 37, 38, 6, 18, 19, 39, 40, 41, 7, 8, 9, 10, 20, 27, 21, 42,
-  11, 12, 13, 14, 15, 43, 44, 22, 23, 24, 25, 45, 46, 28, 29, 30, 31, 32, 33, 47, 48,
+  11, 12, 13, 14, 51, 15, 50, 43, 49, 44, 22, 23, 24, 25, 45, 46, 28, 29, 30, 31, 32, 33, 47, 48,
 ]
 
 export const simTypeLabels = {

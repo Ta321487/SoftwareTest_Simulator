@@ -1,5 +1,6 @@
 /** 番外关卡（ID 101+），不影响主线 levelOrder */
 import { toolQuestLevels, toolQuestArcs } from './toolQuestLevels.js'
+import { uatQuestLevels, uatQuestArc } from './uatQuestLevels.js'
 import { enrichSideArcs } from './sideQuestChapters.js'
 
 export const sideLevels = [
@@ -886,6 +887,7 @@ export const sideLevels = [
     xpReward: 18,
     unlock: { type: 'sideLevel', sideLevelId: 135 },
   },
+  ...uatQuestLevels,
   ...toolQuestLevels,
 ]
 
@@ -950,6 +952,7 @@ export const sideArcs = enrichSideArcs([
     icon: '🔌',
     tagline: '限流、鉴权、异常响应——接口层基本功',
   },
+  uatQuestArc,
   {
     id: 'linux',
     name: 'Linux 值班 · 实操',
