@@ -414,6 +414,16 @@
   color: var(--text-muted);
 }
 
+.player-dashboard__skills-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.player-dashboard__skills-link:hover .player-dashboard__stat-value {
+  color: var(--accent-purple);
+}
+
 .player-dashboard__phases {
   display: grid;
   gap: 10px;

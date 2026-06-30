@@ -10,6 +10,7 @@ import { downloadShareCard } from '../utils/shareCard'
 import { getWeakAreas } from '../utils/weakAreas'
 import { buildWeakDrillCards, getLowStarLevels } from '../utils/learningPath'
 import { phaseOrder, phases, getPhaseProgress } from '../data/phases'
+import { getSkillProgress } from '../data/testingSkills'
 
 defineProps({
   compact: {
@@ -118,6 +119,8 @@ const phaseRows = computed(() =>
   })
 )
 
+const skillProgress = computed(() => getSkillProgress(progressStore.completedLevelIds))
+
 async function handleShare() {
   try {
     const result = await copyShareText(shareText.value)
@@ -192,6 +195,14 @@ function handleSaveShareImage() {
           >{{ progressStore.achievements.length }}/{{ achievements.length }}</span
         >
         <span class="player-dashboard__stat-label">成就</span>
+      </div>
+      <div v-if="!compact" class="player-dashboard__stat player-dashboard__stat--skills">
+        <router-link to="/handbook?view=skills" class="player-dashboard__skills-link">
+          <span class="player-dashboard__stat-value"
+            >{{ skillProgress.done }}/{{ skillProgress.total }}</span
+          >
+          <span class="player-dashboard__stat-label">测试能力</span>
+        </router-link>
       </div>
     </div>
 

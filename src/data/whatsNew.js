@@ -1,10 +1,19 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.18.2'
+export const APP_VERSION = '1.19.0'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
+    title: '通关解锁「测试能力」成长线',
+    items: [
+      '通关 debrief 展示「我会…」能力句，螺旋复现关会提示与哪关同类',
+      '手札新增「我的能力」Tab，按分类查看已掌握能力与来源关卡',
+      '档案页显示能力进度，可跳转手札复习',
+    ],
+  },
+  {
+    version: '1.18.2',
     title: '主线 48 关职场沉浸补全',
     items: [
       '全部主线关卡接入 inbox / envStatus，登录 Day 6–7 与 Lead 线不再「裸关」',

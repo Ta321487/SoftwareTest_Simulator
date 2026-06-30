@@ -42,6 +42,7 @@ import {
   isGlossaryHandbookLocked,
   isDailyHandbookLocked,
 } from '../utils/handbookUnlock'
+import { getSkillsByCategory, getSkillProgress, getSkillCategory } from '../data/testingSkills'
 
 const router = useRouter()
 const route = useRoute()
@@ -57,6 +58,7 @@ const selectedEntry = ref(null)
 const selectedTerm = ref(null)
 const selectedPlaybook = ref(null)
 const selectedDaily = ref(null)
+const selectedSkill = ref(null)
 const searchQuery = ref('')
 
 const LIST_BATCH = 15
@@ -97,6 +99,12 @@ function loadMore() {
 const isSearching = computed(() => searchQuery.value.trim().length > 0)
 
 const dailyEntries = computed(() => getDailyHandbookEntries(DAILY_POOL))
+
+const skillProgress = computed(() => getSkillProgress(progressStore.completedLevelIds))
+
+const skillsByCategory = computed(() =>
+  getSkillsByCategory(progressStore.completedLevelIds)
+)
 
 const mainEntries = computed(() =>
   phaseOrder.flatMap((phaseId) => {
@@ -261,6 +269,7 @@ function closeAllModals() {
   selectedTerm.value = null
   selectedPlaybook.value = null
   selectedDaily.value = null
+  selectedSkill.value = null
 }
 
 function openEntry(entry) {
@@ -364,11 +373,24 @@ function openEntryByLevelId(levelId) {
   }
 }
 
+function openSkill(skill) {
+  if (!skill.unlocked) return
+  closeAllModals()
+  selectedSkill.value = skill.detail || skill
+}
+
+function goToLevelFromSkill(levelId) {
+  if (isHandbookLevelLocked(levelId, progressStore)) return
+  router.push('/level/' + levelId)
+  closeModal()
+}
+
 function applyRouteQuery(query) {
   if (query.view === 'glossary') viewMode.value = 'glossary'
   if (query.view === 'playbooks') viewMode.value = 'playbooks'
   if (query.view === 'daily') viewMode.value = 'daily'
   if (query.view === 'domains') viewMode.value = 'domains'
+  if (query.view === 'skills') viewMode.value = 'skills'
   if (query.domain && handbookDomains.some((d) => d.id === query.domain)) {
     activeDomainId.value = String(query.domain)
   }
@@ -420,7 +442,8 @@ watch(allEntries, () => {
           <h1 class="workbench__title">测试手札 · 百科</h1>
           <p class="workbench__subtitle">
             {{ allEntries.length }} 条关卡笔记 · {{ glossaryTerms.length }} 条术语 ·
-            {{ playbooks.length }} 张套路卡 · {{ dailyEntries.length }} 条每日精选
+            {{ playbooks.length }} 张套路卡 · {{ skillProgress.done }}/{{ skillProgress.total }}
+            项能力
           </p>
         </div>
       </div>
@@ -474,6 +497,14 @@ watch(allEntries, () => {
               @click="viewMode = 'daily'"
             >
               📅 每日精选
+            </button>
+            <button
+              type="button"
+              class="handbook__view-tab"
+              :class="{ 'handbook__view-tab--active': viewMode === 'skills' }"
+              @click="viewMode = 'skills'"
+            >
+              ✨ 我的能力
             </button>
             <button
               type="button"
@@ -768,6 +799,60 @@ watch(allEntries, () => {
             加载更多（还剩 {{ remainingCount(filteredPlaybooks) }} 条）
           </button>
           <p v-if="!filteredPlaybooks.length" class="handbook__empty">该分类暂无套路卡</p>
+        </template>
+
+        <template v-else-if="viewMode === 'skills'">
+          <header class="handbook__domain-head">
+            <h2 class="handbook__domain-title">✨ 我的测试能力</h2>
+            <p class="handbook__domain-tagline">
+              通关主线后解锁「我会…」式能力句——同一能力会在不同关卡螺旋复现。
+            </p>
+            <p class="handbook__domain-stats">
+              已掌握 {{ skillProgress.done }}/{{ skillProgress.total }} 项（{{
+                skillProgress.percent
+              }}%）
+            </p>
+            <div class="handbook__skill-progress">
+              <div
+                class="handbook__skill-progress-fill"
+                :style="{ width: `${skillProgress.percent}%` }"
+              />
+            </div>
+          </header>
+
+          <section v-for="group in skillsByCategory" :key="group.id" class="handbook__section">
+            <h2 class="handbook__section-title">
+              {{ group.icon }} {{ group.name }}
+              <span class="handbook__tab-count">{{ group.done }}/{{ group.total }}</span>
+            </h2>
+            <div class="handbook__grid">
+              <button
+                v-for="skill in group.skills"
+                :key="skill.id"
+                type="button"
+                class="handbook__card handbook__card--skill"
+                :class="{ 'handbook__card--locked': !skill.unlocked }"
+                :aria-disabled="!skill.unlocked || undefined"
+                @click="openSkill(skill)"
+              >
+                <span class="handbook__card-phase">
+                  {{ getSkillCategory(skill.category)?.icon }}
+                  {{ getSkillCategory(skill.category)?.name }}
+                </span>
+                <h3 class="handbook__card-title">{{ skill.icon }} {{ skill.label }}</h3>
+                <p class="handbook__card-summary">
+                  {{
+                    skill.unlocked
+                      ? `已在 ${skill.detail?.sourceLevels?.length || 1} 关练过`
+                      : '通关对应主线后解锁'
+                  }}
+                </p>
+                <span class="handbook__card-more">{{
+                  skill.unlocked ? '查看来源关卡 →' : '未解锁'
+                }}</span>
+              </button>
+            </div>
+          </section>
         </template>
 
         <template v-else-if="viewMode === 'domains'">
@@ -1211,6 +1296,57 @@ watch(allEntries, () => {
                 @click="goToLevelFromTerm(levelId)"
               >
                 #{{ levelId }} {{ getLevelTitle(levelId) }}
+              </button>
+            </div>
+          </section>
+          <footer class="handbook-modal__footer">
+            <button type="button" class="sim-btn sim-btn--primary" @click="closeModal">关闭</button>
+          </footer>
+        </div>
+      </article>
+    </div>
+
+    <div v-if="selectedSkill" class="handbook-modal" @click.self="closeModal">
+      <article class="handbook-modal__panel handbook-modal__panel--skill">
+        <div class="handbook-modal__sticky-head">
+          <button v-if="isMobile" type="button" class="handbook-modal__back" @click="closeModal">
+            ← 返回列表
+          </button>
+          <header class="handbook-modal__header">
+            <div>
+              <span class="handbook-modal__phase">
+                {{ getSkillCategory(selectedSkill.category)?.icon }}
+                {{ getSkillCategory(selectedSkill.category)?.name }}
+              </span>
+              <h2 class="handbook-modal__title">{{ selectedSkill.icon }} {{ selectedSkill.label }}</h2>
+            </div>
+            <button
+              type="button"
+              class="handbook-modal__close"
+              aria-label="关闭"
+              @click="closeModal"
+            >
+              ×
+            </button>
+          </header>
+        </div>
+        <div class="handbook-modal__body">
+          <section class="handbook-modal__section handbook-modal__section--highlight">
+            <h3>练过这些关</h3>
+            <div class="handbook-modal__links">
+              <button
+                v-for="src in selectedSkill.sourceLevels"
+                :key="src.levelId"
+                type="button"
+                class="handbook-modal__link-chip"
+                :class="{ 'handbook-modal__link-chip--locked': levelLinkLocked(src.levelId) }"
+                :aria-disabled="levelLinkLocked(src.levelId) || undefined"
+                @click="goToLevelFromSkill(src.levelId)"
+              >
+                #{{ src.levelId }} {{ src.title }}
+                <span v-if="src.spiralFrom" class="handbook-modal__spiral-tag"
+                  >↻ 进阶自 #{{ src.spiralFrom }}</span
+                >
               </button>
             </div>
           </section>

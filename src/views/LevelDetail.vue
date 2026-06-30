@@ -7,6 +7,7 @@ import { getPhaseForLevel, getPhaseStep } from '../data/phases'
 import { getRankForXp } from '../data/ranks'
 import { getStoryContext } from '../data/storyContext'
 import { getDebrief } from '../data/debriefs'
+import { getSkillForLevel, getSpiralNote } from '../data/testingSkills'
 import { getReferenceAnswer } from '../data/referenceAnswers'
 import { useProgressStore } from '../stores/progressStore'
 import { useProjectStore } from '../stores/projectStore'
@@ -189,9 +190,14 @@ const hintButtonLabel = computed(() => {
 
 const simGuide = computed(() => (level.value ? getSimGuide(level.value.simType) : null))
 const validationCriteria = computed(() => (level.value ? getValidationCriteria(level.value) : ''))
-const debrief = computed(() =>
-  level.value ? getDebrief(level.value.id, level.value.dailyKey) : null
-)
+const debrief = computed(() => {
+  if (!level.value) return null
+  const base = getDebrief(level.value.id, level.value.dailyKey)
+  if (!base) return null
+  const skill = getSkillForLevel(level.value.id)
+  if (!skill) return base
+  return { ...base, skill, spiralNote: getSpiralNote(level.value.id) }
+})
 
 const handbookLinks = computed(() =>
   level.value && debrief.value ? getHandbookLinksForLevel(level.value.id) : null

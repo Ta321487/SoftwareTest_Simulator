@@ -209,6 +209,15 @@ onUnmounted(() => document.body.classList.remove('debrief-open'))
             </dl>
           </section>
 
+          <section v-if="debrief.skill?.label" class="debrief-section debrief-section--skill">
+            <h3 class="debrief-section__label">✨ 掌握能力</h3>
+            <p class="debrief-panel__skill-label">
+              <span class="debrief-panel__skill-icon">{{ debrief.skill.icon }}</span>
+              {{ debrief.skill.label }}
+            </p>
+            <p v-if="debrief.spiralNote" class="debrief-panel__spiral-note">{{ debrief.spiralNote }}</p>
+          </section>
+
           <section class="debrief-section">
             <h3 class="debrief-section__label">本次要点</h3>
             <p>{{ debrief.summary }}</p>
