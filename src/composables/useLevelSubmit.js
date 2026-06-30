@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { validateSimulation } from '../utils/validator'
 import { getFailureHint } from '../utils/failureHints'
+import { trackLevelFail, trackLevelPass } from '../utils/analytics'
 import { getRankForXp } from '../data/ranks'
 import { getAchievementById } from '../data/achievements'
 import {
@@ -188,6 +189,7 @@ export function useLevelSubmit({
     setTimeout(() => {
       submitFlash.value = ''
       showDebrief.value = true
+      trackLevelPass(lv.id, lv.simType, levelReward.value.stars)
     }, debriefDelay)
   }
 
@@ -200,6 +202,7 @@ export function useLevelSubmit({
     if (lv && shouldRecordMistake(lv.simType)) {
       progressStore.recordMistake(lv.id)
     }
+    trackLevelFail(lv?.id, lv?.simType)
   }
 
   function handleSimSubmit(data) {

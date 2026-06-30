@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { getItem, setItem, removeItem } from '../utils/storage'
+import { scheduleAutoBackup } from '../utils/autoBackup'
 
 const STORAGE_KEY = 'project_artifacts'
 const LOGIN_SUT_KEY = 'project_sut'
@@ -48,7 +49,7 @@ export const useProjectStore = defineStore('project', {
 
     patchLoginSut(projectId, patch) {
       this.loginSut[projectId] = { ...this.getLoginSut(projectId), ...patch }
-      setItem(LOGIN_SUT_KEY, this.loginSut)
+      this._persistSut(LOGIN_SUT_KEY, this.loginSut)
     },
 
     getPaymentSut(projectId) {
@@ -57,7 +58,7 @@ export const useProjectStore = defineStore('project', {
 
     patchPaymentSut(projectId, patch) {
       this.paymentSut[projectId] = { ...this.getPaymentSut(projectId), ...patch }
-      setItem(PAYMENT_SUT_KEY, this.paymentSut)
+      this._persistSut(PAYMENT_SUT_KEY, this.paymentSut)
     },
 
     getOrderSut(projectId) {
@@ -66,7 +67,7 @@ export const useProjectStore = defineStore('project', {
 
     patchOrderSut(projectId, patch) {
       this.orderSut[projectId] = { ...this.getOrderSut(projectId), ...patch }
-      setItem(ORDER_SUT_KEY, this.orderSut)
+      this._persistSut(ORDER_SUT_KEY, this.orderSut)
     },
 
     getOnboardSut(projectId) {
@@ -75,7 +76,7 @@ export const useProjectStore = defineStore('project', {
 
     patchOnboardSut(projectId, patch) {
       this.onboardSut[projectId] = { ...this.getOnboardSut(projectId), ...patch }
-      setItem(ONBOARD_SUT_KEY, this.onboardSut)
+      this._persistSut(ONBOARD_SUT_KEY, this.onboardSut)
     },
 
     importSnapshot(data) {
@@ -84,11 +85,17 @@ export const useProjectStore = defineStore('project', {
       this.paymentSut = data.paymentSut || {}
       this.orderSut = data.orderSut || {}
       this.onboardSut = data.onboardSut || {}
-      setItem(STORAGE_KEY, this.artifacts)
-      setItem(LOGIN_SUT_KEY, this.loginSut)
-      setItem(PAYMENT_SUT_KEY, this.paymentSut)
-      setItem(ORDER_SUT_KEY, this.orderSut)
-      setItem(ONBOARD_SUT_KEY, this.onboardSut)
+      this._persistSut(STORAGE_KEY, this.artifacts)
+      this._persistSut(LOGIN_SUT_KEY, this.loginSut)
+      this._persistSut(PAYMENT_SUT_KEY, this.paymentSut)
+      this._persistSut(ORDER_SUT_KEY, this.orderSut)
+      this._persistSut(ONBOARD_SUT_KEY, this.onboardSut)
+    },
+
+    _persistSut(key, value) {
+      const result = setItem(key, value)
+      if (result.ok) scheduleAutoBackup()
+      return result
     },
 
     resetAll() {
@@ -105,7 +112,7 @@ export const useProjectStore = defineStore('project', {
     },
 
     persist() {
-      setItem(STORAGE_KEY, this.artifacts)
+      this._persistSut(STORAGE_KEY, this.artifacts)
     },
   },
 })

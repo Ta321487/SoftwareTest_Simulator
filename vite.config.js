@@ -71,6 +71,11 @@ export default defineConfig({
     ghPagesSpaFallback(),
   ],
   base,
+  define: {
+    'import.meta.env.VITE_APP_VERSION': JSON.stringify(
+      process.env.npm_package_version || 'dev'
+    ),
+  },
   build: {
     rollupOptions: {
       output: {

@@ -8,6 +8,7 @@ import { buildShareText, copyShareText, PLAY_URL } from '../utils/shareProgress'
 import { getSharePracticeContext, formatPracticeLine } from '../utils/sharePractice'
 import { downloadShareCard } from '../utils/shareCard'
 import { getWeakAreas } from '../utils/weakAreas'
+import { buildWeakDrillCards, getLowStarLevels } from '../utils/learningPath'
 import { phaseOrder, phases, getPhaseProgress } from '../data/phases'
 
 defineProps({
@@ -93,6 +94,19 @@ const weakAreas = computed(() =>
     hintsUsed: progressStore.hintsUsed,
     completedLevelIds: progressStore.completedLevelIds,
   })
+)
+
+const weakDrillCards = computed(() =>
+  buildWeakDrillCards({
+    levelMistakes: progressStore.levelMistakes,
+    levelMeta: progressStore.levelMeta,
+    hintsUsed: progressStore.hintsUsed,
+    completedLevelIds: progressStore.completedLevelIds,
+  })
+)
+
+const lowStarLevels = computed(() =>
+  getLowStarLevels(progressStore.levelMeta, progressStore.completedLevelIds)
 )
 
 const phaseRows = computed(() =>
@@ -195,6 +209,42 @@ function handleSaveShareImage() {
           />
         </div>
       </div>
+    </div>
+
+    <div v-if="!compact && weakDrillCards.length" class="player-dashboard__drill">
+      <h3 class="player-dashboard__weak-title">按题型特训</h3>
+      <p class="player-dashboard__drill-desc">根据你的薄弱记录，优先巩固这些题型：</p>
+      <ul class="player-dashboard__drill-list">
+        <li v-for="card in weakDrillCards" :key="card.simType" class="player-dashboard__drill-item">
+          <span class="player-dashboard__drill-type">{{ card.simLabel }}</span>
+          <span class="player-dashboard__drill-meta">{{ card.weakCount }} 关待加强</span>
+          <router-link
+            :to="`/level/${card.retryLevelId}`"
+            class="player-dashboard__drill-btn"
+          >
+            冲星 #{{ card.retryLevelId }}
+          </router-link>
+          <router-link
+            v-if="card.sideQuest"
+            :to="`/level/${card.sideQuest.levelId}`"
+            class="player-dashboard__drill-btn"
+          >
+            番外 #{{ card.sideQuest.levelId }}
+          </router-link>
+        </li>
+      </ul>
+    </div>
+
+    <div v-if="!compact && lowStarLevels.length" class="player-dashboard__weak">
+      <h3 class="player-dashboard__weak-title">可冲星重玩</h3>
+      <ul class="player-dashboard__weak-list">
+        <li v-for="item in lowStarLevels" :key="item.levelId" class="player-dashboard__weak-item">
+          <router-link :to="`/level/${item.levelId}`" class="player-dashboard__weak-link">
+            #{{ item.levelId }} {{ item.title }}
+          </router-link>
+          <span class="player-dashboard__weak-reason">当前 ★{{ item.stars }}</span>
+        </li>
+      </ul>
     </div>
 
     <div v-if="!compact && weakAreas.length" class="player-dashboard__weak">

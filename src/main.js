@@ -8,6 +8,10 @@ import './styles/home-mobile.css'
 import './styles/level-mobile.css'
 import './styles/level-game-ui.css'
 import { useThemeStore } from './stores/themeStore'
+import { useProgressStore } from './stores/progressStore'
+import { useProjectStore } from './stores/projectStore'
+import { registerAutoBackupStores } from './utils/autoBackup'
+import { tryRestoreFromIndexedDB } from './utils/bootstrapRestore'
 
 if (import.meta.env.PROD) {
   import('virtual:pwa-register').then(({ registerSW }) => {
@@ -36,9 +40,18 @@ app.config.errorHandler = (err, _instance, info) => {
 app.use(pinia)
 app.use(router)
 
-try {
-  useThemeStore(pinia).init()
-  app.mount('#app')
-} catch (err) {
-  app.config.errorHandler(err, null, 'bootstrap')
+async function bootstrap() {
+  try {
+    const themeStore = useThemeStore(pinia)
+    themeStore.init()
+    const progressStore = useProgressStore(pinia)
+    const projectStore = useProjectStore(pinia)
+    registerAutoBackupStores({ progressStore, projectStore, themeStore })
+    await tryRestoreFromIndexedDB(progressStore, projectStore, themeStore)
+    app.mount('#app')
+  } catch (err) {
+    app.config.errorHandler(err, null, 'bootstrap')
+  }
 }
+
+bootstrap()

@@ -1,8 +1,8 @@
 <script setup>
-import { computed, ref, watch, nextTick, onUnmounted } from 'vue'
+import { computed, ref, watch, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getLevelById, isDailyQuestId, isSideQuestId, levels } from '../utils/levelRegistry'
-import { getProjectForLevel, getProjectDay, getDockShortLabel } from '../data/projects'
+import { getLevelById, isDailyQuestId, isSideQuestId } from '../utils/levelRegistry'
+import { getProjectForLevel, getProjectDay } from '../data/projects'
 import { getPhaseForLevel, getPhaseStep } from '../data/phases'
 import { getRankForXp } from '../data/ranks'
 import { getStoryContext } from '../data/storyContext'
@@ -18,6 +18,9 @@ import { getLevelDeliverable } from '../data/levelDeliverables'
 import { useMobileLayout } from '../composables/useMobileLayout'
 import { useLevelHints } from '../composables/useLevelHints'
 import { useLevelSubmit } from '../composables/useLevelSubmit'
+import { useLevelDock } from '../composables/useLevelDock'
+import { useLevelSut } from '../composables/useLevelSut'
+import { trackLevelStart } from '../utils/analytics'
 import { buildSimProps, getLinkedJiraIssue as resolveLinkedJiraIssue } from '../utils/simProps'
 import {
   buildSutRoute,
@@ -26,13 +29,10 @@ import {
   isSutModeRoute,
   getSutDockQuery,
   resolveSutEntry,
-  getImmersionStepsProgress,
-  setImmersionStepProgress,
-  initPassiveSutStep,
-  syncDbConnectedStep,
 } from '../utils/sutImmersion'
 import { getHandbookLinksForLevel } from '../utils/handbookLinks'
 import DebriefPanel from '../components/DebriefPanel.vue'
+import LevelFailureLearning from '../components/LevelFailureLearning.vue'
 import PreviousSubmission from '../components/PreviousSubmission.vue'
 import WorkbenchShell from '../components/workbench/WorkbenchShell.vue'
 import ProjectContextPanel from '../components/workbench/ProjectContextPanel.vue'
@@ -43,39 +43,6 @@ import {
   OrderObsPanel,
   OnCallPanel,
 } from '../components/simulators/loadSimulators.js'
-import {
-  LOGIN_SUT_DOCK_ID,
-  LOGIN_MODULE_ID,
-  getLoginBuildVersion,
-  shouldShowLoginAppDock,
-  getLoginSutLead,
-  isLoginModuleProject,
-} from '../utils/loginSut'
-import {
-  PAYMENT_SUT_DOCK_ID,
-  PAYMENT_MODULE_ID,
-  getPaymentScenario,
-  shouldShowPaymentAppDock,
-  getPaymentSutLead,
-  isPaymentModuleProject,
-} from '../utils/paymentSut'
-import {
-  ORDER_OBS_DOCK_ID,
-  ORDER_MODULE_ID,
-  getOrderObsMode,
-  shouldShowOrderObsDock,
-  getOrderObsLead,
-  isOrderModuleProject,
-} from '../utils/orderSut'
-import {
-  ONCALL_DOCK_ID,
-  ONBOARD_WEEK2_ID,
-  getOnCallMode,
-  shouldShowOnCallDock,
-  getOnCallLead,
-  isOnboardWeek2Project,
-  DEFAULT_PROD_LOGS,
-} from '../utils/onboardSut'
 
 const route = useRoute()
 const router = useRouter()
@@ -86,14 +53,8 @@ const { isMobile } = useMobileLayout()
 const simRef = ref(null)
 const simSessionKey = ref(0)
 const freshRetrySession = ref(false)
-const activeDockLevelId = ref(1)
 const sessionAttempts = ref(0)
-const sutToast = ref('')
-const taskReturnFlash = ref('')
-const taskFocusPulse = ref(false)
 const taskPanelOpen = ref(true)
-let taskReturnTimer = null
-let taskPulseTimer = null
 
 const {
   showHint,
@@ -224,74 +185,72 @@ const simComponent = computed(() => (level.value ? simComponentMap[level.value.s
 const MOBILE_HEAVY_SIMS = new Set(['terminal', 'apiclient', 'packet'])
 const showMobileSimHint = computed(() => level.value && MOBILE_HEAVY_SIMS.has(level.value.simType))
 
+const {
+  activeDockLevelId,
+  taskReturnFlash,
+  taskFocusPulse,
+  dockItems,
+  handleDockChange,
+  cleanupDockTimers,
+} = useLevelDock({
+  level,
+  project,
+  projectStore,
+  router,
+  buildSutRoute,
+  projectDay,
+  simGuide,
+})
+
+const {
+  loginSutState,
+  paymentSutState,
+  orderSutState,
+  onboardSutState,
+  sutToast,
+  loginBuild,
+  paymentScenario,
+  showInlineLoginSut,
+  loginSutLead,
+  showInlinePaymentSut,
+  paymentSutLead,
+  showInlineOrderObs,
+  orderObsLead,
+  showInlineOnCall,
+  onCallLead,
+  onCallLogLines,
+  onCallMode,
+  sutSteps,
+  paymentConfigArtifact,
+  showDbConnectedMainLink,
+  setupSutSession,
+  onLoginSmsRequested,
+  onLoginBugReproduced,
+  onLoginFixVerified,
+  onPaymentDbConnected,
+  onPaymentPayAttempt,
+  onPaymentPaySuccess,
+  onPaymentCallbackMiss,
+  onPaymentErrorReproduced,
+  onPaymentVerified,
+  onOrderBottleneckIdentified,
+  onProdLoginStarted,
+  onProdSlowReproduced,
+  onLogReviewed,
+} = useLevelSut({
+  level,
+  project,
+  isSutMode,
+  sutEntry,
+  sutDockQuery,
+  progressStore,
+  projectStore,
+  buildMainLevelRoute,
+})
+
 const isTaskView = computed(
   () => level.value && !isSutMode.value && activeDockLevelId.value === level.value.id
 )
-
-const sutSteps = computed(() => {
-  if (!sutEntry.value || !project.value) return []
-  return getImmersionStepsProgress(sutEntry.value, projectStore, project.value.id)
-})
-
-function sutContext() {
-  return { entry: sutEntry.value, projectId: project.value?.id }
-}
-
-function advanceSutSteps(completedSteps) {
-  const { entry, projectId } = sutContext()
-  if (!entry || !projectId) return
-  setImmersionStepProgress(entry, projectStore, projectId, completedSteps)
-}
-
-function finishSutImmersion() {
-  const { entry, projectId } = sutContext()
-  if (!entry || !projectId) return
-  setImmersionStepProgress(entry, projectStore, projectId, entry.steps.length)
-}
-
-function setupSutSession() {
-  if (!isSutMode.value || !sutEntry.value || !project.value) return
-  initPassiveSutStep(sutEntry.value, projectStore, project.value.id)
-  syncDbConnectedStep(sutEntry.value, projectStore, project.value.id, progressStore)
-}
-
-function handleDockChange(id) {
-  const item = dockItems.value.find((d) => d.levelId === id)
-  if (item?.isSutEntry && item.sutDock) {
-    router.push(buildSutRoute(levelId.value, item.sutDock))
-    return
-  }
-  const wasArchive = level.value && activeDockLevelId.value !== level.value.id
-  const returningToTask = level.value && id === level.value.id && wasArchive
-  activeDockLevelId.value = id
-  nextTick(() => {
-    scrollLevelMain()
-    if (returningToTask) {
-      showTaskReturnFeedback()
-    }
-  })
-}
-
-function scrollLevelMain(behavior = 'smooth') {
-  document.querySelector('.workbench--level .workbench__main')?.scrollTo({ top: 0, behavior })
-}
-
-function showTaskReturnFeedback() {
-  const dayLabel = projectDay.value?.label || `第 ${level.value?.id} 关`
-  const toolLabel = simGuide.value?.label || '答题区'
-  taskReturnFlash.value = `已回到今日任务 · ${dayLabel} · ${toolLabel}`
-  taskFocusPulse.value = true
-  if (taskReturnTimer) clearTimeout(taskReturnTimer)
-  if (taskPulseTimer) clearTimeout(taskPulseTimer)
-  taskReturnTimer = setTimeout(() => {
-    taskReturnFlash.value = ''
-    taskReturnTimer = null
-  }, 2800)
-  taskPulseTimer = setTimeout(() => {
-    taskFocusPulse.value = false
-    taskPulseTimer = null
-  }, 1200)
-}
 
 function goToMainTask() {
   router.push(buildMainLevelRoute(levelId.value))
@@ -299,176 +258,6 @@ function goToMainTask() {
 
 function openSutEntry(entry) {
   router.push(buildSutRoute(entry.levelId, entry.dock))
-}
-
-function showSutCompleteToast(message) {
-  sutToast.value = message
-  setTimeout(() => {
-    sutToast.value = ''
-  }, 4000)
-}
-
-const loginBuild = computed(() => (level.value ? getLoginBuildVersion(level.value.id) : 'buggy'))
-
-const loginSutState = computed(() => projectStore.getLoginSut(LOGIN_MODULE_ID))
-
-const showInlineLoginSut = computed(
-  () =>
-    isSutMode.value &&
-    sutDockQuery.value === 'app' &&
-    isLoginModuleProject(project.value) &&
-    level.value &&
-    shouldShowLoginAppDock(level.value.id)
-)
-
-const loginSutLead = computed(() => (level.value ? getLoginSutLead(level.value.id) : ''))
-
-const paymentScenario = computed(() =>
-  level.value ? getPaymentScenario(level.value.id, projectStore, progressStore) : 'no-db'
-)
-
-const paymentSutState = computed(() => projectStore.getPaymentSut(PAYMENT_MODULE_ID))
-
-const showInlinePaymentSut = computed(
-  () =>
-    isSutMode.value &&
-    sutDockQuery.value === 'pay' &&
-    isPaymentModuleProject(project.value) &&
-    level.value &&
-    shouldShowPaymentAppDock(level.value.id)
-)
-
-const paymentSutLead = computed(() => (level.value ? getPaymentSutLead(level.value.id) : ''))
-
-const orderObsMode = computed(() => (level.value ? getOrderObsMode(level.value.id) : 'overview'))
-
-const orderSutState = computed(() => projectStore.getOrderSut(ORDER_MODULE_ID))
-
-const showInlineOrderObs = computed(
-  () =>
-    isSutMode.value &&
-    sutDockQuery.value === 'obs' &&
-    isOrderModuleProject(project.value) &&
-    level.value &&
-    shouldShowOrderObsDock(level.value.id)
-)
-
-const orderObsLead = computed(() => (level.value ? getOrderObsLead(level.value.id) : ''))
-
-const onCallMode = computed(() => (level.value ? getOnCallMode(level.value.id) : 'release-board'))
-
-const onboardSutState = computed(() => projectStore.getOnboardSut(ONBOARD_WEEK2_ID))
-
-const onCallLogLines = computed(() =>
-  level.value?.storyLogs?.length ? level.value.storyLogs : DEFAULT_PROD_LOGS
-)
-
-const showInlineOnCall = computed(
-  () =>
-    isSutMode.value &&
-    sutDockQuery.value === 'oncall' &&
-    isOnboardWeek2Project(project.value) &&
-    level.value &&
-    shouldShowOnCallDock(level.value.id)
-)
-
-const onCallLead = computed(() => (level.value ? getOnCallLead(level.value.id) : ''))
-
-const dockItems = computed(() => {
-  if (!level.value) return []
-  if (!project.value) {
-    return [
-      {
-        levelId: level.value.id,
-        simType: level.value.simType,
-        shortLabel: getDockShortLabel(level.value.simType, level.value.id),
-        dayLabel: '',
-        locked: false,
-        hasArtifact: false,
-      },
-    ]
-  }
-  const items = project.value.days.map((day) => {
-    const srcLevel = levels.find((lv) => lv.id === day.levelId)
-    return {
-      levelId: day.levelId,
-      simType: srcLevel.simType,
-      shortLabel: getDockShortLabel(srcLevel.simType, day.levelId),
-      dayLabel: day.label,
-      locked: day.levelId > level.value.id,
-      lockReason: lockedLabel(day.levelId, srcLevel.projectDay),
-      hasArtifact: projectStore.hasArtifact(project.value.id, day.levelId),
-    }
-  })
-
-  if (isLoginModuleProject(project.value) && shouldShowLoginAppDock(level.value.id)) {
-    items.push({
-      levelId: LOGIN_SUT_DOCK_ID,
-      simType: 'loginapp',
-      shortLabel: 'App',
-      dayLabel: '实操',
-      locked: false,
-      lockReason: '',
-      isSutEntry: true,
-      sutDock: 'app',
-      hasArtifact: Boolean(loginSutState.value.reproducedBug || loginSutState.value.verifiedFix),
-    })
-  }
-
-  if (isPaymentModuleProject(project.value) && shouldShowPaymentAppDock(level.value.id)) {
-    items.push({
-      levelId: PAYMENT_SUT_DOCK_ID,
-      simType: 'paymentapp',
-      shortLabel: '支付',
-      dayLabel: '实操',
-      locked: false,
-      lockReason: '',
-      isSutEntry: true,
-      sutDock: 'pay',
-      hasArtifact: Boolean(
-        paymentSutState.value.callbackMiss ||
-        paymentSutState.value.payErrorReproduced ||
-        paymentSutState.value.payVerified ||
-        paymentSutState.value.dbConnected
-      ),
-    })
-  }
-
-  if (isOrderModuleProject(project.value) && shouldShowOrderObsDock(level.value.id)) {
-    items.push({
-      levelId: ORDER_OBS_DOCK_ID,
-      simType: 'orderobs',
-      shortLabel: '监控',
-      dayLabel: '实操',
-      locked: false,
-      lockReason: '',
-      isSutEntry: true,
-      sutDock: 'obs',
-      hasArtifact: Boolean(orderSutState.value.bottleneckIdentified),
-    })
-  }
-
-  if (isOnboardWeek2Project(project.value) && shouldShowOnCallDock(level.value.id)) {
-    items.push({
-      levelId: ONCALL_DOCK_ID,
-      simType: 'oncall',
-      shortLabel: '值班',
-      dayLabel: '实操',
-      locked: false,
-      lockReason: '',
-      isSutEntry: true,
-      sutDock: 'oncall',
-      hasArtifact: Boolean(
-        onboardSutState.value.prodSlowReproduced || onboardSutState.value.logReviewed
-      ),
-    })
-  }
-
-  return items
-})
-
-function lockedLabel(levelId, projectDay) {
-  return `完成本阶段第 ${projectDay} 关后解锁`
 }
 
 function getLinkedJiraIssue(projectId) {
@@ -540,122 +329,11 @@ watch(
     taskPanelOpen.value = true
     resetState()
     setupSutSession()
+    if (currentLevel) {
+      trackLevelStart(currentLevel.id, currentLevel.simType)
+    }
   },
   { immediate: true }
-)
-
-watch(
-  () => [
-    paymentSutState.value.dbConnected,
-    progressStore.completedLevelIds.includes(6),
-    sutEntry.value?.key,
-    isSutMode.value,
-  ],
-  () => {
-    if (isSutMode.value && sutEntry.value?.key === 'dbConnected' && project.value) {
-      syncDbConnectedStep(sutEntry.value, projectStore, project.value.id, progressStore)
-    }
-  }
-)
-
-function onLoginSmsRequested() {
-  const { entry } = sutContext()
-  if (!entry) return
-  if (entry.key === 'reproducedBug') advanceSutSteps(2)
-  if (entry.key === 'verifiedFix') advanceSutSteps(1)
-}
-
-function onLoginBugReproduced() {
-  finishSutImmersion()
-  projectStore.patchLoginSut(LOGIN_MODULE_ID, { reproducedBug: true })
-  progressStore.recordLoginBugReproduced()
-  showSutCompleteToast('✓ App 复现 Bug 完成 · 可返回主线写 Jira')
-}
-
-function onLoginFixVerified() {
-  finishSutImmersion()
-  projectStore.patchLoginSut(LOGIN_MODULE_ID, { verifiedFix: true })
-  progressStore.recordLoginFixVerified()
-  showSutCompleteToast('✓ 修复已验证 · 可返回主线勾选回归')
-}
-
-function onPaymentDbConnected() {
-  const { entry } = sutContext()
-  if (entry?.key === 'dbConnected') advanceSutSteps(1)
-  projectStore.patchPaymentSut(PAYMENT_MODULE_ID, { dbConnected: true })
-  showSutCompleteToast('✓ 沙箱已连通 · 可返回主线继续配置任务')
-}
-
-function onPaymentPayAttempt() {
-  const { entry } = sutContext()
-  if (entry?.key === 'payErrorReproduced') advanceSutSteps(1)
-  if (entry?.key === 'callbackMiss') advanceSutSteps(1)
-}
-
-function onPaymentPaySuccess() {
-  const { entry } = sutContext()
-  if (entry?.key === 'dbConnected') {
-    finishSutImmersion()
-    projectStore.patchPaymentSut(PAYMENT_MODULE_ID, { dbConnected: true })
-    showSutCompleteToast('✓ 沙箱连通已验证 · 可返回主线继续')
-    return
-  }
-  if (entry?.key === 'callbackMiss') advanceSutSteps(1)
-}
-
-function onPaymentCallbackMiss() {
-  finishSutImmersion()
-  projectStore.patchPaymentSut(PAYMENT_MODULE_ID, { callbackMiss: true })
-  progressStore.recordPaymentCallbackMiss()
-  showSutCompleteToast('✓ 回调缺失已复现 · 可返回主线写企微回复')
-}
-
-function onPaymentErrorReproduced() {
-  finishSutImmersion()
-  projectStore.patchPaymentSut(PAYMENT_MODULE_ID, { payErrorReproduced: true })
-  progressStore.recordPaymentErrorReproduced()
-  showSutCompleteToast('✓ 支付失败已复现 · 可返回主线补 Bug 单')
-}
-
-function onPaymentVerified() {
-  projectStore.patchPaymentSut(PAYMENT_MODULE_ID, { payVerified: true })
-  progressStore.recordPaymentVerified()
-}
-
-function onOrderBottleneckIdentified() {
-  finishSutImmersion()
-  projectStore.patchOrderSut(ORDER_MODULE_ID, { bottleneckIdentified: true })
-  progressStore.recordOrderBottleneckIdentified()
-  showSutCompleteToast('✓ 瓶颈已定位 · 可返回主线提交选择')
-}
-
-function onProdLoginStarted() {
-  const { entry } = sutContext()
-  if (entry?.key === 'prodSlowReproduced') advanceSutSteps(2)
-}
-
-function onProdSlowReproduced() {
-  finishSutImmersion()
-  projectStore.patchOnboardSut(ONBOARD_WEEK2_ID, { prodSlowReproduced: true })
-  progressStore.recordProdSlowReproduced()
-  showSutCompleteToast('✓ 慢登录已复现 · 可返回主线写 Bug 单')
-}
-
-function onLogReviewed() {
-  finishSutImmersion()
-  projectStore.patchOnboardSut(ONBOARD_WEEK2_ID, { logReviewed: true })
-  progressStore.recordLogReviewed()
-  showSutCompleteToast('✓ 日志已核对 · 可返回主线 grep 终端')
-}
-
-const paymentConfigArtifact = computed(() => projectStore.getArtifact(PAYMENT_MODULE_ID, 6))
-
-const showDbConnectedMainLink = computed(
-  () =>
-    isSutMode.value &&
-    sutEntry.value?.key === 'dbConnected' &&
-    !paymentSutState.value.dbConnected &&
-    !progressStore.completedLevelIds.includes(6)
 )
 
 const rankUp = computed(() => {
@@ -703,8 +381,7 @@ function goBack() {
 }
 
 onUnmounted(() => {
-  if (taskReturnTimer) clearTimeout(taskReturnTimer)
-  if (taskPulseTimer) clearTimeout(taskPulseTimer)
+  cleanupDockTimers()
 })
 </script>
 
@@ -981,6 +658,11 @@ onUnmounted(() => {
       <p v-if="failureHint && failureHint !== feedbackMessage" class="level-detail__failure-hint">
         {{ failureHint }}
       </p>
+      <LevelFailureLearning
+        v-if="showFeedback"
+        :level-id="levelId"
+        :completed-level-ids="progressStore.completedLevelIds"
+      />
     </footer>
 
     <DebriefPanel

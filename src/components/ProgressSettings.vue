@@ -10,6 +10,8 @@ import {
   readBackupFile,
   BACKUP_VERSION,
 } from '../utils/progressBackup'
+import { markExported } from '../utils/bootstrapRestore'
+import { trackBackupExport, trackBackupImport } from '../utils/analytics'
 
 const emit = defineEmits(['show-onboarding'])
 
@@ -24,6 +26,8 @@ const fileInput = ref(null)
 function exportSave() {
   const backup = buildBackup(progressStore, projectStore)
   downloadBackup(backup)
+  markExported()
+  trackBackupExport()
   importMsg.value = '存档已下载到本地'
   importError.value = false
 }
@@ -43,6 +47,7 @@ async function onFileChange(event) {
     if (result.ok) {
       importMsg.value = result.message
       importError.value = false
+      trackBackupImport()
     } else {
       importMsg.value = result.message
       importError.value = true

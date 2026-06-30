@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { getItem, setItem, removeItem } from '../utils/storage'
+import { scheduleAutoBackup } from '../utils/autoBackup'
 import { levelOrder } from '../data/levels'
 import { getSideLevel, isSideQuestUnlocked, isSideQuestId } from '../data/sideQuests'
 import {
@@ -394,7 +395,7 @@ export const useProgressStore = defineStore('progress', {
     },
 
     persist() {
-      setItem(STORAGE_KEY, {
+      const result = setItem(STORAGE_KEY, {
         completedLevelIds: this.completedLevelIds,
         levelMeta: this.levelMeta,
         attemptCounts: this.attemptCounts,
@@ -413,6 +414,10 @@ export const useProgressStore = defineStore('progress', {
         prodSlowReproduced: this.prodSlowReproduced,
         logReviewed: this.logReviewed,
       })
+      if (result.ok) {
+        scheduleAutoBackup()
+      }
+      return result
     },
   },
 })

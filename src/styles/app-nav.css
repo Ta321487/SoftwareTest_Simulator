@@ -302,6 +302,13 @@
     padding: 1px 3px;
   }
 
+  .app-mobile-dock .app-tab__badge--pending {
+    background: var(--accent-amber, #d97706);
+    right: -6px;
+    min-width: 14px;
+    padding: 1px 3px;
+  }
+
   .app-mobile-dock .app-tab__label,
   .app-mobile-dock .workbench__dock-text {
     font-size: 0.625rem;

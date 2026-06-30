@@ -30,6 +30,8 @@ import { getLevelById } from '../utils/levelRegistry'
 import { getNextAchievementHint } from '../utils/achievementProgress'
 import ThemeToggle from '../components/ThemeToggle.vue'
 import AppNavDock from '../components/AppNavDock.vue'
+import BackupReminder from '../components/BackupReminder.vue'
+import WhatsNewModal from '../components/WhatsNewModal.vue'
 import { useMobileLayout } from '../composables/useMobileLayout'
 import { useHorizontalDragScroll } from '../composables/useHorizontalDragScroll'
 
@@ -37,6 +39,7 @@ const router = useRouter()
 const route = useRoute()
 const progressStore = useProgressStore()
 const onboardingRef = ref(null)
+const whatsNewRef = ref(null)
 const onboardingReady = ref(false)
 const { isMobile } = useMobileLayout()
 const homeTab = ref('quest')
@@ -176,12 +179,17 @@ function syncHomeTabFromHash(hash) {
   }
 }
 
+function goToSettings() {
+  setHomeTab('profile')
+}
+
 onMounted(() => {
   syncHomeTabFromHash(route.hash)
   unbindGameTabsDragScroll = bindGameTabsDragScroll(gameTabsRef.value)
   const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 300))
   idle(() => {
     onboardingReady.value = true
+    queueMicrotask(() => whatsNewRef.value?.open?.())
   })
 })
 
@@ -198,6 +206,7 @@ watch(
 <template>
   <div class="workbench home-map">
     <OnboardingTour v-if="onboardingReady" ref="onboardingRef" />
+    <WhatsNewModal ref="whatsNewRef" />
     <header class="workbench__topbar">
       <div class="workbench__topbar-left">
         <div class="workbench__title-block">
@@ -236,6 +245,7 @@ watch(
         </nav>
 
         <div v-if="tabActive('quest')" class="game-section game-section--quest">
+          <BackupReminder @go-settings="goToSettings" />
           <section class="home-map__hero quest-panel">
             <span class="quest-panel__badge">▸ 当前任务</span>
 

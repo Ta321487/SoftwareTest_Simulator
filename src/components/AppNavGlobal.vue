@@ -70,6 +70,7 @@ const mainTaskActive = computed(
       <span class="app-tab__icon-wrap">
         <span class="app-tab__icon" aria-hidden="true">📅</span>
         <span v-if="dailyDone" class="app-tab__badge app-tab__badge--done">✓</span>
+        <span v-else class="app-tab__badge app-tab__badge--pending">!</span>
       </span>
       <span class="workbench__dock-text app-tab__label">每日</span>
     </button>
