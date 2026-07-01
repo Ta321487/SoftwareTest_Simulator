@@ -1,7 +1,7 @@
 {
   "name": "softwaretest-simulator",
   "private": true,
-  "version": "1.23.5",
+  "version": "1.26.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

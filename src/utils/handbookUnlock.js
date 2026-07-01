@@ -1,7 +1,9 @@
 /** 手札内容是否与关卡进度联动锁定 */
 
+import { SIDE_QUEST_ID_MIN, SIDE_QUEST_ID_MAX } from '../data/sideQuests.js'
+
 export function resolveHandbookLevelStatus(levelId, store) {
-  if (levelId >= 101 && levelId <= 199) {
+  if (levelId >= SIDE_QUEST_ID_MIN && levelId <= SIDE_QUEST_ID_MAX) {
     return store.getSideQuestStatus(levelId)
   }
   return store.getStatus(levelId)

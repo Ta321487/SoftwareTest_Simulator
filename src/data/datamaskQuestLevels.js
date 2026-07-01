@@ -1,0 +1,96 @@
+/** 数据脱敏与合规选修番外（4 关链式解锁，接番外 #116 向 DBA 要数据） */
+export const datamaskQuestLevels = [
+  {
+    id: 214,
+    sideArc: 'datamask',
+    title: '测试库能否用生产明文',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【数据脱敏 · 解锁于番外 #116 之后】压测需要 10 万订单，DBA 问能否直接导生产库到 staging。你怎么答？',
+    simType: 'clickcard',
+    content: '请点击【最合规且可执行的方案】：',
+    clickOptions: [
+      { id: 'a', label: '拒绝明文生产数据，要求脱敏导出或合成造数，并限定字段范围' },
+      { id: 'b', label: '可以，测完再删就行' },
+      { id: 'c', label: '只要不用外网，明文没问题' },
+      { id: 'd', label: '让开发自己拷，测试不管' },
+    ],
+    correctClick: 'a',
+    hint: '生产数据进测试库必须脱敏/最小化——「测完再删」不是合规方案。',
+    xpReward: 20,
+    unlock: { type: 'sideLevel', sideLevelId: 116 },
+  },
+  {
+    id: 215,
+    sideArc: 'datamask',
+    title: '脱敏字段清单',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【数据脱敏 · 解锁于 #214 之后】订单数据导出测试库。圈出必须脱敏或禁止导出的字段。',
+    simType: 'checklist',
+    content: '勾选导出测试数据时【必须脱敏/排除】的字段：',
+    checklistItems: [
+      { id: 'a', label: '手机号、身份证号等 PII' },
+      { id: 'b', label: '支付 token、银行卡号、CVV' },
+      { id: 'c', label: '用户明文密码或 session 密钥' },
+      { id: 'd', label: '订单金额（业务测试需要可保留或缩放）' },
+      { id: 'e', label: '订单 status、order_id（通常可保留用于联调）' },
+      { id: 'f', label: '用户昵称首字（必须全删）' },
+    ],
+    correctChecks: ['a', 'b', 'c'],
+    hint: 'PII、支付凭证、密钥必须脱敏；业务 ID/状态常可保留；昵称首字不必「必须全删」。',
+    xpReward: 20,
+    unlock: { type: 'sideLevel', sideLevelId: 214 },
+  },
+  {
+    id: 216,
+    sideArc: 'datamask',
+    title: '查脱敏视图',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【数据脱敏 · 解锁于 #215 之后】只能访问 users_masked 视图，查手机号 13800138000 的脱敏记录。',
+    simType: 'sqlclient',
+    content: '编写 SELECT 查询 users_masked 视图中该手机号的记录：',
+    sqlTable: 'users_masked',
+    sqlSchema:
+      '-- users_masked(id, phone_masked, locked_until, fail_count)\n-- phone_masked 示例：138****8000',
+    sqlMustInclude: ['users_masked', '138'],
+    sqlResultRows: [
+      { phone_masked: '138****8000', fail_count: 3, locked_until: null },
+    ],
+    correctQuery: "SELECT * FROM users_masked WHERE phone_masked LIKE '138%8000'",
+    sqlHint: '查脱敏视图 users_masked；手机号可能已打码，用 LIKE 或 masked 字段匹配。',
+    xpReward: 22,
+    unlock: { type: 'sideLevel', sideLevelId: 215 },
+  },
+  {
+    id: 217,
+    sideArc: 'datamask',
+    title: '发现未脱敏 dump',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【数据脱敏 · 解锁于 #216 之后】在 staging 发现一份含明文手机号的 SQL dump。向 DBA/安全说明风险并请求处理。',
+    simType: 'chat',
+    content: '在企微 @DBA：说明发现未脱敏 dump 的风险，以及需要对方配合的处理动作。',
+    chatGroup: '数据安全群',
+    chatKeywords: ['脱敏', 'dump', '明文', '风险', '删除', 'staging', '手机号', '合规'],
+    chatMinKeywords: 2,
+    chatMinLength: 24,
+    chatStructure: 'escalation',
+    chatHint: '说清：在哪发现、含什么敏感数据、建议立即做什么（删除/隔离/审计）。',
+    chatPlaceholder: '例：staging 发现含明文手机号 dump，存在合规风险，请协助删除并排查来源…',
+    xpReward: 22,
+    unlock: { type: 'sideLevel', sideLevelId: 216 },
+  },
+]
+
+export const datamaskQuestArc = {
+  id: 'datamask',
+  name: '数据脱敏 · 选修',
+  icon: '🔒',
+  tagline: '合规判断 → 字段圈选 → SQL 查库 → 泄露升级',
+}

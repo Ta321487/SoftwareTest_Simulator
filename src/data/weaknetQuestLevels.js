@@ -1,0 +1,127 @@
+/** 弱网与断网恢复选修番外（4 关链式解锁，接主线 #34 验证码） */
+export const weaknetQuestLevels = [
+  {
+    id: 210,
+    sideArc: 'weaknet',
+    title: '4G 下复现倒计时卡住',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【弱网专项 · 解锁于主线 #34 之后】4G 网络下点击「获取验证码」，倒计时卡住不动。在 App 里复现。',
+    simType: 'loginapp',
+    content: '在登录 App（4G 弱网模拟）点击「获取验证码」，复现倒计时不启动：',
+    appBuild: 'buggy',
+    appAction: 'bug-reproduced',
+    hint: '弱网 Bug 要先能复现——网络条件写进步骤，别只描述 UI。',
+    xpReward: 22,
+    unlock: { type: 'level', levelId: 34 },
+  },
+  {
+    id: 211,
+    sideArc: 'weaknet',
+    title: '弱网必测清单',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【弱网专项 · 解锁于 #210 之后】登录模块要上线，资源有限。圈出弱网/断网场景的必测项。',
+    simType: 'checklist',
+    content: '勾选移动端弱网测试【必须覆盖】的项：',
+    checklistItems: [
+      { id: 'a', label: '请求超时时的 loading 与错误提示' },
+      { id: 'b', label: '弱网下重复点击「获取验证码」是否重复提交' },
+      { id: 'c', label: '断网后恢复网络能否继续流程/重试' },
+      { id: 'd', label: '登录页 slogan 文案是否居中' },
+      { id: 'e', label: '弱网首屏/关键接口超时阈值体验' },
+      { id: 'f', label: 'App 图标圆角是否为 12px' },
+    ],
+    correctChecks: ['a', 'b', 'c', 'e'],
+    hint: '弱网测超时提示、重复提交、断网恢复、首屏体验；文案居中不是弱网重点。',
+    xpReward: 20,
+    unlock: { type: 'sideLevel', sideLevelId: 210 },
+  },
+  {
+    id: 212,
+    sideArc: 'weaknet',
+    title: '写登录幂等断言',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【弱网专项 · 解锁于 #211 之后】弱网下连点 3 次登录，第二次请求才返回。根据接口样本填写幂等断言要点。',
+    simType: 'apiclient',
+    apiMethod: 'POST',
+    apiUrl: '/api/login',
+    apiRequestBody: '{"phone":"13800138000","code":"826493"}',
+    content: '根据弱网重复提交场景，填写接口测试应断言的行为：',
+    requirement: '弱网连点登录：不能产生多次有效 session 或重复扣费',
+    fillHint: '写清重复请求时期望的 HTTP 状态与业务行为（防抖/幂等）',
+    templateMinLength: 10,
+    templateFields: [
+      {
+        field: 'case1',
+        scenario: '样本 · 连点 3 次登录\n第 2、3 次请求在弱网延迟后几乎同时返回',
+        placeholder: '应断言：同一用户只建立 1 个有效 session…',
+        validationHint: '重复提交应被幂等/防抖拦截，不能多次登录成功。',
+        fieldKeywords: ['幂等', '一次', 'session', '拦截', '重复', '防抖', '401', '429'],
+      },
+    ],
+    hint: '弱网 + 连点：断言幂等或限流，不是测动画帧率。',
+    xpReward: 22,
+    unlock: { type: 'sideLevel', sideLevelId: 211 },
+  },
+  {
+    id: 213,
+    sideArc: 'weaknet',
+    title: '提交弱网 Bug 单',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【弱网专项 · 解锁于 #212 之后】TEST-1033：4G 弱网下验证码倒计时不启动。按规范填写 Bug 工单。',
+    simType: 'jira',
+    content: '请填写弱网 Bug 工单所有字段：',
+    jiraFields: {
+      summary: {
+        label: 'Bug标题',
+        placeholder: '概括弱网现象（如：4G 下验证码倒计时不启动）',
+        required: true,
+      },
+      severity: {
+        label: '严重程度',
+        options: ['Blocker', 'Critical', 'Major', 'Trivial'],
+        required: true,
+      },
+      module: {
+        label: '所属模块',
+        options: ['登录', '支付', '订单', '个人中心'],
+        required: true,
+      },
+      steps: {
+        label: '复现步骤',
+        placeholder: '1. 4G 网络环境\n2. 打开 App v2.3.0\n3. 点击获取验证码…',
+        required: true,
+        rows: 4,
+      },
+      expected: {
+        label: '预期结果',
+        placeholder: '倒计时从 60s 正常递减',
+        required: true,
+        rows: 2,
+      },
+      actual: {
+        label: '实际结果',
+        placeholder: '倒计时卡住不动 / 显示 -1…',
+        required: true,
+        rows: 2,
+      },
+    },
+    hint: '标题含 4G/弱网；步骤写网络+版本；预期/实际写倒计时行为。',
+    xpReward: 22,
+    unlock: { type: 'sideLevel', sideLevelId: 212 },
+  },
+]
+
+export const weaknetQuestArc = {
+  id: 'weaknet',
+  name: '弱网断网 · 选修',
+  icon: '📶',
+  tagline: 'App 复现 → 清单圈选 → 接口断言 → Jira 提单',
+}

@@ -13,7 +13,22 @@ import { leadQuestLevels, leadQuestArc } from './leadQuestLevels.js'
 import { apiAuthQuestLevels, apiAuthQuestArc } from './apiAuthQuestLevels.js'
 import { loadtestQuestLevels, loadtestQuestArc } from './loadtestQuestLevels.js'
 import { appSmokeQuestLevels, appSmokeQuestArc } from './appSmokeQuestLevels.js'
+import { exploreQuestLevels, exploreQuestArc } from './exploreQuestLevels.js'
+import { testReportQuestLevels, testReportQuestArc } from './testReportQuestLevels.js'
+import { configDriftQuestLevels, configDriftQuestArc } from './configDriftQuestLevels.js'
+import { flakyQuestLevels, flakyQuestArc } from './flakyQuestLevels.js'
+import { reqChangeQuestLevels, reqChangeQuestArc } from './reqChangeQuestLevels.js'
+import { weaknetQuestLevels, weaknetQuestArc } from './weaknetQuestLevels.js'
+import { datamaskQuestLevels, datamaskQuestArc } from './datamaskQuestLevels.js'
+import { i18nQuestLevels, i18nQuestArc } from './i18nQuestLevels.js'
+import { analyticsQuestLevels, analyticsQuestArc } from './analyticsQuestLevels.js'
+import { contractQuestLevels, contractQuestArc } from './contractQuestLevels.js'
+import { autoRoiQuestLevels, autoRoiQuestArc } from './autoRoiQuestLevels.js'
+import { boundaryQuestLevels, boundaryQuestArc } from './boundaryQuestLevels.js'
 import { enrichSideArcs } from './sideQuestChapters.js'
+
+export const SIDE_QUEST_ID_MIN = 101
+export const SIDE_QUEST_ID_MAX = 299
 
 export const sideLevels = [
   ...mindsetQuestLevels,
@@ -29,6 +44,18 @@ export const sideLevels = [
   ...apiAuthQuestLevels,
   ...loadtestQuestLevels,
   ...appSmokeQuestLevels,
+  ...exploreQuestLevels,
+  ...testReportQuestLevels,
+  ...configDriftQuestLevels,
+  ...flakyQuestLevels,
+  ...reqChangeQuestLevels,
+  ...weaknetQuestLevels,
+  ...datamaskQuestLevels,
+  ...i18nQuestLevels,
+  ...analyticsQuestLevels,
+  ...contractQuestLevels,
+  ...autoRoiQuestLevels,
+  ...boundaryQuestLevels,
   ...toolQuestLevels,
 ]
 
@@ -45,6 +72,18 @@ export const sideArcs = enrichSideArcs([
   apiAuthQuestArc,
   loadtestQuestArc,
   appSmokeQuestArc,
+  exploreQuestArc,
+  testReportQuestArc,
+  configDriftQuestArc,
+  flakyQuestArc,
+  reqChangeQuestArc,
+  weaknetQuestArc,
+  datamaskQuestArc,
+  i18nQuestArc,
+  analyticsQuestArc,
+  contractQuestArc,
+  autoRoiQuestArc,
+  boundaryQuestArc,
   linuxQuestArc,
   ...toolQuestArcs,
 ])
@@ -64,7 +103,7 @@ export function getSideLevel(id) {
 }
 
 export function isSideQuestId(id) {
-  return id >= 101 && id <= 199
+  return id >= SIDE_QUEST_ID_MIN && id <= SIDE_QUEST_ID_MAX
 }
 
 export function isSideQuestUnlocked(level, completedLevelIds) {

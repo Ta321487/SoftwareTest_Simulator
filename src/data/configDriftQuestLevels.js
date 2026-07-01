@@ -1,0 +1,92 @@
+/** 环境配置漂移选修番外（4 关链式解锁，接主线 #6 环境配置） */
+export const configDriftQuestLevels = [
+  {
+    id: 198,
+    sideArc: 'configdrift',
+    title: '回调 URL 指了生产',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【环境漂移 · 解锁于主线 #6 之后】staging 支付测试时发现回调发到了 prod 域名。选出第一时间该做的动作。',
+    simType: 'clickcard',
+    content: '请点击【最应优先执行】的动作：',
+    clickOptions: [
+      { id: 'a', label: '立即停止 staging 支付测试，修正配置并通知相关同学' },
+      { id: 'b', label: '继续测，反正只是测试数据' },
+      { id: 'c', label: '等开发下班后再改配置' },
+      { id: 'd', label: '只改前端，不动回调地址' },
+    ],
+    correctClick: 'a',
+    hint: '配置指错生产要先停测止血，再改配置并同步——避免污染生产或误操作。',
+    xpReward: 20,
+    unlock: { type: 'level', levelId: 6 },
+  },
+  {
+    id: 199,
+    sideArc: 'configdrift',
+    title: '环境冒烟核对项',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【环境漂移 · 解锁于 #198 之后】环境重建后，测试开始前要核对配置。圈出环境冒烟必查项。',
+    simType: 'checklist',
+    content: '勾选环境就绪检查【必核对】的配置项：',
+    checklistItems: [
+      { id: 'a', label: 'DB/Redis 连接指向 staging 实例' },
+      { id: 'b', label: '支付/短信回调 URL 指向 staging 域名' },
+      { id: 'c', label: '第三方沙箱密钥与 staging 账号匹配' },
+      { id: 'd', label: '登录页 Logo 是否与 UI 稿一致' },
+      { id: 'e', label: '关键 feature flag 与测试计划一致' },
+      { id: 'f', label: 'API 网关路由未误指 prod' },
+    ],
+    correctChecks: ['a', 'b', 'c', 'e', 'f'],
+    hint: '环境冒烟查数据层、回调、密钥、开关、网关；Logo 不是环境门禁重点。',
+    xpReward: 20,
+    unlock: { type: 'sideLevel', sideLevelId: 198 },
+  },
+  {
+    id: 200,
+    sideArc: 'configdrift',
+    title: '修正 staging 回调地址',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【环境漂移 · 解锁于 #199 之后】配置中心里 PAY_CALLBACK_URL 误填为生产地址，改对并测连通。',
+    simType: 'config',
+    content: '请修改 PAY_CALLBACK_URL，保存后测试连接，通过再提交。',
+    configContent:
+      'PAY_CALLBACK_URL=https://api.prod.example.com/pay/callback\nPAYMENT_DB_HOST=10.0.2.8\nSTAGING_GATEWAY=https://gw.staging.example.com',
+    configKey: 'PAY_CALLBACK_URL',
+    correctValue: 'https://api.staging.example.com/pay/callback',
+    hint: 'staging 回调应指向 staging 域名，不能含 prod。',
+    xpReward: 22,
+    unlock: { type: 'sideLevel', sideLevelId: 199 },
+  },
+  {
+    id: 201,
+    sideArc: 'configdrift',
+    title: '通知开发环境已污染',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【环境漂移 · 解锁于 #200 之后】配置已修正，但 staging 可能已有脏数据。在企微说明情况并请求配合。',
+    simType: 'chat',
+    content: '在企微 @开发：说明曾指错 prod 回调、已修正，以及需要对方配合的清理/验证。',
+    chatGroup: '支付模块测试群',
+    chatKeywords: ['staging', '回调', '配置', '修正', '脏数据', '清理', '验证', 'prod'],
+    chatMinKeywords: 2,
+    chatMinLength: 24,
+    chatStructure: 'collaboration',
+    chatHint: '说清：什么问题、已改什么、需要开发做什么验证或清理。',
+    chatPlaceholder: '例：staging 回调曾指 prod 已改回，请帮忙确认无脏回调记录…',
+    xpReward: 22,
+    unlock: { type: 'sideLevel', sideLevelId: 200 },
+  },
+]
+
+export const configDriftQuestArc = {
+  id: 'configdrift',
+  name: '环境漂移 · 选修',
+  icon: '⚙️',
+  tagline: '停测判断 → 环境圈选 → 改配置 → 同步开发',
+}

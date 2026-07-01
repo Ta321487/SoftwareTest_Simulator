@@ -62,9 +62,9 @@ describe('orderStuckQuestLevels', () => {
 })
 
 describe('sideLevels aggregate', () => {
-  it('has 89 side quest levels (#101–#189)', () => {
+  it('has 148 side quest levels (#101–#248)', () => {
     expect(getSideLevel(101)).toBeTruthy()
-    expect(getSideLevel(189)).toBeTruthy()
-    expect(getSideLevel(190)).toBeNull()
+    expect(getSideLevel(248)).toBeTruthy()
+    expect(getSideLevel(249)).toBeNull()
   })
 })

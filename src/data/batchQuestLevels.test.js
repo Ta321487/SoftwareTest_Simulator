@@ -68,8 +68,8 @@ describe('appSmokeQuestLevels', () => {
 })
 
 describe('sideLevels batch aggregate', () => {
-  it('has 89 side quest levels through #189', () => {
-    expect(getSideLevel(189)).toBeTruthy()
-    expect(getSideLevel(190)).toBeNull()
+  it('has 148 side quest levels through #248', () => {
+    expect(getSideLevel(248)).toBeTruthy()
+    expect(getSideLevel(249)).toBeNull()
   })
 })

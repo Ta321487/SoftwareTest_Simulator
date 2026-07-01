@@ -1,0 +1,129 @@
+/** 国际化与时区选修番外（4 关链式解锁，接主线 #44 订单接口） */
+export const i18nQuestLevels = [
+  {
+    id: 218,
+    sideArc: 'i18n',
+    title: '海外用户时间差 8 小时',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【国际化 · 解锁于主线 #44 之后】新加坡用户反馈订单列表「创建时间」比本地晚 8 小时。先怀疑什么？',
+    simType: 'clickcard',
+    content: '请点击【最应优先排查】的方向：',
+    clickOptions: [
+      { id: 'a', label: 'DB 存 UTC、前端未按用户时区转换展示' },
+      { id: 'b', label: '订单按钮颜色在海外版不对' },
+      { id: 'c', label: '用户网络太慢' },
+      { id: 'd', label: '字体不支持英文' },
+    ],
+    correctClick: 'a',
+    hint: '固定 8 小时差通常是 UTC vs 本地时区展示问题，不是网络或字体。',
+    xpReward: 20,
+    unlock: { type: 'level', levelId: 44 },
+  },
+  {
+    id: 219,
+    sideArc: 'i18n',
+    title: '出海冒烟清单',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【国际化 · 解锁于 #218 之后】订单 App 要出海东南亚。圈出 i18n/l10n 冒烟必测项。',
+    simType: 'checklist',
+    content: '勾选出海版本【必须覆盖】的测试项：',
+    checklistItems: [
+      { id: 'a', label: '多语言文案是否完整（无中文 fallback 漏网）' },
+      { id: 'b', label: '日期/金额/货币格式按 locale 展示' },
+      { id: 'c', label: '时区：创建/支付时间与用户本地一致' },
+      { id: 'd', label: '长文案是否撑破布局（德语/泰语等）' },
+      { id: 'e', label: '国内版登录页背景图是否加载' },
+      { id: 'f', label: '仅中文环境测过即可签字出海' },
+    ],
+    correctChecks: ['a', 'b', 'c', 'd'],
+    hint: '出海测语言、格式、时区、布局；不能仅中文环境签字。',
+    xpReward: 20,
+    unlock: { type: 'sideLevel', sideLevelId: 218 },
+  },
+  {
+    id: 220,
+    sideArc: 'i18n',
+    title: 'SQL 核对 UTC 时间',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【国际化 · 解锁于 #219 之后】orderId=7701 用户称时间不对。查 orders 表 created_at 存储值。',
+    simType: 'sqlclient',
+    content: '编写 SELECT 查询 order_id=7701 的 created_at：',
+    sqlTable: 'orders',
+    sqlSchema: '-- orders(order_id, amount, status, created_at)\n-- created_at 存 UTC',
+    sqlMustInclude: ['7701'],
+    sqlResultRows: [
+      {
+        order_id: '7701',
+        amount: '128.00',
+        status: 'PAID',
+        created_at: '2026-06-29 02:15:00',
+      },
+    ],
+    correctQuery: "SELECT created_at FROM orders WHERE order_id = '7701'",
+    sqlHint: '先查库 UTC 值，再与前端展示（+8）交叉验证。',
+    xpReward: 22,
+    unlock: { type: 'sideLevel', sideLevelId: 219 },
+  },
+  {
+    id: 221,
+    sideArc: 'i18n',
+    title: '提交时区 Bug 单',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【国际化 · 解锁于 #220 之后】确认是展示层未转换时区。按规范提交 TEST-1040 Bug 工单。',
+    simType: 'jira',
+    content: '请填写时区展示 Bug 工单所有字段：',
+    jiraFields: {
+      summary: {
+        label: 'Bug标题',
+        placeholder: '如：[SG] 订单列表创建时间未按用户时区展示',
+        required: true,
+      },
+      severity: {
+        label: '严重程度',
+        options: ['Blocker', 'Critical', 'Major', 'Trivial'],
+        required: true,
+      },
+      module: {
+        label: '所属模块',
+        options: ['登录', '支付', '订单', '个人中心'],
+        required: true,
+      },
+      steps: {
+        label: '复现步骤',
+        placeholder: '1. 新加坡 locale 登录\n2. 进入订单列表\n3. 对比本地时间…',
+        required: true,
+        rows: 4,
+      },
+      expected: {
+        label: '预期结果',
+        placeholder: '创建时间按用户本地时区（UTC+8）展示',
+        required: true,
+        rows: 2,
+      },
+      actual: {
+        label: '实际结果',
+        placeholder: '显示 UTC 时间，比本地晚 8 小时',
+        required: true,
+        rows: 2,
+      },
+    },
+    hint: '标题含区域+时区线索；模块选订单；步骤写 locale 对比。',
+    xpReward: 22,
+    unlock: { type: 'sideLevel', sideLevelId: 220 },
+  },
+]
+
+export const i18nQuestArc = {
+  id: 'i18n',
+  name: '国际化 · 选修',
+  icon: '🌏',
+  tagline: '归因判断 → 清单圈选 → SQL 查库 → Jira 提单',
+}
