@@ -20,9 +20,9 @@
   max-height: min(88vh, 680px);
   overflow: hidden;
   background: var(--bg-card);
-  border: 1px solid rgba(52, 211, 153, 0.3);
+  border: 1px solid var(--green-border);
   border-radius: var(--radius);
-  box-shadow: 0 0 48px rgba(52, 211, 153, 0.2);
+  box-shadow: var(--quest-glow);
 }
 
 .debrief-panel__header {
@@ -42,8 +42,8 @@
   margin: 0 20px;
   padding: 14px 16px;
   border-radius: 10px;
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(52, 211, 153, 0.1));
-  border: 1px solid rgba(124, 58, 237, 0.35);
+  background: var(--purple-bg);
+  border: 1px solid var(--purple-border);
 }
 
 .debrief-panel__phase-icon {
@@ -220,7 +220,7 @@
   overscroll-behavior: contain;
   padding: 4px 20px 16px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(52, 211, 153, 0.35) transparent;
+  scrollbar-color: rgba(152, 152, 166, 0.35) transparent;
 }
 
 .debrief-panel__body::-webkit-scrollbar {
@@ -228,7 +228,7 @@
 }
 
 .debrief-panel__body::-webkit-scrollbar-thumb {
-  background: rgba(52, 211, 153, 0.35);
+  background: rgba(152, 152, 166, 0.35);
   border-radius: 999px;
 }
 
@@ -249,13 +249,13 @@
 }
 
 .debrief-section--highlight {
-  border-color: rgba(34, 211, 238, 0.2);
-  background: rgba(34, 211, 238, 0.05);
+  border-color: var(--cyan-border);
+  background: var(--cyan-bg);
 }
 
 .debrief-section--skill {
-  border-color: rgba(167, 139, 250, 0.35);
-  background: rgba(167, 139, 250, 0.08);
+  border-color: var(--purple-border);
+  background: var(--purple-bg);
 }
 
 .debrief-panel__skill-label {
@@ -285,8 +285,8 @@
 }
 
 .debrief-section--chat {
-  border-color: rgba(52, 211, 153, 0.25);
-  background: rgba(52, 211, 153, 0.06);
+  border-color: var(--green-border);
+  background: var(--green-bg-soft);
 }
 
 .debrief-panel__chat-reply {
@@ -303,8 +303,8 @@
   font-size: 0.72rem;
   letter-spacing: 0.04em;
   color: var(--accent-cyan);
-  background: rgba(34, 211, 238, 0.1);
-  border: 1px solid rgba(34, 211, 238, 0.25);
+  background: var(--cyan-bg);
+  border: 1px solid var(--cyan-border);
   border-radius: 999px;
 }
 

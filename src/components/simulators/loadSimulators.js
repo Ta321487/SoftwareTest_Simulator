@@ -20,6 +20,10 @@ export const simComponentMap = {
   apmtrace: defineAsyncComponent(() => import('./ApmTrace.vue')),
   gitrelease: defineAsyncComponent(() => import('./GitRelease.vue')),
   mqinbox: defineAsyncComponent(() => import('./MqInbox.vue')),
+  oncall: defineAsyncComponent(() => import('./OnCallQuest.vue')),
+  leadboard: defineAsyncComponent(() => import('./LeadQuest.vue')),
+  loginapp: defineAsyncComponent(() => import('./LoginAppQuest.vue')),
+  paymentapp: defineAsyncComponent(() => import('./PaymentAppQuest.vue')),
 }
 
 /** 上机实操面板 — 进入对应 SUT 模式时再加载 */

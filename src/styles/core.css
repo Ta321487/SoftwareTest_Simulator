@@ -670,7 +670,7 @@ body {
 
 .level-detail__back {
   background: transparent;
-  border: 1px solid rgba(34, 211, 238, 0.3);
+  border: 1px solid var(--cyan-border);
   color: var(--accent-cyan);
   font-family: var(--font-mono);
   font-size: 0.85rem;
@@ -685,7 +685,7 @@ body {
 
 .level-detail__back:hover {
   background: var(--cyan-bg);
-  box-shadow: 0 0 12px rgba(34, 211, 238, 0.2);
+  box-shadow: none;
 }
 
 .level-detail__meta {
@@ -1438,7 +1438,7 @@ select.sim-field__input option,
 
 .chat-box__input:focus {
   outline: none;
-  border-color: rgba(34, 211, 238, 0.4);
+  border-color: var(--cyan-border-strong);
 }
 
 /* Config */
@@ -1478,12 +1478,12 @@ select.sim-field__input option,
 }
 
 .report-item:hover {
-  border-color: rgba(34, 211, 238, 0.25);
+  border-color: var(--cyan-border);
 }
 
 .report-item--selected {
-  border-color: rgba(34, 211, 238, 0.4);
-  background: rgba(34, 211, 238, 0.06);
+  border-color: var(--cyan-border-strong);
+  background: var(--cyan-bg);
 }
 
 .report-item__body {
@@ -1518,7 +1518,7 @@ select.sim-field__input option,
 
 .report-tag--pass {
   color: var(--accent-green);
-  background: rgba(52, 211, 153, 0.12);
+  background: var(--green-bg);
 }
 
 .report-tag--risk-high {
@@ -1552,12 +1552,12 @@ select.sim-field__input option,
 }
 
 .checklist-item:hover {
-  border-color: rgba(34, 211, 238, 0.25);
+  border-color: var(--cyan-border);
 }
 
 .checklist-item--selected {
-  border-color: rgba(34, 211, 238, 0.4);
-  background: rgba(34, 211, 238, 0.06);
+  border-color: var(--cyan-border-strong);
+  background: var(--cyan-bg);
 }
 
 .checklist-item input {

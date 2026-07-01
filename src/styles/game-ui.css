@@ -2,114 +2,63 @@
 
 :root,
 [data-theme='dark'] {
-  --font-display: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  --quest-panel-bg: linear-gradient(145deg, rgba(17, 24, 39, 0.92) 0%, rgba(15, 23, 42, 0.88) 100%);
-  --quest-panel-border: rgba(34, 211, 238, 0.35);
-  --quest-glow: 0 0 40px rgba(34, 211, 238, 0.12), 0 0 80px rgba(167, 139, 250, 0.08);
-  --quest-glow-strong: 0 0 24px rgba(34, 211, 238, 0.35), 0 0 48px rgba(34, 211, 238, 0.15);
-  --game-gradient: linear-gradient(135deg, #22d3ee 0%, #34d399 50%, #a78bfa 100%);
-  --hud-bg: rgba(10, 14, 23, 0.75);
+  --font-display: 'Segoe UI', system-ui, -apple-system, 'Noto Sans SC', sans-serif;
+  --quest-panel-bg: var(--bg-card);
+  --quest-panel-border: var(--border-subtle);
+  --quest-glow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --quest-glow-strong: 0 4px 14px rgba(0, 0, 0, 0.28);
+  --game-gradient: linear-gradient(180deg, #d4923a 0%, #b87a2e 100%);
+  --hud-bg: var(--bg-card);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 [data-theme='light'] {
-  --quest-panel-bg: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-  --quest-panel-border: rgba(8, 145, 178, 0.35);
-  --quest-glow: 0 8px 32px rgba(8, 145, 178, 0.1);
-  --quest-glow-strong: 0 4px 20px rgba(8, 145, 178, 0.2);
-  --hud-bg: rgba(255, 255, 255, 0.9);
+  --quest-panel-bg: var(--bg-card);
+  --quest-panel-border: var(--border-subtle);
+  --quest-glow: 0 2px 8px rgba(26, 26, 31, 0.06);
+  --quest-glow-strong: 0 4px 12px rgba(26, 26, 31, 0.1);
+  --hud-bg: var(--bg-card);
 }
 
-/* Atmospheric home background */
+/* Home — clean workbench shell */
 .workbench.home-map {
   position: relative;
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(34, 211, 238, 0.09), transparent 55%),
-    radial-gradient(ellipse 60% 40% at 100% 30%, rgba(167, 139, 250, 0.07), transparent 50%),
-    radial-gradient(ellipse 50% 35% at 0% 70%, rgba(52, 211, 153, 0.06), transparent 45%),
-    var(--bg-primary);
+  background: var(--bg-primary);
 }
 
-.workbench.home-map::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 20%, transparent 75%);
-  z-index: 0;
-}
-
-.workbench.home-map .workbench__body,
+/* Title bar */
 .workbench.home-map .workbench__topbar {
-  position: relative;
-  z-index: 1;
-}
-
-/* Title bar — game header */
-.workbench.home-map .workbench__topbar {
-  border-bottom-color: var(--quest-panel-border);
+  border-bottom-color: var(--border-subtle);
   background: var(--hud-bg);
-  backdrop-filter: blur(12px);
 }
 
 .workbench.home-map .workbench__title {
   font-family: var(--font-display);
+  font-weight: 700;
   letter-spacing: -0.02em;
-  background: var(--game-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-primary);
 }
 
 .workbench.home-map .workbench__level-tag {
   font-family: var(--font-sans);
   padding: 4px 10px;
   border-radius: 999px;
-  background: var(--cyan-bg);
-  border: 1px solid var(--cyan-border);
+  background: var(--surface-muted);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
 }
 
-/* Quest panel (hero) */
+/* Quest panel (hero) — task-card style */
 .quest-panel {
   position: relative;
   margin-bottom: 16px;
   padding: 18px 18px 16px;
-  border-radius: 14px;
+  border-radius: var(--radius);
+  overflow: hidden;
   background: var(--quest-panel-bg);
   border: 1px solid var(--quest-panel-border);
+  border-left: 3px solid var(--accent-amber);
   box-shadow: var(--quest-glow);
-  overflow: hidden;
-}
-
-.quest-panel::before,
-.quest-panel::after {
-  content: '';
-  position: absolute;
-  width: 28px;
-  height: 28px;
-  border: 2px solid var(--accent-cyan);
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.quest-panel::before {
-  top: 8px;
-  left: 8px;
-  border-right: none;
-  border-bottom: none;
-  border-radius: 4px 0 0 0;
-}
-
-.quest-panel::after {
-  bottom: 8px;
-  right: 8px;
-  border-left: none;
-  border-top: none;
-  border-radius: 0 0 4px 0;
 }
 
 .quest-panel__badge {
@@ -122,9 +71,9 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--accent-cyan);
-  background: var(--cyan-bg);
-  border: 1px solid var(--cyan-border);
+  color: var(--accent-amber);
+  background: var(--amber-bg);
+  border: 1px solid var(--amber-border);
   border-radius: 4px;
 }
 
@@ -133,7 +82,7 @@
 }
 
 .quest-panel .home-map__hero-rank-pill {
-  background: rgba(167, 139, 250, 0.12);
+  background: var(--purple-bg);
   border-color: var(--purple-border);
   font-family: var(--font-display);
 }
@@ -166,12 +115,11 @@
 
 [data-theme='light'] .quest-panel .home-map__hero-xp-bar,
 [data-theme='light'] .quest-panel .home-map__hero-achievement-bar {
-  background: #e2e8f0;
+  background: var(--surface-hover);
 }
 
 .quest-panel .home-map__hero-xp-fill {
   background: var(--game-gradient);
-  box-shadow: 0 0 12px rgba(34, 211, 238, 0.4);
 }
 
 .quest-panel .home-map__hero-achievement {
@@ -206,20 +154,6 @@
   transform: translateY(0);
 }
 
-.level-map__btn--game.quest-panel__play {
-  animation: quest-pulse 2.5s ease-in-out infinite;
-}
-
-@keyframes quest-pulse {
-  0%,
-  100% {
-    box-shadow: var(--shadow-btn);
-  }
-  50% {
-    box-shadow: var(--quest-glow-strong);
-  }
-}
-
 /* Daily quest card */
 .quest-daily {
   display: flex;
@@ -231,7 +165,7 @@
   border-radius: 12px;
   background: var(--quest-panel-bg);
   border: 1px dashed var(--amber-border);
-  box-shadow: 0 4px 16px rgba(251, 191, 36, 0.08);
+  box-shadow: var(--quest-glow);
 }
 
 .quest-daily--done {
@@ -530,7 +464,7 @@
 
 .side-hub__card--available {
   border-color: var(--cyan-border-strong);
-  box-shadow: 0 0 12px rgba(34, 211, 238, 0.1);
+  box-shadow: var(--quest-glow);
 }
 
 .side-hub__card--available:hover:not(:disabled) {
@@ -546,7 +480,7 @@
 .phase-timeline__step--available,
 .phase-timeline__step--active {
   border-color: var(--cyan-border-strong);
-  box-shadow: 0 0 16px rgba(34, 211, 238, 0.12);
+  box-shadow: var(--quest-glow);
 }
 
 .phase-timeline__step--active {

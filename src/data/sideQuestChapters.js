@@ -1,4 +1,17 @@
-/** 番外大章：工具链（推荐） vs 思维选修 */
+/** 番外大章：思维选修 / 排查工具链 / 业务场景选修 */
+
+export const MINDSET_ARC_IDS = [
+  'security',
+  'performance',
+  'pipeline',
+  'collab',
+  'compat',
+  'strategy',
+  'data',
+  'monitor',
+  'automation',
+  'api',
+]
 
 export const TOOLCHAIN_ARC_IDS = [
   'linux',
@@ -11,12 +24,27 @@ export const TOOLCHAIN_ARC_IDS = [
   'async',
 ]
 
+/** 异步 / 发布 / 值班 / Lead / App 等业务实操选修 */
+export const SCENARIO_ARC_IDS = [
+  'uat',
+  'refund',
+  'sms',
+  'grayrelease',
+  'callback',
+  'orderstuck',
+  'oncall',
+  'lead',
+  'apiauth',
+  'loadtest',
+  'appsmoke',
+]
+
 export const sideChapters = [
   {
     id: 'mindset',
     name: '第一章 · 测试思维选修',
     icon: '📖',
-    tagline: '安全、性能、策略等场景判断——按主线里程碑解锁，不影响职级晋升。',
+    tagline: '安全、性能、策略等场景判断——#101–#123 共 23 关，按主线里程碑解锁。',
     elective: true,
     badge: '选修',
   },
@@ -29,14 +57,34 @@ export const sideChapters = [
     recommended: true,
     badge: '推荐',
   },
+  {
+    id: 'scenario',
+    name: '第三章 · 业务场景选修',
+    icon: '🎯',
+    tagline:
+      'UAT / 退款 / 短信 / 灰度 / 抓包 / 卡单 / 值班 / Lead / 越权 / 压测 / App 冒烟——共 39 关实操链。',
+    elective: true,
+    badge: '选修',
+  },
 ]
+
+export function isMindsetArc(arcId) {
+  return MINDSET_ARC_IDS.includes(arcId)
+}
 
 export function isToolchainArc(arcId) {
   return TOOLCHAIN_ARC_IDS.includes(arcId)
 }
 
+export function isScenarioArc(arcId) {
+  return SCENARIO_ARC_IDS.includes(arcId)
+}
+
 export function getArcParentChapter(arcId) {
-  return isToolchainArc(arcId) ? 'toolchain' : 'mindset'
+  if (isToolchainArc(arcId)) return 'toolchain'
+  if (isScenarioArc(arcId)) return 'scenario'
+  if (isMindsetArc(arcId)) return 'mindset'
+  return 'scenario'
 }
 
 export function enrichSideArc(arc) {
@@ -44,7 +92,7 @@ export function enrichSideArc(arc) {
   return {
     ...arc,
     parentChapter,
-    elective: parentChapter === 'mindset',
+    elective: parentChapter !== 'toolchain',
   }
 }
 

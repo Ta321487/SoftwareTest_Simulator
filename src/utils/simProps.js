@@ -171,6 +171,27 @@ export function buildSimProps({
         correctCode: lv.correctCode,
         mqHint: lv.mqHint,
       }
+    case 'oncall':
+      return {
+        oncallMode: lv.oncallMode || 'prod-login',
+        logLines: lv.logLines,
+        oncallAction: lv.oncallAction,
+      }
+    case 'leadboard':
+      return {
+        leadMode: lv.leadMode || 'gonogo',
+        leadAction: lv.leadAction,
+      }
+    case 'loginapp':
+      return {
+        appBuild: lv.appBuild || 'buggy',
+        appAction: lv.appAction,
+      }
+    case 'paymentapp':
+      return {
+        paymentScenario: lv.paymentScenario || 'callback-bug',
+        appAction: lv.appAction,
+      }
     default:
       return {}
   }

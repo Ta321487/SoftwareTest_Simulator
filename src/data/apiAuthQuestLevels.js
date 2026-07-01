@@ -1,0 +1,108 @@
+/** 接口越权实操选修番外（4 关链式解锁，接主线 #32 安全审计） */
+export const apiAuthQuestLevels = [
+  {
+    id: 180,
+    sideArc: 'apiauth',
+    title: '无 Token 应 401',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【接口越权 · 解锁于主线 #32 之后】GET /api/user/profile 拉取个人信息。圈出鉴权相关必测项。',
+    simType: 'apiclient',
+    apiMethod: 'GET',
+    apiUrl: '/api/user/profile',
+    apiRequestBody: '',
+    content: '勾选【必须覆盖】的鉴权验证项：',
+    checklistItems: [
+      { id: 'a', label: '带有效 token 返回 200 + 用户字段' },
+      { id: 'b', label: '无 Authorization 头返回 401' },
+      { id: 'c', label: '响应不含明文密码' },
+      { id: 'd', label: '头像圆角是否为 50%' },
+      { id: 'e', label: '过期/伪造 token 应拒绝' },
+    ],
+    correctChecks: ['a', 'b', 'c', 'e'],
+    hint: '鉴权三件套：有效 token 200、无 token 401、过期 token 拒绝；圆角不是接口项。',
+    xpReward: 20,
+    unlock: { type: 'level', levelId: 32 },
+  },
+  {
+    id: 181,
+    sideArc: 'apiauth',
+    title: '改 userId 越权应 403',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【接口越权 · 解锁于 #180 之后】用户 A 的 token 请求 GET /api/order/9901（属于用户 B）。根据响应写断言要点。',
+    simType: 'apiclient',
+    apiMethod: 'GET',
+    apiUrl: '/api/order/9901',
+    apiRequestBody: 'Authorization: Bearer <userA_token>',
+    content: '根据越权响应样本，填写测试应断言的内容：',
+    requirement: '水平越权：A 的用户不能查看 B 的订单',
+    fillHint: '写清 HTTP 状态码 + 错误信息，不应返回 B 的订单详情',
+    templateMinLength: 10,
+    templateFields: [
+      {
+        field: 'case1',
+        scenario:
+          '样本 · 越权访问\nHTTP/1.1 403\n{"code":403,"message":"access denied"}',
+        placeholder: '应断言：status=? message=? …',
+        validationHint: '越权应 403 或 404，不能返回他人订单数据。',
+        fieldKeywords: ['403', 'denied', 'access', 'status', 'message'],
+      },
+    ],
+    xpReward: 22,
+    unlock: { type: 'sideLevel', sideLevelId: 180 },
+  },
+  {
+    id: 182,
+    sideArc: 'apiauth',
+    title: '越权必测项清单',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【接口越权 · 解锁于 #181 之后】订单/用户类接口上线前，圈出水平越权必须覆盖的验证项。',
+    simType: 'checklist',
+    content: '勾选【水平越权必须覆盖】的验证项：',
+    checklistItems: [
+      { id: 'a', label: '用户 A 的 token 不能访问用户 B 的 orderId/userId 资源' },
+      { id: 'b', label: '修改 URL 路径中的 ID 应返回 403/404，不能泄露数据' },
+      { id: 'c', label: '列表接口不能通过改 pageSize 拉取全量他人数据' },
+      { id: 'd', label: '接口响应 Content-Type 是否为 application/json' },
+      { id: 'e', label: '管理后台接口普通用户 token 应 403' },
+      { id: 'f', label: '按钮 loading 动画帧率' },
+    ],
+    correctChecks: ['a', 'b', 'c', 'e'],
+    hint: '越权测 IDOR、路径改 ID、列表泄露、角色权限；Content-Type 和动画不是越权重点。',
+    xpReward: 22,
+    unlock: { type: 'sideLevel', sideLevelId: 181 },
+  },
+  {
+    id: 183,
+    sideArc: 'apiauth',
+    title: '哪条用例抓 IDOR',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【接口越权 · 解锁于 #182 之后】4 条接口用例，选出最可能发现水平越权（IDOR）的一条。',
+    simType: 'clickcard',
+    content: '点击【最应优先执行】的越权测试用例：',
+    clickOptions: [
+      { id: 'a', label: '正常用户登录后查询自己的订单列表' },
+      { id: 'b', label: '用户 A 登录后，把 orderId 改成 B 的订单号再请求详情' },
+      { id: 'c', label: '检查订单列表页表格行高是否统一' },
+      { id: 'd', label: '支付按钮 hover 颜色与 UI 稿一致' },
+    ],
+    correctClick: 'b',
+    hint: 'IDOR 经典测法：合法 token + 他人资源 ID——改 orderId 请求详情。',
+    xpReward: 20,
+    unlock: { type: 'sideLevel', sideLevelId: 182 },
+  },
+]
+
+export const apiAuthQuestArc = {
+  id: 'apiauth',
+  name: '接口越权 · 选修',
+  icon: '🔐',
+  tagline: '401、403、IDOR、角色权限——接口鉴权实操链',
+}

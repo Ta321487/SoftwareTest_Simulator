@@ -264,6 +264,20 @@ export function validateSimulation(level, data) {
       return validateMqInbox(level, data)
     }
 
+    case 'oncall':
+    case 'leadboard':
+    case 'loginapp':
+    case 'paymentapp': {
+      const expected = level.oncallAction || level.leadAction || level.appAction
+      if (!data.done) {
+        return { isPass: false, message: '请先完成面板上的操作，再确认提交。' }
+      }
+      if (expected && data.action !== expected) {
+        return { isPass: false, message: '操作未完成，请按任务说明在面板里完成后再提交。' }
+      }
+      return { isPass: true, message: '操作完成！' }
+    }
+
     default:
       return { isPass: false, message: '未知模拟类型。' }
   }

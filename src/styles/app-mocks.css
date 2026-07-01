@@ -736,9 +736,9 @@
   font-size: 0.72rem;
   padding: 4px 8px;
   border-radius: 999px;
-  background: rgba(167, 139, 250, 0.15);
-  color: var(--accent-purple, #a78bfa);
-  border: 1px solid rgba(167, 139, 250, 0.35);
+  background: var(--purple-bg);
+  color: var(--accent-purple);
+  border: 1px solid var(--purple-border);
   white-space: nowrap;
 }
 
@@ -783,8 +783,8 @@
 }
 
 .lead-panel__metric--active {
-  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.35);
-  border-color: rgba(167, 139, 250, 0.55);
+  box-shadow: 0 0 0 2px var(--purple-border);
+  border-color: var(--accent-purple);
 }
 
 .lead-panel__metric-label {

@@ -1,0 +1,110 @@
+/** 短信验证码链路选修番外（4 关链式解锁，接主线 #50 短信事故） */
+export const smsQuestLevels = [
+  {
+    id: 158,
+    sideArc: 'sms',
+    title: '连点获取验证码',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【短信链路 · 解锁于主线 #50 之后】用户 10 秒内连点 5 次「获取验证码」，开发问会不会发 5 条有效短信。选出最该优先验证的行为。',
+    simType: 'clickcard',
+    content: '请点击【最应优先验证】的验证码发送行为：',
+    clickOptions: [
+      { id: 'a', label: '同一手机号短时限流，60 秒内只发 1 条有效验证码' },
+      { id: 'b', label: '每次点击都发新验证码，旧码全部有效直到过期' },
+      { id: 'c', label: '按钮 hover 颜色与 UI 稿一致' },
+      { id: 'd', label: '验证码输入框 placeholder 文案' },
+    ],
+    correctClick: 'a',
+    hint: '短信有成本也有骚扰风险——限流 + 旧码失效是登录验证码的基本门禁。',
+    xpReward: 20,
+    unlock: { type: 'level', levelId: 50 },
+  },
+  {
+    id: 159,
+    sideArc: 'sms',
+    title: 'TTL 查验证码是否过期',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【短信链路 · 解锁于 #158 之后】用户说验证码刚收到就提示过期。查 Redis 里 sms:code:13900139000 还剩多少秒。',
+    simType: 'redis',
+    content: '输入命令查看 sms:code:13900139000 的 TTL（秒）：',
+    redisHint: 'TTL 键名',
+    correctCommand: 'TTL sms:code:13900139000',
+    redisStore: {
+      'sms:code:13900139000': '552018',
+      'sms:code:13900139000:ttl': 0,
+    },
+    redisSuccessMsg: 'TTL 0 秒——验证码已过期，前端应引导重新获取而非反复输入旧码。',
+    xpReward: 20,
+    unlock: { type: 'sideLevel', sideLevelId: 158 },
+  },
+  {
+    id: 160,
+    sideArc: 'sms',
+    title: '队列里找短信发送失败',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【短信链路 · 解锁于 #159 之后】网关超时 5 分钟，登录成功率下跌。在短信相关队列里找最该优先排查的消息。',
+    simType: 'mqinbox',
+    content: '选中【最应优先排查】的消息：',
+    inboxMode: 'mq',
+    mqMessages: [
+      {
+        id: 'a',
+        routingKey: 'sms.sent',
+        time: '08:01:02',
+        payload: '{"phone":"13900139000","code":"552018","status":"OK"}',
+      },
+      {
+        id: 'b',
+        routingKey: 'sms.retry',
+        time: '08:05:18',
+        payload: '{"phone":"13900139001","code":"881122","retry":3,"error":"gateway timeout"}',
+      },
+      {
+        id: 'c',
+        routingKey: 'user.login',
+        time: '08:05:20',
+        payload: '{"userId":"u20001","action":"login_success"}',
+      },
+    ],
+    correctMessageId: 'b',
+    mqHint: '网关超时看 sms.retry 里 retry 耗尽 + gateway timeout，别盯已成功的 sms.sent。',
+    xpReward: 22,
+    unlock: { type: 'sideLevel', sideLevelId: 159 },
+  },
+  {
+    id: 161,
+    sideArc: 'sms',
+    title: '短信超时必测项',
+    season: 'extra',
+    isSideQuest: true,
+    description:
+      '【短信链路 · 解锁于 #160 之后】短信网关曾超时 5 分钟。回归资源有限，圈出短信链路必须覆盖的验证项。',
+    simType: 'checklist',
+    content: '勾选短信验证码链路中【必须覆盖】的验证项：',
+    checklistItems: [
+      { id: 'a', label: '网关超时时前端有明确提示，可重新获取验证码' },
+      { id: 'b', label: '同一手机号发送频率有限制（防刷/防骚扰）' },
+      { id: 'c', label: '验证码输入框字体是否为 14px' },
+      { id: 'd', label: '网关失败时有降级策略（备用通道/图形验证码）' },
+      { id: 'e', label: '短信发送失败触发监控告警' },
+      { id: 'f', label: '登录页背景渐变色与品牌稿一致' },
+    ],
+    correctChecks: ['a', 'b', 'd', 'e'],
+    hint: '短信链路测超时体验、限流、降级、告警；字体和背景色不是链路冒烟重点。',
+    xpReward: 22,
+    unlock: { type: 'sideLevel', sideLevelId: 160 },
+  },
+]
+
+export const smsQuestArc = {
+  id: 'sms',
+  name: '短信验证码 · 选修',
+  icon: '📱',
+  tagline: '限流、TTL、网关超时、降级——登录验证码异步老坑',
+}

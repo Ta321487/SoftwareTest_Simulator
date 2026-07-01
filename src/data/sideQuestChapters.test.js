@@ -1,17 +1,22 @@
 import { describe, it, expect } from 'vitest'
 import {
   isToolchainArc,
+  isMindsetArc,
+  isScenarioArc,
   getArcParentChapter,
   getToolchainLevelIds,
   getToolchainProgress,
 } from './sideQuestChapters.js'
 
 describe('sideQuestChapters', () => {
-  it('classifies toolchain arcs', () => {
+  it('classifies mindset, toolchain and scenario arcs', () => {
     expect(isToolchainArc('linux')).toBe(true)
-    expect(isToolchainArc('security')).toBe(false)
+    expect(isMindsetArc('security')).toBe(true)
+    expect(isScenarioArc('refund')).toBe(true)
     expect(getArcParentChapter('sql')).toBe('toolchain')
     expect(getArcParentChapter('pipeline')).toBe('mindset')
+    expect(getArcParentChapter('oncall')).toBe('scenario')
+    expect(getArcParentChapter('uat')).toBe('scenario')
   })
 
   it('counts toolchain levels', () => {
@@ -19,6 +24,7 @@ describe('sideQuestChapters', () => {
       { id: 124, sideArc: 'linux' },
       { id: 137, sideArc: 'sql' },
       { id: 101, sideArc: 'security' },
+      { id: 154, sideArc: 'refund' },
     ]
     expect(getToolchainLevelIds(levels)).toEqual([124, 137])
     const progress = getToolchainProgress(levels, [124])

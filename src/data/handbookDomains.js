@@ -96,6 +96,10 @@ const SIM_TYPE_DOMAINS = {
   clickcard: ['functional', 'release'],
   calculator: ['functional', 'release'],
   packet: ['api', 'oncall'],
+  oncall: ['oncall'],
+  leadboard: ['release', 'functional'],
+  loginapp: ['functional'],
+  paymentapp: ['functional', 'api'],
 }
 
 const LEVEL_DOMAIN_OVERRIDES = {

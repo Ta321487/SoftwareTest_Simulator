@@ -1,10 +1,22 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.20.0'
+export const APP_VERSION = '1.23.0'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
+    title: '番外补全值班、Lead、越权、压测与 App 冒烟',
+    items: [
+      'On-call 值班 4 关（#172–#175），接主线 #45 告警响应',
+      'Lead 带教 4 关（#176–#179），接主线 #47 分派任务',
+      '接口越权 4 关（#180–#183），接主线 #32 安全审计',
+      '压测解读 3 关（#184–#186），接主线 #48 压测拍板',
+      'App 冒烟 3 关（#187–#189），接主线 #34 验证码登录',
+      '新增 oncall / leadboard / loginapp / paymentapp 番外模拟器',
+    ],
+  },
+  {
+    version: '1.22.0',
     title: '螺旋复现加深 + UAT 验收选修',
     items: [
       '主线新增 3 关：退款状态机、小事故复盘、灰度指标拍板（#49–#51）',

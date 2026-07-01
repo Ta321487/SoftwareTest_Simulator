@@ -1436,4 +1436,8 @@ export const simTypeLabels = {
   apmtrace: 'APM 链路',
   gitrelease: 'Git 发布',
   mqinbox: '消息收件箱',
+  oncall: '值班面板',
+  leadboard: 'Lead 看板',
+  loginapp: '登录 App',
+  paymentapp: '支付 App',
 }

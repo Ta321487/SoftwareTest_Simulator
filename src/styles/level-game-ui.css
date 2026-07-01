@@ -1,25 +1,8 @@
-/* ===== Level page — bridge home game UI with workbench shell ===== */
+/* ===== Level page — workplace shell + game accents ===== */
 
 .workbench--level {
   position: relative;
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(34, 211, 238, 0.07), transparent 55%),
-    radial-gradient(ellipse 60% 40% at 100% 30%, rgba(167, 139, 250, 0.05), transparent 50%),
-    radial-gradient(ellipse 50% 35% at 0% 70%, rgba(52, 211, 153, 0.04), transparent 45%),
-    var(--bg-primary);
-}
-
-.workbench--level::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: radial-gradient(ellipse 70% 55% at 50% 25%, black 15%, transparent 72%);
-  z-index: 0;
+  background: var(--bg-primary);
 }
 
 .workbench--level .workbench__body,
@@ -29,10 +12,10 @@
   z-index: 1;
 }
 
-/* HUD topbar — 不用 backdrop-filter，避免下拉面板（工作消息）Compositor 撕裂 */
+/* HUD topbar */
 .workbench--level .workbench__topbar {
-  border-bottom-color: var(--quest-panel-border);
-  background: color-mix(in srgb, var(--hud-bg) 92%, var(--bg-primary));
+  border-bottom-color: var(--border-subtle);
+  background: var(--hud-bg);
 }
 
 .workbench--level .workbench__title {
@@ -46,23 +29,24 @@
 }
 
 .workbench--level .workbench__back {
-  border-color: var(--cyan-border);
-  color: var(--accent-cyan);
-  background: color-mix(in srgb, var(--accent-cyan) 6%, transparent);
+  border-color: var(--border-subtle);
+  color: var(--text-secondary);
+  background: transparent;
 }
 
 .workbench--level .workbench__back:hover {
-  border-color: var(--accent-cyan);
-  background: var(--cyan-bg);
-  color: var(--accent-cyan);
+  border-color: var(--btn-ghost-hover);
+  background: var(--surface-hover);
+  color: var(--text-primary);
 }
 
 .workbench--level .workbench__level-tag {
   font-family: var(--font-sans);
   padding: 4px 10px;
   border-radius: 999px;
-  background: var(--cyan-bg);
-  border: 1px solid var(--cyan-border);
+  background: var(--surface-muted);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
 }
 
 .workbench--level .workbench__season-tag {
@@ -94,72 +78,46 @@
 }
 
 .workbench--level .workbench__season-tag.season-platinum {
-  color: #a78bfa;
-  background: rgba(167, 139, 250, 0.12);
-  border-color: rgba(167, 139, 250, 0.35);
+  color: var(--accent-purple);
+  background: var(--purple-bg);
+  border-color: var(--purple-border);
 }
 
 /* Status HUD strip */
 .workbench--level .workbench__status-bar,
 .workbench--level .work-status {
-  background: color-mix(in srgb, var(--hud-bg) 88%, var(--bg-primary));
-  border-bottom-color: var(--quest-panel-border);
+  background: var(--bg-card);
+  border-bottom-color: var(--border-subtle);
 }
 
 .workbench--level .work-status__item {
-  border-color: var(--cyan-border);
-  background: color-mix(in srgb, var(--accent-cyan) 6%, var(--surface-muted));
+  border-color: var(--border-subtle);
+  background: var(--surface-muted);
 }
 
-/* Task briefing — quest panel */
+/* Task briefing — task-card style */
 .workbench--level .task-panel-fold {
   position: relative;
   margin-bottom: 16px;
-  border-radius: 14px;
+  border-radius: var(--radius);
   background: var(--quest-panel-bg);
   border: 1px solid var(--quest-panel-border);
+  border-left: 3px solid var(--accent-amber);
   box-shadow: var(--quest-glow);
   overflow: hidden;
 }
 
-/* Desktop task brief — plain section, no <details> fold wrapper */
+/* Desktop task brief */
 .workbench--level .task-panel-brief--desktop {
   position: relative;
   margin-bottom: 16px;
   padding: 14px 18px 16px;
-  border-radius: 14px;
+  border-radius: var(--radius);
   background: var(--quest-panel-bg);
   border: 1px solid var(--quest-panel-border);
+  border-left: 3px solid var(--accent-amber);
   box-shadow: var(--quest-glow);
   border-bottom: none;
-}
-
-.workbench--level .task-panel-brief--desktop::before,
-.workbench--level .task-panel-brief--desktop::after {
-  content: '';
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  border: 2px solid var(--accent-cyan);
-  opacity: 0.35;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.workbench--level .task-panel-brief--desktop::before {
-  top: 8px;
-  left: 8px;
-  border-right: none;
-  border-bottom: none;
-  border-radius: 4px 0 0 0;
-}
-
-.workbench--level .task-panel-brief--desktop::after {
-  bottom: 8px;
-  right: 8px;
-  border-left: none;
-  border-top: none;
-  border-radius: 0 0 4px 0;
 }
 
 .workbench--level .task-panel-brief__badge {
@@ -178,34 +136,6 @@
   .task-panel-brief--mobile {
     display: none !important;
   }
-}
-
-.workbench--level .task-panel-fold::before,
-.workbench--level .task-panel-fold::after {
-  content: '';
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  border: 2px solid var(--accent-cyan);
-  opacity: 0.35;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.workbench--level .task-panel-fold::before {
-  top: 8px;
-  left: 8px;
-  border-right: none;
-  border-bottom: none;
-  border-radius: 4px 0 0 0;
-}
-
-.workbench--level .task-panel-fold::after {
-  bottom: 8px;
-  right: 8px;
-  border-left: none;
-  border-top: none;
-  border-radius: 0 0 4px 0;
 }
 
 .workbench--level .task-panel-fold__badge {
@@ -280,31 +210,31 @@
 .workbench--level .sim-workspace__header {
   margin-bottom: 12px;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--quest-panel-border);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .workbench--level .sim-workspace__tag {
   font-family: var(--font-sans);
   font-weight: 600;
-  color: var(--accent-cyan);
-  background: var(--cyan-bg);
-  border-color: var(--cyan-border);
+  color: var(--text-secondary);
+  background: var(--surface-muted);
+  border-color: var(--border-subtle);
   border-radius: 999px;
 }
 
 .workbench--level .sim-card {
-  background: var(--quest-panel-bg);
-  border: 1px solid var(--quest-panel-border);
-  border-radius: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
   box-shadow: var(--quest-glow);
 }
 
 /* Archive context banner — quest-daily tone */
 .workbench--level .workbench__context-banner--archive {
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--quest-panel-bg);
   border: 1px dashed var(--amber-border);
-  box-shadow: 0 4px 16px rgba(251, 191, 36, 0.06);
+  box-shadow: var(--quest-glow);
 }
 
 /* Primary actions — match home game button */
@@ -349,13 +279,13 @@
 
 @keyframes task-focus-pulse {
   0% {
-    box-shadow: var(--quest-glow);
+    box-shadow: none;
   }
   40% {
     box-shadow: var(--quest-glow-strong);
   }
   100% {
-    box-shadow: var(--quest-glow);
+    box-shadow: none;
   }
 }
 
@@ -394,4 +324,15 @@
   .workbench--level .task-panel-fold .task-panel {
     padding: 0 18px 16px;
   }
+}
+
+.sut-quest__submit {
+  margin-top: 14px;
+  width: 100%;
+}
+
+.sut-quest__hint {
+  margin-top: 10px;
+  font-size: 0.88rem;
+  color: var(--text-muted, #888);
 }

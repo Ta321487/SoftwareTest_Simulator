@@ -29,8 +29,8 @@ export default defineConfig({
         short_name: '测试人一生',
         description:
           '备考 → 面试 → 笔试 → 入职。48 关主线 + 番外 + 每日特训，在模拟工具里攒 XP 升职级。',
-        theme_color: '#0f172a',
-        background_color: '#0f172a',
+        theme_color: '#131316',
+        background_color: '#131316',
         display: 'standalone',
         lang: 'zh-CN',
         start_url: base,

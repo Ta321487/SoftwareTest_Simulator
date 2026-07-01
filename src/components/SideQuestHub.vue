@@ -19,7 +19,7 @@ const router = useRouter()
 const progressStore = useProgressStore()
 const { isMobile } = useMobileLayout()
 const expandedChapterIds = ref(new Set(['toolchain']))
-const selectedMindsetArcId = ref(null)
+const selectedArcByChapter = ref({})
 const arcToast = ref('')
 let arcToastTimer = null
 
@@ -82,36 +82,6 @@ const arcsWithLevels = computed(() =>
   })
 )
 
-const mindsetArcs = computed(() =>
-  arcsWithLevels.value.filter((a) => a.parentChapter === 'mindset')
-)
-
-const activeMindsetArcId = computed(() => {
-  for (const arc of mindsetArcs.value) {
-    if (arc.active) return arc.id
-  }
-  const available = mindsetArcs.value.find((a) => a.levels.some((l) => l.status === 'available'))
-  return available?.id ?? mindsetArcs.value[0]?.id
-})
-
-const currentMindsetArc = computed(() => {
-  const id = selectedMindsetArcId.value || activeMindsetArcId.value
-  return mindsetArcs.value.find((a) => a.id === id)
-})
-
-const mindsetPathNodes = computed(() =>
-  (currentMindsetArc.value?.levels || []).map((card) => ({
-    levelId: card.id,
-    label: `EX-${card.id - 100}`,
-    title: card.title,
-    status: card.status,
-  }))
-)
-
-watch(activeMindsetArcId, (id) => {
-  if (id && !selectedMindsetArcId.value) selectedMindsetArcId.value = id
-})
-
 const chaptersWithArcs = computed(() =>
   sideChapters.map((chapter) => {
     const arcs = arcsWithLevels.value.filter((a) => a.parentChapter === chapter.id)
@@ -128,6 +98,57 @@ const chaptersWithArcs = computed(() =>
       active,
     }
   })
+)
+
+function activeArcIdForChapter(chapterId, arcs) {
+  for (const arc of arcs) {
+    if (arc.active) return arc.id
+  }
+  const available = arcs.find((a) => a.levels.some((l) => l.status === 'available'))
+  return available?.id ?? arcs[0]?.id
+}
+
+function currentArcForChapter(chapter) {
+  const arcs = chapter.arcs || []
+  const selected = selectedArcByChapter.value[chapter.id]
+  const activeId = activeArcIdForChapter(chapter.id, arcs)
+  const id = selected || activeId
+  return arcs.find((a) => a.id === id)
+}
+
+function pathNodesForChapter(chapter) {
+  return (currentArcForChapter(chapter)?.levels || []).map((card) => ({
+    levelId: card.id,
+    label: `EX-${card.id - 100}`,
+    title: card.title,
+    status: card.status,
+  }))
+}
+
+function selectChapterArc(chapterId, arcId) {
+  selectedArcByChapter.value = { ...selectedArcByChapter.value, [chapterId]: arcId }
+}
+
+function formatArcTabLabel(name) {
+  return String(name || '')
+    .replace(/ · 选修$/, '')
+    .replace(/ · 实操$/, '')
+    .replace(/线$/, '')
+}
+
+watch(
+  chaptersWithArcs,
+  (chapters) => {
+    for (const chapter of chapters) {
+      if (chapter.recommended || !chapter.arcs?.length) continue
+      if (selectedArcByChapter.value[chapter.id]) continue
+      const activeId = activeArcIdForChapter(chapter.id, chapter.arcs)
+      if (activeId) {
+        selectedArcByChapter.value = { ...selectedArcByChapter.value, [chapter.id]: activeId }
+      }
+    }
+  },
+  { immediate: true }
 )
 
 function goLevel(id) {
@@ -180,8 +201,7 @@ onUnmounted(() => {
           番外 & 特训
         </h2>
         <p class="side-hub__subtitle">
-          主线之外两条线：<strong>排查工具链</strong>（推荐 27 关实操）与
-          <strong>测试思维选修</strong>（场景判断）。另有每日特训，不影响职级晋升。
+          思维选修（23 关）· 排查工具链（27 关推荐）· 业务场景选修（39 关）· 每日特训，均不影响职级晋升。
         </p>
       </div>
       <span class="side-hub__progress">{{ sideProgress.done }}/{{ sideProgress.total }} 番外</span>
@@ -196,7 +216,7 @@ onUnmounted(() => {
       ]"
     >
       <div class="side-hub__daily-body">
-        <span class="side-hub__daily-badge">第三章 · 每日特训</span>
+        <span class="side-hub__daily-badge">每日特训</span>
         <h3 class="side-hub__daily-title">{{ dailyTitle }}</h3>
         <p v-if="dailyFocus" class="side-hub__daily-focus">{{ dailyFocus }}</p>
         <p v-if="dailyStatus !== 'locked'" class="side-hub__daily-meta">
@@ -247,32 +267,43 @@ onUnmounted(() => {
           <ToolchainSkillTree v-if="chapter.recommended" />
 
           <template v-else>
-            <div class="skill-tree__arcs side-hub__mindset-arcs" role="tablist">
+            <div
+              class="skill-tree__arcs side-hub__arc-grid"
+              :class="{ 'side-hub__arc-grid--dense': chapter.arcs.length > 8 }"
+              role="tablist"
+            >
               <button
-                v-for="(arc, index) in mindsetArcs"
+                v-for="arc in chapter.arcs"
                 :key="arc.id"
                 type="button"
                 role="tab"
                 class="skill-tree__arc"
                 :class="{
                   'skill-tree__arc--active':
-                    (selectedMindsetArcId || activeMindsetArcId) === arc.id,
+                    (selectedArcByChapter[chapter.id] ||
+                      activeArcIdForChapter(chapter.id, chapter.arcs)) === arc.id,
                   'skill-tree__arc--available': arc.active,
                   'skill-tree__arc--done': arc.complete,
-                  'skill-tree__arc--last': index === mindsetArcs.length - 1,
                 }"
-                :aria-selected="(selectedMindsetArcId || activeMindsetArcId) === arc.id"
-                @click="selectedMindsetArcId = arc.id"
+                :aria-selected="
+                  (selectedArcByChapter[chapter.id] ||
+                    activeArcIdForChapter(chapter.id, chapter.arcs)) === arc.id
+                "
+                @click="selectChapterArc(chapter.id, arc.id)"
               >
                 <span class="skill-tree__arc-icon">{{ arc.icon }}</span>
-                <span class="skill-tree__arc-name">{{ arc.name.replace(/线$/, '') }}</span>
+                <span class="skill-tree__arc-name">{{ formatArcTabLabel(arc.name) }}</span>
                 <span class="skill-tree__arc-progress">{{ arc.done }}/{{ arc.total }}</span>
               </button>
             </div>
-            <p v-if="currentMindsetArc" class="skill-tree__arc-tagline">
-              {{ currentMindsetArc.tagline }}
+            <p v-if="currentArcForChapter(chapter)" class="skill-tree__arc-tagline">
+              {{ currentArcForChapter(chapter).tagline }}
             </p>
-            <QuestPathMap v-if="mindsetPathNodes.length" :nodes="mindsetPathNodes" size="sm" />
+            <QuestPathMap
+              v-if="pathNodesForChapter(chapter).length"
+              :nodes="pathNodesForChapter(chapter)"
+              size="sm"
+            />
           </template>
         </div>
       </details>

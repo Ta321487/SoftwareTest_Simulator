@@ -413,7 +413,7 @@
 /* 术语百科弹窗：外框与卡片统一紫色系，内链也用紫色 */
 .handbook-modal__panel--glossary {
   border-color: var(--purple-border);
-  box-shadow: 0 12px 40px rgba(167, 139, 250, 0.12);
+  box-shadow: var(--quest-glow);
 }
 
 .handbook-modal__panel--glossary .handbook-modal__phase {
@@ -439,7 +439,7 @@
 .handbook-modal__panel--glossary .handbook-modal__footer .sim-btn--primary {
   background: var(--accent-purple);
   color: var(--btn-primary-text);
-  box-shadow: 0 8px 24px rgba(167, 139, 250, 0.35);
+  box-shadow: var(--shadow-btn);
 }
 
 .handbook-modal__panel--glossary .handbook-modal__footer .sim-btn--primary:hover {
