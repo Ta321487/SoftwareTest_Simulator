@@ -8,17 +8,39 @@ export function useHorizontalDragScroll(options = {}) {
   function bind(el) {
     if (!el) return () => {}
 
-    // Desktop / wide layouts: skip when tabs already fit (avoids breaking clicks).
-    if (el.scrollWidth <= el.clientWidth) return () => {}
+    // Skip when content fits; caller should re-bind after layout changes (e.g. expand +N strip).
+    if (!options.alwaysBind && el.scrollWidth <= el.clientWidth) return () => {}
 
     let startX = 0
     let scrollLeft = 0
     let active = false
     let dragged = false
     let captured = false
+    let dragResetTimer = null
+
+    const skipSelector =
+      options.skipSelector ??
+      '[aria-disabled="true"], button:disabled, .app-mobile-dock__chip--locked'
+
+    const clearDragResetTimer = () => {
+      if (dragResetTimer != null) {
+        clearTimeout(dragResetTimer)
+        dragResetTimer = null
+      }
+    }
+
+    const scheduleDragReset = () => {
+      clearDragResetTimer()
+      dragResetTimer = window.setTimeout(() => {
+        dragged = false
+        dragResetTimer = null
+      }, 0)
+    }
 
     const onPointerDown = (e) => {
       if (e.pointerType === 'mouse' && e.button !== 0) return
+      if (e.target.closest(skipSelector)) return
+      clearDragResetTimer()
       active = true
       dragged = false
       captured = false
@@ -49,12 +71,15 @@ export function useHorizontalDragScroll(options = {}) {
         }
         captured = false
       }
+      // Mobile often skips click after drag; reset so later taps are not swallowed.
+      if (dragged) scheduleDragReset()
     }
 
     const onClick = (e) => {
       if (!dragged) return
       e.preventDefault()
       e.stopPropagation()
+      clearDragResetTimer()
       dragged = false
     }
 
@@ -65,6 +90,7 @@ export function useHorizontalDragScroll(options = {}) {
     el.addEventListener('click', onClick, true)
 
     return () => {
+      clearDragResetTimer()
       el.removeEventListener('pointerdown', onPointerDown)
       el.removeEventListener('pointermove', onPointerMove)
       el.removeEventListener('pointerup', end)

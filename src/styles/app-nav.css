@@ -416,9 +416,11 @@
   }
 
   .app-mobile-dock__chip--locked,
-  .app-mobile-dock__chip[aria-disabled='true'] {
+  .app-mobile-dock__chip[aria-disabled='true'],
+  .app-mobile-dock__chip:disabled {
     opacity: 0.45;
     cursor: not-allowed;
+    touch-action: manipulation;
   }
 
   .app-mobile-dock__chip--more {

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { computed, ref, onUnmounted, watch, nextTick } from 'vue'
 import { dockApps } from '../data/projects'
 import AppNavGlobal from './AppNavGlobal.vue'
 import { useMobileLayout } from '../composables/useMobileLayout'
@@ -33,8 +33,9 @@ const emit = defineEmits(['dock-change'])
 const { isMobile } = useMobileLayout()
 const dockExpanded = ref(false)
 const projectStripRef = ref(null)
-const { bind: bindProjectStripDragScroll } = useHorizontalDragScroll()
+const { bind: bindProjectStripDragScroll } = useHorizontalDragScroll({ alwaysBind: true })
 let unbindProjectStripDragScroll = null
+let projectStripSetupGen = 0
 
 const MOBILE_PROJECT_VISIBLE = 5
 
@@ -68,12 +69,17 @@ function toggleDockExpanded() {
 
 async function setupProjectStripDragScroll() {
   unbindProjectStripDragScroll?.()
+  const gen = ++projectStripSetupGen
   await nextTick()
+  if (gen !== projectStripSetupGen) return
   unbindProjectStripDragScroll = bindProjectStripDragScroll(projectStripRef.value)
 }
 
-onMounted(setupProjectStripDragScroll)
-watch([hasProject, isMobile], setupProjectStripDragScroll)
+watch(
+  [hasProject, isMobile, dockExpanded, () => props.projectItems.length],
+  setupProjectStripDragScroll,
+  { immediate: true, flush: 'post' }
+)
 onUnmounted(() => unbindProjectStripDragScroll?.())
 </script>
 
@@ -97,6 +103,7 @@ onUnmounted(() => unbindProjectStripDragScroll?.())
             'app-mobile-dock__chip--active': activeLevelId === item.levelId,
             'app-mobile-dock__chip--locked': item.locked,
           }"
+          :disabled="item.locked || undefined"
           :aria-disabled="item.locked || undefined"
           :title="item.locked ? item.lockReason : dockApps[item.simType]?.label"
           @click="!item.locked && emit('dock-change', item.levelId)"
@@ -145,6 +152,7 @@ onUnmounted(() => unbindProjectStripDragScroll?.())
             'workbench__dock-item--task': item.levelId === taskLevelId,
             'workbench__dock-item--locked': item.locked,
           }"
+          :disabled="item.locked || undefined"
           :title="item.locked ? item.lockReason : dockApps[item.simType]?.label"
           @click="!item.locked && emit('dock-change', item.levelId)"
         >
