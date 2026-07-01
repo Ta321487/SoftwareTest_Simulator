@@ -1,10 +1,19 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.23.2'
+export const APP_VERSION = '1.23.3'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
+    title: '修复手机 Safari 上 Day 条无法滑动与点击卡死',
+    items: [
+      'Day 横滑条改由浏览器原生 overflow 滚动，移除 JS pointer 捕获',
+      'Day chip 由 button 改为 div，避免 iOS 拦截横滑手势',
+      '点击未解锁 Day 不再导致底栏无响应',
+    ],
+  },
+  {
+    version: '1.23.2',
     title: '修复手机端 Day 条展开拖动与点击卡死',
     items: [
       '底部项目 Day 条点击 +N 展开后，可正常左右滑动查看全部关卡',

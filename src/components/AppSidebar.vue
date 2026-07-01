@@ -1,9 +1,8 @@
 <script setup>
-import { computed, ref, onUnmounted, watch, nextTick } from 'vue'
+import { computed, ref } from 'vue'
 import { dockApps } from '../data/projects'
 import AppNavGlobal from './AppNavGlobal.vue'
 import { useMobileLayout } from '../composables/useMobileLayout'
-import { useHorizontalDragScroll } from '../composables/useHorizontalDragScroll'
 
 const props = defineProps({
   current: {
@@ -32,10 +31,6 @@ const emit = defineEmits(['dock-change'])
 
 const { isMobile } = useMobileLayout()
 const dockExpanded = ref(false)
-const projectStripRef = ref(null)
-const { bind: bindProjectStripDragScroll } = useHorizontalDragScroll({ alwaysBind: true })
-let unbindProjectStripDragScroll = null
-let projectStripSetupGen = 0
 
 const MOBILE_PROJECT_VISIBLE = 5
 
@@ -67,20 +62,22 @@ function toggleDockExpanded() {
   dockExpanded.value = !dockExpanded.value
 }
 
-async function setupProjectStripDragScroll() {
-  unbindProjectStripDragScroll?.()
-  const gen = ++projectStripSetupGen
-  await nextTick()
-  if (gen !== projectStripSetupGen) return
-  unbindProjectStripDragScroll = bindProjectStripDragScroll(projectStripRef.value)
+function onMobileProjectChipClick(item) {
+  if (item.locked) return
+  emit('dock-change', item.levelId)
 }
 
-watch(
-  [hasProject, isMobile, dockExpanded, () => props.projectItems.length],
-  setupProjectStripDragScroll,
-  { immediate: true, flush: 'post' }
-)
-onUnmounted(() => unbindProjectStripDragScroll?.())
+function onMobileProjectChipKeydown(e, item) {
+  if (e.key !== 'Enter' && e.key !== ' ') return
+  e.preventDefault()
+  onMobileProjectChipClick(item)
+}
+
+function onMobileChipActivate(e, action) {
+  if (e.key !== 'Enter' && e.key !== ' ') return
+  e.preventDefault()
+  action()
+}
 </script>
 
 <template>
@@ -93,40 +90,47 @@ onUnmounted(() => unbindProjectStripDragScroll?.())
         'app-mobile-dock--level': isMobile && hasProject,
       }"
     >
-      <div v-if="isMobile && hasProject" ref="projectStripRef" class="app-mobile-dock__project">
-        <button
+      <div v-if="isMobile && hasProject" class="app-mobile-dock__project">
+        <div
           v-for="item in visibleProjectItems"
           :key="item.levelId"
-          type="button"
+          role="button"
           class="app-mobile-dock__chip"
           :class="{
             'app-mobile-dock__chip--active': activeLevelId === item.levelId,
             'app-mobile-dock__chip--locked': item.locked,
           }"
-          :disabled="item.locked || undefined"
+          :tabindex="item.locked ? -1 : 0"
           :aria-disabled="item.locked || undefined"
           :title="item.locked ? item.lockReason : dockApps[item.simType]?.label"
-          @click="!item.locked && emit('dock-change', item.levelId)"
+          @click="onMobileProjectChipClick(item)"
+          @keydown="onMobileProjectChipKeydown($event, item)"
         >
           <span class="app-mobile-dock__chip-icon" aria-hidden="true">{{ projectIcon(item) }}</span>
           <span>{{ projectShortLabel(item) }}</span>
-        </button>
-        <button
+        </div>
+        <div
           v-if="hiddenProjectCount > 0"
-          type="button"
+          role="button"
+          tabindex="0"
           class="app-mobile-dock__chip app-mobile-dock__chip--more"
+          aria-label="展开更多 Day"
           @click="toggleDockExpanded"
+          @keydown="onMobileChipActivate($event, toggleDockExpanded)"
         >
           +{{ hiddenProjectCount }}
-        </button>
-        <button
+        </div>
+        <div
           v-else-if="dockExpanded && projectItems.length > MOBILE_PROJECT_VISIBLE"
-          type="button"
+          role="button"
+          tabindex="0"
           class="app-mobile-dock__chip app-mobile-dock__chip--more"
+          aria-label="收起 Day 列表"
           @click="toggleDockExpanded"
+          @keydown="onMobileChipActivate($event, toggleDockExpanded)"
         >
           收起
-        </button>
+        </div>
       </div>
 
       <div class="app-sidebar__core">

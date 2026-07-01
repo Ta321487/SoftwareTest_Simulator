@@ -372,10 +372,10 @@
     border-bottom: 1px solid var(--border-subtle);
     background: color-mix(in srgb, var(--surface-muted) 80%, transparent);
     overflow-x: auto;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
     touch-action: pan-x;
-    scroll-snap-type: x proximity;
     scrollbar-width: none;
   }
 
@@ -397,11 +397,19 @@
     font-weight: 600;
     white-space: nowrap;
     cursor: pointer;
-    touch-action: pan-x;
-    scroll-snap-align: start;
+    touch-action: auto;
     -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none;
     user-select: none;
+  }
+
+  .app-mobile-dock__chip:focus-visible {
+    outline: 2px solid var(--accent-cyan);
+    outline-offset: 2px;
+  }
+
+  .app-mobile-dock__chip:active:not([aria-disabled='true']) {
+    background: var(--surface-hover);
   }
 
   .app-mobile-dock__chip-icon {
@@ -416,11 +424,10 @@
   }
 
   .app-mobile-dock__chip--locked,
-  .app-mobile-dock__chip[aria-disabled='true'],
-  .app-mobile-dock__chip:disabled {
+  .app-mobile-dock__chip[aria-disabled='true'] {
     opacity: 0.45;
     cursor: not-allowed;
-    touch-action: manipulation;
+    touch-action: auto;
   }
 
   .app-mobile-dock__chip--more {
