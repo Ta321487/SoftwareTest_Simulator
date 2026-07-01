@@ -27,8 +27,7 @@ export const i18nQuestLevels = [
     title: '出海冒烟清单',
     season: 'extra',
     isSideQuest: true,
-    description:
-      '【国际化 · 解锁于 #218 之后】订单 App 要出海东南亚。圈出 i18n/l10n 冒烟必测项。',
+    description: '【国际化 · 解锁于 #218 之后】订单 App 要出海东南亚。圈出 i18n/l10n 冒烟必测项。',
     simType: 'checklist',
     content: '勾选出海版本【必须覆盖】的测试项：',
     checklistItems: [

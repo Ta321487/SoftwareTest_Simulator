@@ -27,8 +27,7 @@ export const analyticsQuestLevels = [
     title: '埋点冒烟清单',
     season: 'extra',
     isSideQuest: true,
-    description:
-      '【埋点验收 · 解锁于 #222 之后】订单灰度发布前，圈出埋点验收必须覆盖的项。',
+    description: '【埋点验收 · 解锁于 #222 之后】订单灰度发布前，圈出埋点验收必须覆盖的项。',
     simType: 'checklist',
     content: '勾选灰度发布前【埋点验收必做】的项：',
     checklistItems: [

@@ -361,8 +361,7 @@ export const toolQuestLevels = [
     title: 'KEYS 查分布式锁',
     season: 'extra',
     isSideQuest: true,
-    description:
-      '【Redis 缓存线 · 第3关】订单 9905 卡单，怀疑未释放锁。列出 lock:order:* 相关键。',
+    description: '【Redis 缓存线 · 第3关】订单 9905 卡单，怀疑未释放锁。列出 lock:order:* 相关键。',
     simType: 'redis',
     content: '输入 KEYS 命令匹配 lock:order: 开头的键：',
     redisHint: 'KEYS lock:order:*',
@@ -412,8 +411,7 @@ export const toolQuestLevels = [
     title: 'Mock 支付失败 500',
     season: 'extra',
     isSideQuest: true,
-    description:
-      '【Mock 配置线 · 第3关】要测支付失败 UI，Mock /pay 返回 500 且 body 含 error。',
+    description: '【Mock 配置线 · 第3关】要测支付失败 UI，Mock /pay 返回 500 且 body 含 error。',
     simType: 'mockserver',
     content: '配置 Mock 模拟支付网关失败：',
     mockPath: '/pay',
@@ -452,8 +450,7 @@ export const toolQuestLevels = [
     title: '确认 hotfix 已 cherry-pick',
     season: 'extra',
     isSideQuest: true,
-    description:
-      '【Git 发布线 · 第3关】release/v2.3.1 要上线，确认 TEST-1015 修复已在该分支。',
+    description: '【Git 发布线 · 第3关】release/v2.3.1 要上线，确认 TEST-1015 修复已在该分支。',
     simType: 'gitrelease',
     content: '选择 release/v2.3.1 分支上包含 TEST-1015 的 commit：',
     gitMode: 'commit',
@@ -480,8 +477,7 @@ export const toolQuestLevels = [
     title: '死信队列找重复回调',
     season: 'extra',
     isSideQuest: true,
-    description:
-      '【异步消息线 · 第3关】订单重复入账怀疑重复回调。在 pay.dlq 找 max retry 消息。',
+    description: '【异步消息线 · 第3关】订单重复入账怀疑重复回调。在 pay.dlq 找 max retry 消息。',
     simType: 'mqinbox',
     content: '选中【最应优先排查】的死信消息：',
     inboxMode: 'mq',

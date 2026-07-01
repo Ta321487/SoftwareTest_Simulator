@@ -28,8 +28,7 @@ export const autoRoiQuestLevels = [
     title: 'CI 里标 unstable 阶段',
     season: 'extra',
     isSideQuest: true,
-    description:
-      '【自动化 ROI · 解锁于 #236 之后】E2E 阶段历史 flaky。根据流水线判断应如何处理。',
+    description: '【自动化 ROI · 解锁于 #236 之后】E2E 阶段历史 flaky。根据流水线判断应如何处理。',
     simType: 'cipipeline',
     content: '先看 E2E 阶段，再选最合理的流水线策略：',
     pipelineStages: [

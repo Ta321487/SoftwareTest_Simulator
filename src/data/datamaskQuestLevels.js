@@ -58,9 +58,7 @@ export const datamaskQuestLevels = [
     sqlSchema:
       '-- users_masked(id, phone_masked, locked_until, fail_count)\n-- phone_masked 示例：138****8000',
     sqlMustInclude: ['users_masked', '138'],
-    sqlResultRows: [
-      { phone_masked: '138****8000', fail_count: 3, locked_until: null },
-    ],
+    sqlResultRows: [{ phone_masked: '138****8000', fail_count: 3, locked_until: null }],
     correctQuery: "SELECT * FROM users_masked WHERE phone_masked LIKE '138%8000'",
     sqlHint: '查脱敏视图 users_masked；手机号可能已打码，用 LIKE 或 masked 字段匹配。',
     xpReward: 22,

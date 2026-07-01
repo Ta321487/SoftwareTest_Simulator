@@ -50,8 +50,7 @@ export const flakyQuestLevels = [
     title: '读 CI 失败日志',
     season: 'extra',
     isSideQuest: true,
-    description:
-      '【Flaky 自动化 · 解锁于 #203 之后】E2E 阶段间歇红，根据日志判断最可能原因。',
+    description: '【Flaky 自动化 · 解锁于 #203 之后】E2E 阶段间歇红，根据日志判断最可能原因。',
     simType: 'cipipeline',
     content: '先看 E2E 阶段日志，再选最可能原因：',
     pipelineStages: [

@@ -1,10 +1,15 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.26.0'
+export const APP_VERSION = '1.26.1'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
+    title: '修复 Prettier 格式以通过 CI',
+    items: ['统一 README 与番外关卡数据文件的代码风格'],
+  },
+  {
+    version: '1.26.0',
     title: '思维选修薄 arc 补全至 3 关',
     items: [
       '自动化 / 接口 / 性能 / CI / 监控 5 条线各补关（#242–#248）',
