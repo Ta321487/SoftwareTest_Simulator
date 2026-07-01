@@ -77,9 +77,14 @@ onUnmounted(() => {
       :class="{ 'work-inbox__toggle--unread': unreadCount }"
       :aria-expanded="open"
       aria-haspopup="dialog"
+      :aria-label="unreadCount ? `${unreadCount} 条未读工作消息` : '工作消息'"
       @click="toggle"
     >
-      📬 {{ unreadCount ? `${unreadCount} 未读` : '消息' }}
+      <span class="work-inbox__toggle-icon" aria-hidden="true">📬</span>
+      <span v-if="unreadCount" class="work-inbox__count">{{ unreadCount }}</span>
+      <span class="work-inbox__toggle-label">{{
+        unreadCount ? `${unreadCount} 未读` : '消息'
+      }}</span>
     </button>
 
     <Teleport to="body">

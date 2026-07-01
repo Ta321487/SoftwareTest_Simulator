@@ -1,10 +1,19 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.23.3'
+export const APP_VERSION = '1.23.4'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
+    title: '修复手机端关卡顶栏返回键与消息按钮重叠',
+    items: [
+      '关卡页顶栏改为三列网格，标题居中省略，避免窄屏元素挤在一起',
+      '手机端返回键仅显示 ←，消息与主题切换改为图标按钮',
+      'PC 端布局与文案不变',
+    ],
+  },
+  {
+    version: '1.23.3',
     title: '修复手机 Safari 上 Day 条无法滑动与点击卡死',
     items: [
       'Day 横滑条改由浏览器原生 overflow 滚动，移除 JS pointer 捕获',

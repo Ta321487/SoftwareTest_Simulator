@@ -102,7 +102,10 @@ const seasonBadge = computed(() => {
   <div class="workbench" :class="{ 'workbench--level': levelPage }">
     <header class="workbench__topbar">
       <div class="workbench__topbar-left">
-        <button type="button" class="workbench__back" @click="$emit('back')">← 首页</button>
+        <button type="button" class="workbench__back" @click="$emit('back')">
+          <span class="workbench__back-arrow" aria-hidden="true">←</span
+          ><span class="workbench__back-label">首页</span>
+        </button>
         <div class="workbench__title-block">
           <h1 class="workbench__title">{{ headerTitle }}</h1>
           <p v-if="headerSubtitle" class="workbench__subtitle">{{ headerSubtitle }}</p>

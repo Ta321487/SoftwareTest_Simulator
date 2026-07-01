@@ -8,27 +8,39 @@
 
 @media (max-width: 768px) {
   .workbench--level .workbench__topbar {
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'back title actions';
     align-items: center;
-    flex-wrap: nowrap;
+    flex-wrap: unset;
     padding: 8px 12px;
     padding-top: max(8px, env(safe-area-inset-top));
     gap: 8px;
   }
 
   .workbench--level .workbench__topbar-left {
-    flex: 1;
-    min-width: 0;
-    flex-wrap: nowrap;
-    align-items: center;
-    gap: 8px;
+    display: contents;
   }
 
   .workbench--level .workbench__back {
+    grid-area: back;
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
     min-height: 40px;
-    padding: 6px 10px;
+    padding: 8px 10px;
     font-size: 0.8rem;
+  }
+
+  .workbench--level .workbench__back-label {
+    display: none;
+  }
+
+  .workbench--level .workbench__title-block {
+    grid-area: title;
+    min-width: 0;
   }
 
   .workbench--level .workbench__title {
@@ -43,18 +55,59 @@
   }
 
   .workbench--level .workbench__topbar-right {
+    grid-area: actions;
     width: auto;
     flex-shrink: 0;
-    gap: 6px;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 4px;
   }
 
-  .workbench--level .workbench__rank-compact {
+  .workbench--level .workbench__rank-compact,
+  .workbench--level .workbench__season-tag,
+  .workbench--level .workbench__level-tag {
     display: none;
   }
 
-  .workbench--level .workbench__level-tag {
+  .workbench--level .work-inbox__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 8px 10px;
+  }
+
+  .workbench--level .work-inbox__toggle-label {
+    display: none;
+  }
+
+  .workbench--level .work-inbox__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--error);
+    color: #fff;
     font-size: 0.625rem;
-    padding: 4px 8px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .workbench--level .theme-toggle {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 8px 10px;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .workbench--level .theme-toggle__label {
+    display: none;
   }
 
   .workbench--level .workbench__status-bar {
