@@ -66,7 +66,8 @@ export const orderStuckQuestLevels = [
     redisStore: {
       'order:lock:9905': 'worker-ship-03:held',
     },
-    redisSuccessMsg: '锁仍被 worker-ship-03 持有——可能是消费端 crash 未释放，导致后续发货任务阻塞。',
+    redisSuccessMsg:
+      '锁仍被 worker-ship-03 持有——可能是消费端 crash 未释放，导致后续发货任务阻塞。',
     xpReward: 22,
     unlock: { type: 'sideLevel', sideLevelId: 169 },
   },

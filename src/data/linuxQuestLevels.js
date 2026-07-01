@@ -295,7 +295,7 @@ export const linuxQuestLevels = [
     hint: 'ls -la /var/log/app',
     xpReward: 18,
     unlock: { type: 'sideLevel', sideLevelId: 135 },
-  }
+  },
 ]
 
 export const linuxQuestArc = {

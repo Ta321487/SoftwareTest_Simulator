@@ -586,18 +586,33 @@ export const mindsetQuestLevels = [
     hint: '用户反馈指向字体缩放 + 按钮裁切，应复现系统级大字体下的布局与可点击性。',
     xpReward: 20,
     unlock: { type: 'sideLevel', sideLevelId: 112 },
-  }
+  },
 ]
 
 export const mindsetQuestArcs = [
   { id: 'security', name: '安全线', icon: '🛡️', tagline: 'XSS、注入——上线前的红线' },
   { id: 'performance', name: '性能线', icon: '⚡', tagline: '链路、瓶颈——别只会在日志里 grep' },
-  { id: 'pipeline', name: 'CI 门禁 · 选修', icon: '🔄', tagline: '概念判断：测试在流水线哪一步介入' },
-  { id: 'collab', name: '协作进阶', icon: '🤝', tagline: 'Mock 策略 · 沙箱降级——概念选修（实操见 Mock 配置线）' },
+  {
+    id: 'pipeline',
+    name: 'CI 门禁 · 选修',
+    icon: '🔄',
+    tagline: '概念判断：测试在流水线哪一步介入',
+  },
+  {
+    id: 'collab',
+    name: '协作进阶',
+    icon: '🤝',
+    tagline: 'Mock 策略 · 沙箱降级——概念选修（实操见 Mock 配置线）',
+  },
   { id: 'compat', name: '兼容性', icon: '📱', tagline: 'H5、微信、弱网——移动端测试常识' },
   { id: 'strategy', name: '策略线', icon: '🎯', tagline: '时间不够时怎么测——老手的取舍' },
   { id: 'data', name: '数据线', icon: '🧪', tagline: '造数、沙箱、脚本——联调不踩坑' },
-  { id: 'monitor', name: '监控告警 · 选修', icon: '📡', tagline: '概念判断：告警谁优先（实操见 APM 下钻线）' },
+  {
+    id: 'monitor',
+    name: '监控告警 · 选修',
+    icon: '📡',
+    tagline: '概念判断：告警谁优先（实操见 APM 下钻线）',
+  },
   { id: 'automation', name: '自动化', icon: '🤖', tagline: 'ROI 思维：先自动哪条最值' },
   { id: 'api', name: '接口专项', icon: '🔌', tagline: '限流、鉴权、异常响应——接口层基本功' },
 ]

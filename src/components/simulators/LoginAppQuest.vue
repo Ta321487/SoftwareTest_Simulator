@@ -31,7 +31,12 @@ defineExpose({ reset })
 
 <template>
   <div class="sut-quest">
-    <LoginAppMock :build="appBuild" compact @bug-reproduced="onBugReproduced" @fix-verified="onFixVerified" />
+    <LoginAppMock
+      :build="appBuild"
+      compact
+      @bug-reproduced="onBugReproduced"
+      @fix-verified="onFixVerified"
+    />
     <button
       type="button"
       class="sim-btn sim-btn--primary sut-quest__submit"

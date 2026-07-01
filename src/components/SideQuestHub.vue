@@ -201,7 +201,8 @@ onUnmounted(() => {
           番外 & 特训
         </h2>
         <p class="side-hub__subtitle">
-          思维选修（23 关）· 排查工具链（27 关推荐）· 业务场景选修（39 关）· 每日特训，均不影响职级晋升。
+          思维选修（23 关）· 排查工具链（27 关推荐）· 业务场景选修（39 关）·
+          每日特训，均不影响职级晋升。
         </p>
       </div>
       <span class="side-hub__progress">{{ sideProgress.done }}/{{ sideProgress.total }} 番外</span>

@@ -44,8 +44,7 @@ export const apiAuthQuestLevels = [
     templateFields: [
       {
         field: 'case1',
-        scenario:
-          '样本 · 越权访问\nHTTP/1.1 403\n{"code":403,"message":"access denied"}',
+        scenario: '样本 · 越权访问\nHTTP/1.1 403\n{"code":403,"message":"access denied"}',
         placeholder: '应断言：status=? message=? …',
         validationHint: '越权应 403 或 404，不能返回他人订单数据。',
         fieldKeywords: ['403', 'denied', 'access', 'status', 'message'],
