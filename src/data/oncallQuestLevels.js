@@ -87,5 +87,5 @@ export const oncallQuestArc = {
   id: 'oncall',
   name: 'On-call 值班 · 选修',
   icon: '🚨',
-  tagline: '生产复现、日志摘要、影响评估、升级协作——线上救火完整链',
+  tagline: '线上挂了：复现、写摘要、@ 人升级',
 }

@@ -6,25 +6,25 @@ export const handbookDomains = [
     id: 'functional',
     name: '功能测试',
     icon: '🧪',
-    tagline: '需求、用例、Bug、边界与黑盒思路',
+    tagline: '从 PRD 到用例，黑盒思路打底',
   },
   {
     id: 'api',
     name: '接口测试',
     icon: '🔌',
-    tagline: 'HTTP、断言、回调、抓包与联调',
+    tagline: '不只会点 Send，还得会对断言',
   },
   {
     id: 'oncall',
     name: '值班排查',
     icon: '🚨',
-    tagline: '日志、告警、升级与线上救火',
+    tagline: '线上出事，先稳住再定位',
   },
   {
     id: 'release',
     name: '发布回归',
     icon: '🚀',
-    tagline: '冒烟、回归、环境、分支与 Go/No-Go',
+    tagline: '发版前那几小时，冒烟回归签字',
   },
 ]
 

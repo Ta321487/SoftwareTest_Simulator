@@ -114,5 +114,5 @@ export const orderStuckQuestArc = {
   id: 'orderstuck',
   name: '订单卡单 · 选修',
   icon: '📦',
-  tagline: '状态机、SQL、Redis 锁、MQ 死信——PAID 但不出货排查链',
+  tagline: 'PAID 但没发货，状态机到 MQ 一路查',
 }

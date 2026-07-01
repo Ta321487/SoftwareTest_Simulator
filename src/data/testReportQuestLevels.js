@@ -100,5 +100,5 @@ export const testReportQuestArc = {
   id: 'testreport',
   name: '测试报告 · 选修',
   icon: '📊',
-  tagline: '发布判断 → 小结填空 → 报告圈选 → 签字沟通',
+  tagline: '报告不是流水账，得写结论',
 }

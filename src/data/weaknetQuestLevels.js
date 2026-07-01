@@ -123,5 +123,5 @@ export const weaknetQuestArc = {
   id: 'weaknet',
   name: '弱网断网 · 选修',
   icon: '📶',
-  tagline: 'App 复现 → 清单圈选 → 接口断言 → Jira 提单',
+  tagline: '电梯里闪退？弱网场景单独验',
 }

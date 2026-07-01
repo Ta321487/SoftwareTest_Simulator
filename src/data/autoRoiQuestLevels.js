@@ -88,5 +88,5 @@ export const autoRoiQuestArc = {
   id: 'autoroi',
   name: '自动化 ROI · 选修',
   icon: '🤖',
-  tagline: '门禁取舍 → 读 CI → 写立项（3 关短链）',
+  tagline: 'flaky 的别硬卡发布',
 }

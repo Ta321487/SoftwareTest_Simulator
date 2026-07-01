@@ -115,5 +115,5 @@ export const refundQuestArc = {
   id: 'refund',
   name: '退款异步 · 选修',
   icon: '↩️',
-  tagline: '幂等、回调验签、落库、死信——接主线状态机后的异步老坑',
+  tagline: '钱退了订单还在？异步老坑',
 }

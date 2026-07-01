@@ -90,5 +90,5 @@ export const datamaskQuestArc = {
   id: 'datamask',
   name: '数据脱敏 · 选修',
   icon: '🔒',
-  tagline: '合规判断 → 字段圈选 → SQL 查库 → 泄露升级',
+  tagline: '导出的数据，手机号不能明文',
 }

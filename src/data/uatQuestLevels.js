@@ -70,5 +70,5 @@ export const uatQuestArc = {
   id: 'uat',
   name: 'UAT 验收 · 选修',
   icon: '✅',
-  tagline: '业务验收、签字分工、阻塞定级——上线前最后一道门',
+  tagline: '业务说不行，测试不能替他们签字',
 }

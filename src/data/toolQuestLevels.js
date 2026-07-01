@@ -509,16 +509,16 @@ export const toolQuestLevels = [
 ]
 
 export const toolQuestArcs = [
-  { id: 'sql', name: 'SQL 查库 · 实操', icon: '🗄️', tagline: '灰盒验证 · 接口 200 也要查落库' },
-  { id: 'redis', name: 'Redis 缓存 · 实操', icon: '🔴', tagline: 'Session / 验证码 / 限流键排查' },
+  { id: 'sql', name: 'SQL 查库 · 实操', icon: '🗄️', tagline: '接口 200 了，库里也得有' },
+  { id: 'redis', name: 'Redis 缓存 · 实操', icon: '🔴', tagline: '验证码老不对？先查 Redis' },
   {
     id: 'cipipeline',
     name: 'CI 流水线 · 实操',
     icon: '🔄',
-    tagline: '看流水线 · 读日志 · 判断门禁',
+    tagline: '流水线红了，看是哪一段在拦',
   },
-  { id: 'mock', name: 'Mock 配置 · 实操', icon: '🎭', tagline: '沙箱挂了 · 回调 Mock 保进度' },
-  { id: 'apm', name: 'APM 链路 · 实操', icon: '📈', tagline: '链路耗时 · 灰度告警优先级' },
-  { id: 'git', name: 'Git 发布 · 实操', icon: '⎇', tagline: 'Hotfix 分支 · 修复 commit 核对' },
-  { id: 'async', name: '异步消息 · 实操', icon: '📨', tagline: 'MQ 回调 · 短信验证码收件箱' },
+  { id: 'mock', name: 'Mock 配置 · 实操', icon: '🎭', tagline: '第三方挂了，Mock 顶上别空等' },
+  { id: 'apm', name: 'APM 链路 · 实操', icon: '📈', tagline: '灰度错了先看错误率，别看感觉' },
+  { id: 'git', name: 'Git 发布 · 实操', icon: '⎇', tagline: 'Hotfix 发错 commit？核对再点发布' },
+  { id: 'async', name: '异步消息 · 实操', icon: '📨', tagline: '短信没到，收件箱和 MQ 两边查' },
 ]

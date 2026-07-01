@@ -83,5 +83,5 @@ export const boundaryQuestArc = {
   id: 'boundary',
   name: '边界值 · 选修',
   icon: '📐',
-  tagline: '写预期 → 等价类圈选 → 金额边界（3 关短链）',
+  tagline: '120 能过、121 该拦，边界别凭感觉',
 }

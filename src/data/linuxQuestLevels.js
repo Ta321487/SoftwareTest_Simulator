@@ -302,5 +302,5 @@ export const linuxQuestArc = {
   id: 'linux',
   name: 'Linux 值班 · 实操',
   icon: '💻',
-  tagline: 'tail / grep / curl——测试排障常用命令',
+  tagline: '告警来了先 tail，再 grep',
 }

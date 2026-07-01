@@ -56,7 +56,7 @@ export const sideChapters = [
     id: 'mindset',
     name: '第一章 · 测试思维选修',
     icon: '📖',
-    tagline: '安全、性能、策略等场景判断——思维 arc 各 3 关，按主线里程碑解锁。',
+    tagline: '时间紧、资源少时，先练怎么选、怎么取舍。',
     elective: true,
     badge: '选修',
   },
@@ -64,8 +64,7 @@ export const sideChapters = [
     id: 'toolchain',
     name: '第二章 · 排查工具链',
     icon: '🔧',
-    tagline:
-      '推荐路线：主线 #5 后开练。Linux → SQL → Redis → CI → Mock → APM → Git → MQ，各线 2–13 关链式解锁。',
+    tagline: '主线第 5 关后可开练，从 tail 到 MQ，一条道往下走。',
     recommended: true,
     badge: '推荐',
   },
@@ -73,8 +72,7 @@ export const sideChapters = [
     id: 'scenario',
     name: '第三章 · 业务场景选修',
     icon: '🎯',
-    tagline:
-      'UAT / 退款 / 探索性 / 报告 / 环境 / Flaky / 弱网 / 脱敏 / 埋点等——业务与流程加深选修链。',
+    tagline: '退款卡住、回调丢了、弱网闪退，业务坑单独练。',
     elective: true,
     badge: '选修',
   },

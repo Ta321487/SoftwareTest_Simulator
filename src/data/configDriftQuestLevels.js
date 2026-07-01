@@ -88,5 +88,5 @@ export const configDriftQuestArc = {
   id: 'configdrift',
   name: '环境漂移 · 选修',
   icon: '⚙️',
-  tagline: '停测判断 → 环境圈选 → 改配置 → 同步开发',
+  tagline: 'staging 和文档对不上？先停测',
 }

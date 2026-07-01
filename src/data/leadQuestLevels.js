@@ -80,5 +80,5 @@ export const leadQuestArc = {
   id: 'lead',
   name: 'Lead 带教 · 选修',
   icon: '🚀',
-  tagline: 'Go/No-Go、分任务、排资源、Review 交付——带人发布四步',
+  tagline: '带人发版：拍板、分活、盯交付',
 }

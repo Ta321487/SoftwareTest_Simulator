@@ -75,5 +75,5 @@ export const contractQuestArc = {
   id: 'contract',
   name: '契约回归 · 选修',
   icon: '📜',
-  tagline: '破坏性变更 → 写断言 → 同步开发（3 关短链）',
+  tagline: '接口改字段，契约测得先红',
 }

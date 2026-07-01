@@ -99,5 +99,5 @@ export const flakyQuestArc = {
   id: 'flaky',
   name: 'Flaky 自动化 · 选修',
   icon: '🎲',
-  tagline: '门禁判断 → 排查圈选 → 读 CI 日志 → 协作沟通',
+  tagline: '随机红的那条，别当门禁',
 }

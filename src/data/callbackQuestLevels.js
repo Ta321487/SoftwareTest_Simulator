@@ -88,5 +88,5 @@ export const callbackQuestArc = {
   id: 'callback',
   name: '抓包回调 · 选修',
   icon: '📡',
-  tagline: '域名配错、200 非成功、验签幂等——支付回调联调三板斧',
+  tagline: '支付成功了订单没动？先看回调 URL',
 }

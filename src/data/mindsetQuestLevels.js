@@ -795,44 +795,44 @@ export const mindsetQuestLevels = [
 ]
 
 export const mindsetQuestArcs = [
-  { id: 'security', name: '安全线', icon: '🛡️', tagline: 'XSS、注入——上线前的红线' },
+  { id: 'security', name: '安全线', icon: '🛡️', tagline: '评论区能跑脚本？这类洞得先拦' },
   {
     id: 'performance',
     name: '性能线',
     icon: '⚡',
-    tagline: '瓶颈判断 → 慢查询 Bug → 写验收口径（3 关）',
+    tagline: '慢在哪一段，修完怎么算过关',
   },
   {
     id: 'pipeline',
     name: 'CI 门禁 · 选修',
     icon: '🔄',
-    tagline: '门禁判断 → 修配置 → CI 协作（3 关）',
+    tagline: 'CI 红了别瞎点，先看该谁拦',
   },
   {
     id: 'collab',
     name: '协作进阶',
     icon: '🤝',
-    tagline: 'Mock 策略 · 沙箱降级——概念选修（实操见 Mock 配置线）',
+    tagline: '沙箱又挂了，Mock 和真连怎么折中',
   },
-  { id: 'compat', name: '兼容性', icon: '📱', tagline: 'H5、微信、弱网——移动端测试常识' },
-  { id: 'strategy', name: '策略线', icon: '🎯', tagline: '时间不够时怎么测——老手的取舍' },
-  { id: 'data', name: '数据线', icon: '🧪', tagline: '造数、沙箱、脚本——联调不踩坑' },
+  { id: 'compat', name: '兼容性', icon: '📱', tagline: '微信里打开、刘海挡住按钮，都得测' },
+  { id: 'strategy', name: '策略线', icon: '🎯', tagline: '发版前三小时，800 条用例跑不完怎么办' },
+  { id: 'data', name: '数据线', icon: '🧪', tagline: '没账号没订单？先会造数再联调' },
   {
     id: 'monitor',
     name: '监控告警 · 选修',
     icon: '📡',
-    tagline: '告警优先级 → grep 日志 → 写 incident 摘要（3 关）',
+    tagline: '四条告警同时响，先处理哪条',
   },
   {
     id: 'automation',
     name: '自动化',
     icon: '🤖',
-    tagline: '圈优先级 → 写范围 → 读 CI 排查（3 关）',
+    tagline: '二十条名额，先捡哪条最值',
   },
   {
     id: 'api',
     name: '接口专项',
     icon: '🔌',
-    tagline: '限流清单 → 幂等判断 → 写错误码预期（3 关）',
+    tagline: '限流、幂等、错误码，别只测 200',
   },
 ]

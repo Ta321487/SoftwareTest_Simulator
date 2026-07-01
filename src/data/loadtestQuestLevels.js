@@ -66,5 +66,5 @@ export const loadtestQuestArc = {
   id: 'loadtest',
   name: '压测解读 · 选修',
   icon: '📊',
-  tagline: '读报告、标红项、No-Go 拍板、复测标准——性能决策链',
+  tagline: '压测报告一片红，敢不敢签字',
 }

@@ -61,5 +61,5 @@ export const appSmokeQuestArc = {
   id: 'appsmoke',
   name: 'App 冒烟 · 选修',
   icon: '📲',
-  tagline: '点 App 复现、支付通知、冒烟清单——手工测试体感链',
+  tagline: '装包点一点，比看文档靠谱',
 }

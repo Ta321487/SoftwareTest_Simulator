@@ -124,5 +124,5 @@ export const i18nQuestArc = {
   id: 'i18n',
   name: '国际化 · 选修',
   icon: '🌏',
-  tagline: '归因判断 → 清单圈选 → SQL 查库 → Jira 提单',
+  tagline: '英文截断了，不一定是翻译问题',
 }

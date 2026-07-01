@@ -96,5 +96,5 @@ export const exploreQuestArc = {
   id: 'explore',
   name: '探索性测试 · 选修',
   icon: '🧭',
-  tagline: 'App 探索 → 章程圈选 → 笔记填空 → 汇报沟通',
+  tagline: '没写用例的地方，最容易漏',
 }

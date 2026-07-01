@@ -1,10 +1,18 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.26.1'
+export const APP_VERSION = '1.26.2'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
+    title: '番外与职级文案去模板化',
+    items: [
+      '55 处 tagline 改为场景口语，去掉「完整链 / 三板斧 / →」式目录腔',
+      '覆盖番外三章、41 条 arc、职级副标题与手札能力域',
+    ],
+  },
+  {
+    version: '1.26.1',
     title: '修复 Prettier 格式以通过 CI',
     items: ['统一 README 与番外关卡数据文件的代码风格'],
   },

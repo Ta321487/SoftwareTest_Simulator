@@ -100,5 +100,5 @@ export const reqChangeQuestArc = {
   id: 'reqchange',
   name: '需求变更 · 选修',
   icon: '📝',
-  tagline: '确认沟通 → 回归圈选 → 影响填空 → 工时沟通',
+  tagline: '需求又改了，回归范围得重划',
 }

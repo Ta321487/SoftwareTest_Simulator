@@ -73,5 +73,5 @@ export const grayReleaseQuestArc = {
   id: 'grayrelease',
   name: '灰度发布 · 选修',
   icon: '🚦',
-  tagline: 'APM 下钻、错误率优先、回滚确认——上线前三道门之一',
+  tagline: '灰度涨了先查错误率，别急着全量',
 }

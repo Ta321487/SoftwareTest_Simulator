@@ -103,5 +103,5 @@ export const apiAuthQuestArc = {
   id: 'apiauth',
   name: '接口越权 · 选修',
   icon: '🔐',
-  tagline: '401、403、IDOR、角色权限——接口鉴权实操链',
+  tagline: '拿 A 的 token 看 B 的订单？不行',
 }

@@ -106,5 +106,5 @@ export const smsQuestArc = {
   id: 'sms',
   name: '短信验证码 · 选修',
   icon: '📱',
-  tagline: '限流、TTL、网关超时、降级——登录验证码异步老坑',
+  tagline: '验证码收不到，限流到网关一路查',
 }

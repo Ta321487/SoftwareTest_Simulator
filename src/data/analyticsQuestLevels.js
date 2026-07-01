@@ -91,5 +91,5 @@ export const analyticsQuestArc = {
   id: 'analytics',
   name: '埋点验收 · 选修',
   icon: '📡',
-  tagline: '缺陷判断 → 验收圈选 → grep 日志 → 发布沟通',
+  tagline: '埋点少了，版本发出去就难补',
 }
