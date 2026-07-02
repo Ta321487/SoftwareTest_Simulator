@@ -4,7 +4,8 @@ export function includesAny(text, keywords = []) {
 }
 
 const COLLAB_REQUEST_WORDS = ['请', '麻烦', '配合', '协调', '支持', '帮忙', '帮我', '@']
-const SELF_ACTION_RE = /(我先|我来|我会|我这边|我去|我打算|我准备).{0,24}(查|核对|确认|看|排查|对比|验证|检查|复现|跟进|更新|同步|说明|整理|圈|补|对)/
+const SELF_ACTION_RE =
+  /(我先|我来|我会|我这边|我去|我打算|我准备).{0,24}(查|核对|确认|看|排查|对比|验证|检查|复现|跟进|更新|同步|说明|整理|圈|补|对)/
 const PASSIVE_ASK_RE = /^你(来|帮|帮忙|配合|看|查|核对)|^你配合我|麻烦你|请.*(看|查|核对)/
 
 const SELF_ACTION_PATTERNS = [
@@ -67,7 +68,18 @@ function getEffectiveMinLength(level, priorCount = 0) {
 }
 
 const HR_VALUE_WORDS = ['质量', '用户', '缺陷', '体验', '风险', '验证', '细致', '负责', '价值']
-const HR_BACKGROUND_WORDS = ['培训', '练习', '项目', '经验', '背景', '登录', '模块', '学习', '大学', '计算机']
+const HR_BACKGROUND_WORDS = [
+  '培训',
+  '练习',
+  '项目',
+  '经验',
+  '背景',
+  '登录',
+  '模块',
+  '学习',
+  '大学',
+  '计算机',
+]
 
 export function hasHrValueIntent(text) {
   const lower = String(text || '').toLowerCase()
@@ -82,13 +94,27 @@ export function hasHrBackground(text) {
 
 export function hasEscalationRisk(text) {
   const t = String(text || '')
-  const riskWords = ['阻塞', '风险', '影响', '上线', '延期', '来不及', 'Blocker', 'Major', '发版', '卡点', '没修']
+  const riskWords = [
+    '阻塞',
+    '风险',
+    '影响',
+    '上线',
+    '延期',
+    '来不及',
+    'Blocker',
+    'Major',
+    '发版',
+    '卡点',
+    '没修',
+  ]
   return riskWords.some((w) => t.includes(w)) || /怕.*上线|没法.*发布|来不及/.test(t)
 }
 
 export function hasEscalationRequest(text) {
   const t = String(text || '')
-  if (['请', '麻烦', '协调', '优先', '资源', '支持', '安排', '@', '帮忙'].some((w) => t.includes(w))) {
+  if (
+    ['请', '麻烦', '协调', '优先', '资源', '支持', '安排', '@', '帮忙'].some((w) => t.includes(w))
+  ) {
     return true
   }
   return /需要.*(协调|支持|优先|资源|排期)/.test(t)
@@ -101,7 +127,9 @@ function getEffectiveMinKeywords(level, text, priorCount = 0) {
     const hasAction = hasOwnCollabAction(text)
     const hasRequest = hasCollabRequest(text)
     const keywords = level.chatKeywords || []
-    const matched = keywords.filter((kw) => String(text).toLowerCase().includes(String(kw).toLowerCase()))
+    const matched = keywords.filter((kw) =>
+      String(text).toLowerCase().includes(String(kw).toLowerCase())
+    )
     const hasTopic =
       matched.length > 0 || STRUCTURE_TOPIC_ANCHORS.collaboration.some((a) => text.includes(a))
     if (hasAction && hasRequest && (hasTopic || priorCount > 0)) {
@@ -135,7 +163,24 @@ function getEffectiveMinKeywords(level, text, priorCount = 0) {
 
 const OFF_TOPIC_RE = /天气|吃饭|外卖|游戏|请假|工资|恋爱|电影|周末|无聊|不知道说|随便|跑题/
 const STRUCTURE_TOPIC_ANCHORS = {
-  hr: ['测试', '质量', '培训', '项目', '工作', '面试', '背景', '经验', '用户', '缺陷', '细致', '学习', '计算机', '编程', '大学', '专业'],
+  hr: [
+    '测试',
+    '质量',
+    '培训',
+    '项目',
+    '工作',
+    '面试',
+    '背景',
+    '经验',
+    '用户',
+    '缺陷',
+    '细致',
+    '学习',
+    '计算机',
+    '编程',
+    '大学',
+    '专业',
+  ],
   collaboration: [
     '测试',
     '环境',
@@ -150,7 +195,19 @@ const STRUCTURE_TOPIC_ANCHORS = {
     '网关',
     '抓包',
   ],
-  escalation: ['阻塞', '上线', '风险', '排期', '协调', '发版', '资源', 'bug', '延期', '影响', '修复'],
+  escalation: [
+    '阻塞',
+    '上线',
+    '风险',
+    '排期',
+    '协调',
+    '发版',
+    '资源',
+    'bug',
+    '延期',
+    '影响',
+    '修复',
+  ],
 }
 
 /** 与当前关卡话题明显无关（各 structured chat 通用） */
@@ -219,7 +276,9 @@ export function validateChatStructure(level, message) {
 
 /** 合并多轮回复为一条判题文本 */
 export function combineChatMessages(priorMessages = [], latestMessage = '') {
-  const parts = [...(priorMessages || []), latestMessage].map((s) => String(s || '').trim()).filter(Boolean)
+  const parts = [...(priorMessages || []), latestMessage]
+    .map((s) => String(s || '').trim())
+    .filter(Boolean)
   return parts.join(' ')
 }
 
@@ -312,7 +371,8 @@ export function getLevelTopicContext(level) {
     triple: kw.slice(0, 3).join('、') || '排查点',
     hint: level?.chatHint || '',
     placeholder: level?.chatPlaceholder || '',
-    isCallbackScenario: kw.some((k) => /回调|通知|notify/i.test(k)) || /回调|通知/.test(level?.content || ''),
+    isCallbackScenario:
+      kw.some((k) => /回调|通知|notify/i.test(k)) || /回调|通知/.test(level?.content || ''),
   }
 }
 
@@ -342,9 +402,8 @@ export function isKeywordStuffing(level, text, matchedKeywords, priorCount = 0) 
   const minKw = level?.chatMinKeywords ?? 2
   if (matched.length < minKw) return false
 
-  const hasSentenceFlow = /[，,。；]|因为|所以|先|然后|麻烦|请|我会|我先|打算|需要|建议|申请|一起/.test(
-    text
-  )
+  const hasSentenceFlow =
+    /[，,。；]|因为|所以|先|然后|麻烦|请|我会|我先|打算|需要|建议|申请|一起/.test(text)
   if (text.length >= minLen && hasSentenceFlow) return false
   if (priorCount > 0 && hasSentenceFlow) return false
   if (text.length < minLen && matched.length >= minKw) return true
@@ -352,12 +411,10 @@ export function isKeywordStuffing(level, text, matchedKeywords, priorCount = 0) 
   return false
 }
 
-function buildDynamicFollowUp(level, key, message, analysis, chatHistory = []) {
+function buildDynamicFollowUp(level, key, message, analysis, _chatHistory = []) {
   const text = String(message || '').trim()
   const ctx = getLevelTopicContext(level)
   const echo = extractUserEcho(text, level)
-  const dev = resolveChatFollowUpSender(level, chatHistory)
-  const devName = dev.sender?.split(/[·\s]/)[0] || '同事'
   const defaults = FOLLOW_UP_SETS[level.chatStructure] || HR_FOLLOW_UPS
   const fallback = defaults[key] || defaults.missingKeywords
 
@@ -530,7 +587,6 @@ function buildDynamicManagerNudge(key, level, devName = '同事') {
   }
 }
 
-
 const MANAGER_SENDER_RE = /组长|经理|PM|主管|总监|Leader|顾问/i
 
 /** 协作关追问默认由开发同事接话，而非派活的组长/PM */
@@ -671,7 +727,14 @@ const FOLLOW_UP_SETS = {
 }
 
 const FOLLOW_UP_ORDER = {
-  hr: ['meaningless', 'offTopic', 'keywordStuffing', 'tooShort', 'missingStructure', 'missingKeywords'],
+  hr: [
+    'meaningless',
+    'offTopic',
+    'keywordStuffing',
+    'tooShort',
+    'missingStructure',
+    'missingKeywords',
+  ],
   collaboration: [
     'meaningless',
     'offTopic',
@@ -682,7 +745,15 @@ const FOLLOW_UP_ORDER = {
     'missingRequest',
     'missingKeywords',
   ],
-  escalation: ['meaningless', 'offTopic', 'keywordStuffing', 'tooShort', 'missingRisk', 'missingRequest', 'missingKeywords'],
+  escalation: [
+    'meaningless',
+    'offTopic',
+    'keywordStuffing',
+    'tooShort',
+    'missingRisk',
+    'missingRequest',
+    'missingKeywords',
+  ],
 }
 
 /** 结构化 chat：首轮弱答是否触发一次追问 */
@@ -844,7 +915,11 @@ export function validateChatReply(level, data = {}) {
   }
 
   if (analysis.weaknesses.includes('missingRisk')) {
-    return { isPass: false, message: '对 PM 的升级需说清：什么卡住了、对上线有什么影响。', analysis }
+    return {
+      isPass: false,
+      message: '对 PM 的升级需说清：什么卡住了、对上线有什么影响。',
+      analysis,
+    }
   }
 
   if (analysis.weaknesses.includes('missingStructure')) {
@@ -909,7 +984,9 @@ export function getChatComposePreview(level, message) {
     if (level.chatStructure === 'hr') {
       tips.push(`相关表述还偏少（${matched.length}/${minKw}）。可提：质量、用户、细致、培训等。`)
     } else {
-      tips.push(`协作关键词不足（${matched.length}/${minKw}）。可提：测试环境、回调、配置、日志等。`)
+      tips.push(
+        `协作关键词不足（${matched.length}/${minKw}）。可提：测试环境、回调、配置、日志等。`
+      )
     }
   }
 

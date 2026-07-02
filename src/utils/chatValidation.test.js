@@ -15,8 +15,6 @@ import {
   isMeaninglessReply,
   hasOwnCollabAction,
   hasCollabRequest,
-  hasHrValueIntent,
-  hasHrBackground,
   hasEscalationRisk,
   hasEscalationRequest,
   getLevelTopicContext,
@@ -188,11 +186,10 @@ describe('chatValidation', () => {
       { sender: '李工', avatar: '👨‍💻', role: 'other' },
       { sender: '测试组长', avatar: '👩‍💼', role: 'other' },
     ]
-    const messages = getChatSuccessThread(
-      collabLevel,
-      history,
-      { chatReply: '行，我先配合看日志。', chatManagerReply: '好，有进展同步。' }
-    )
+    const messages = getChatSuccessThread(collabLevel, history, {
+      chatReply: '行，我先配合看日志。',
+      chatManagerReply: '好，有进展同步。',
+    })
     expect(messages).toHaveLength(2)
     expect(messages[0].sender).toBe('李工')
     expect(messages[1].sender).toBe('测试组长')
@@ -298,9 +295,9 @@ describe('chatValidation', () => {
     const first = '我参加过测试培训，做过登录模块练习。'
     const second = '想做测试是因为能在上线前帮用户发现缺陷，做事比较细致。'
     expect(validateChatReply(hrLevel, { message: first }).isPass).toBe(false)
-    expect(
-      validateChatReply(hrLevel, { message: second, chatPriorMessages: [first] }).isPass
-    ).toBe(true)
+    expect(validateChatReply(hrLevel, { message: second, chatPriorMessages: [first] }).isPass).toBe(
+      true
+    )
   })
 
   it('passes realistic two-turn escalation to PM', () => {

@@ -161,15 +161,21 @@ async function revealOtherMessages(messages = [], { onComplete, startDelay = 520
 
 function markSuccess(reply) {
   if (Array.isArray(reply?.messages) && reply.messages.length) {
-    revealOtherMessages(reply.messages, { onComplete: () => { sent.value = true } })
+    revealOtherMessages(reply.messages, {
+      onComplete: () => {
+        sent.value = true
+      },
+    })
     return
   }
   const payload = typeof reply === 'string' ? { text: reply } : reply || {}
   if (!payload.text) return
-  revealOtherMessages(
-    [{ sender: payload.sender, avatar: payload.avatar, text: payload.text }],
-    { onComplete: () => { sent.value = true }, startDelay: 420 }
-  )
+  revealOtherMessages([{ sender: payload.sender, avatar: payload.avatar, text: payload.text }], {
+    onComplete: () => {
+      sent.value = true
+    },
+    startDelay: 420,
+  })
 }
 
 function markFollowUp(payload) {
@@ -185,7 +191,11 @@ function markFollowUp(payload) {
         ? [{ sender: payload.sender, avatar: payload.avatar, text: payload.text }]
         : []
 
-  revealOtherMessages(messages, { onComplete: () => { followUpRound.value = true } })
+  revealOtherMessages(messages, {
+    onComplete: () => {
+      followUpRound.value = true
+    },
+  })
 }
 
 function markError() {

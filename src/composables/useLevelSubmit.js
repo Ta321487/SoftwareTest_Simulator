@@ -1,6 +1,12 @@
 import { ref } from 'vue'
 import { validateSimulation } from '../utils/validator'
-import { shouldOfferChatFollowUp, getChatFollowUpThread, getChatSuccessThread, combineChatMessages, getChatFollowUpNotice } from '../utils/chatValidation'
+import {
+  shouldOfferChatFollowUp,
+  getChatFollowUpThread,
+  getChatSuccessThread,
+  combineChatMessages,
+  getChatFollowUpNotice,
+} from '../utils/chatValidation'
 import { getFailureHint } from '../utils/failureHints'
 import { trackLevelFail, trackLevelPass } from '../utils/analytics'
 import { getRankForXp } from '../data/ranks'
