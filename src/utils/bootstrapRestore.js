@@ -15,7 +15,7 @@ export async function tryRestoreFromIndexedDB(progressStore, projectStore, theme
 
   const completed = backup.progress.completedLevelIds.length
   const ok = window.confirm(
-    `检测到浏览器自动备份（${completed} 关进度）。\n\n是否恢复？当前空白进度将被覆盖。`
+    `本地没有存档进度，但检测到自动备份（已通关 ${completed} 关）。\n\n是否恢复？建议点「确定」找回进度。`
   )
   if (!ok) return false
 

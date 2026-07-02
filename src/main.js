@@ -26,14 +26,19 @@ app.config.errorHandler = (err, _instance, info) => {
   console.error('[App Error]', err, info)
   const root = document.getElementById('app')
   if (root && !root.querySelector('.boot-error')) {
+    const msg = String(err?.message || err || '未知错误')
     root.innerHTML = `
-      <div class="boot-error" style="padding:2rem;font-family:system-ui;max-width:520px;margin:2rem auto">
+      <div class="boot-error" style="padding:2rem;font-family:system-ui;max-width:520px;margin:2rem auto;line-height:1.6">
         <h1 style="font-size:1.25rem;margin-bottom:0.75rem">页面加载出错</h1>
-        <p style="color:#666;line-height:1.6;margin-bottom:1rem">${err?.message || err}</p>
-        <button type="button" onclick="localStorage.clear();location.reload()" style="padding:8px 16px;cursor:pointer">
-          清除缓存并刷新
+        <p style="color:#666;margin-bottom:0.75rem">${msg}</p>
+        <p style="color:#b45309;font-size:0.9rem;margin-bottom:1rem">
+          请勿清除浏览器数据，否则会丢失通关记录。刷新后若提示「从自动备份恢复」，请点确定。
+        </p>
+        <button type="button" id="boot-error-reload" style="padding:8px 16px;cursor:pointer;margin-right:8px">
+          刷新页面
         </button>
       </div>`
+    root.querySelector('#boot-error-reload')?.addEventListener('click', () => location.reload())
   }
 }
 
@@ -47,8 +52,8 @@ async function bootstrap() {
     const progressStore = useProgressStore(pinia)
     const projectStore = useProjectStore(pinia)
     registerAutoBackupStores({ progressStore, projectStore, themeStore })
+    await tryRestoreFromIndexedDB(progressStore, projectStore, themeStore).catch(() => {})
     app.mount('#app')
-    tryRestoreFromIndexedDB(progressStore, projectStore, themeStore).catch(() => {})
   } catch (err) {
     app.config.errorHandler(err, null, 'bootstrap')
   }

@@ -226,13 +226,15 @@ defineExpose({ reset })
           <pre class="api-client__response-body">{{ activeScenario.responseBody }}</pre>
         </div>
 
-        <label class="sim-field__label">测试断言（status + body 要点）</label>
-        <textarea
-          v-model="values[activeScenario.field.field]"
-          class="sim-field__textarea"
-          rows="3"
-          :placeholder="activeScenario.field.placeholder"
-        />
+        <template v-if="activeScenario">
+          <label class="sim-field__label">测试断言（status + body 要点）</label>
+          <textarea
+            v-model="values[activeScenario.field.field]"
+            class="sim-field__textarea"
+            rows="3"
+            :placeholder="activeScenario.field.placeholder"
+          />
+        </template>
       </div>
 
       <div

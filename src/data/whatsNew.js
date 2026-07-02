@@ -1,10 +1,19 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.26.7'
+export const APP_VERSION = '1.26.8'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
+    title: '修复崩溃页误删通关记录',
+    items: [
+      '页面报错时不再提供「清除缓存」按钮，避免一键清空进度',
+      '启动时优先尝试从浏览器自动备份恢复丢失的进度',
+      '修复接口断言关在样本未加载时可能白屏的问题',
+    ],
+  },
+  {
+    version: '1.26.7',
     title: '全站描述文案更易读',
     items: [
       '校验提示、引导、职级与成就等说明改为更自然的表述',
