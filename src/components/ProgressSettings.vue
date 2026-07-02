@@ -3,12 +3,7 @@ import { ref } from 'vue'
 import { useProgressStore } from '../stores/progressStore'
 import { useProjectStore } from '../stores/projectStore'
 import { useThemeStore } from '../stores/themeStore'
-import {
-  buildBackup,
-  applyBackup,
-  downloadBackup,
-  readBackupFile,
-} from '../utils/progressBackup'
+import { buildBackup, applyBackup, downloadBackup, readBackupFile } from '../utils/progressBackup'
 import { markExported } from '../utils/bootstrapRestore'
 import { trackBackupExport, trackBackupImport } from '../utils/analytics'
 
@@ -73,7 +68,8 @@ function triggerImport() {
   <section class="save-panel" :class="{ 'save-panel--embedded': embedded }">
     <h2 class="save-panel__title">存档管理</h2>
     <p class="save-panel__desc">
-      进度保存在浏览器本地。换设备或清缓存前请先导出；支持 JSON 存档导入恢复。存档包含关卡进度和 App 实操记录。
+      进度保存在浏览器本地。换设备或清缓存前请先导出；支持 JSON 存档导入恢复。存档包含关卡进度和 App
+      实操记录。
     </p>
     <div class="save-panel__actions">
       <button type="button" class="level-map__btn level-map__btn--primary" @click="exportSave">

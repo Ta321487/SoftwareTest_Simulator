@@ -180,7 +180,9 @@ const hintButtonLabel = computed(() => {
     return hintPoolSize.value > 1 ? '换一条思路' : '再看思路'
   }
   if (levelStatus.value === 'completed') {
-    return sessionHintUsed.value && hintPoolSize.value > 1 ? '换一条提示（冲三星）' : '提示（冲三星）'
+    return sessionHintUsed.value && hintPoolSize.value > 1
+      ? '换一条提示（冲三星）'
+      : '提示（冲三星）'
   }
   if (sessionHintUsed.value) {
     return hintPoolSize.value > 1 ? '换一条提示' : '再看提示'

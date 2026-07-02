@@ -53,9 +53,7 @@ export function validateSimulation(level, data) {
       const isPass = arraysEqual(selected, level.correctChecks)
       return {
         isPass,
-        message: isPass
-          ? '勾选正确！'
-          : '有些选项不该选。想想哪些是功能或风险相关，哪些只是干扰。',
+        message: isPass ? '勾选正确！' : '有些选项不该选。想想哪些是功能或风险相关，哪些只是干扰。',
       }
     }
 

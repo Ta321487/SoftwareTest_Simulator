@@ -241,7 +241,9 @@ onUnmounted(() => {
         :disabled="dailyStatus === 'locked'"
         @click="goLevel(DAILY_LEVEL_ID)"
       >
-        {{ dailyStatus === 'completed' ? '明日刷新' : dailyStatus === 'locked' ? '🔒 未解锁' : '开始' }}
+        {{
+          dailyStatus === 'completed' ? '明日刷新' : dailyStatus === 'locked' ? '🔒 未解锁' : '开始'
+        }}
       </button>
     </article>
 
