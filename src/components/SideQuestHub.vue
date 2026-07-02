@@ -18,7 +18,7 @@ defineProps({
 const router = useRouter()
 const progressStore = useProgressStore()
 const { isMobile } = useMobileLayout()
-const expandedChapterIds = ref(new Set(['toolchain']))
+const expandedChapterIds = ref(new Set())
 const selectedArcByChapter = ref({})
 const arcToast = ref('')
 let arcToastTimer = null
@@ -157,9 +157,9 @@ function goLevel(id) {
 
 function chapterOpen(chapter) {
   if (!isMobile.value) {
-    return chapter.recommended || expandedChapterIds.value.has(chapter.id)
+    return expandedChapterIds.value.has(chapter.id)
   }
-  return chapter.active || chapter.recommended || expandedChapterIds.value.has(chapter.id)
+  return chapter.active || expandedChapterIds.value.has(chapter.id)
 }
 
 function onChapterToggle(chapter, event) {

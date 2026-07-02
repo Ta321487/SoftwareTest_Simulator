@@ -219,6 +219,7 @@ const {
   level,
   project,
   projectStore,
+  progressStore,
   router,
   buildSutRoute,
   projectDay,

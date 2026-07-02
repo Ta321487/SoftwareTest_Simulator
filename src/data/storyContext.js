@@ -184,6 +184,7 @@ export function getStoryContext(levelId, projectStore, progressStore = null) {
       envStatus: ctx.envStatus || [],
       chatHistory: ctx.chatHistory || [],
       chatReply: ctx.chatReply || '',
+      chatManagerReply: ctx.chatManagerReply || '',
       prdContent: ctx.prdContent || '',
       jiraMode: ctx.jiraMode || 'create',
       jiraDraft: ctx.jiraDraft || null,
@@ -370,6 +371,7 @@ const STORY_BY_LEVEL = {
       },
     ],
     chatReply: '行，你先对一下测试环境的回调地址，有需要我配合抓包或看日志。',
+    chatManagerReply: '好，跟李工把方案对齐，有进展群里同步。',
     inbox: [
       {
         id: 'chat-mention',
@@ -963,7 +965,7 @@ Content-Type: application/json
         time: '14:00',
       },
     ],
-    chatReply: '介绍清楚，有培训经历和用户视角，继续下一题。',
+    chatReply: '嗯，这样清楚多了。继续下一题。',
     inbox: [
       {
         id: 'final-intro',

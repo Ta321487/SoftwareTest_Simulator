@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { validateSimulation } from '../utils/validator'
+import { shouldOfferChatFollowUp, getChatFollowUpThread, getChatSuccessThread, combineChatMessages, getChatFollowUpNotice } from '../utils/chatValidation'
 import { getFailureHint } from '../utils/failureHints'
 import { trackLevelFail, trackLevelPass } from '../utils/analytics'
 import { getRankForXp } from '../data/ranks'
@@ -104,6 +105,7 @@ export function useLevelSubmit({
   const phaseMilestone = ref(null)
   const passSimEpilogue = ref(null)
   const submitFlash = ref('')
+  const chatPriorMessages = ref([])
 
   function resetSubmitState() {
     showFeedback.value = false
@@ -120,6 +122,7 @@ export function useLevelSubmit({
     sessionJiraTier.value = null
     passSimEpilogue.value = null
     simRef.value?.reset?.()
+    chatPriorMessages.value = []
   }
 
   function saveStoryArtifact(submitData) {
@@ -238,13 +241,44 @@ export function useLevelSubmit({
     }
 
     if (lv.simType === 'chat') {
-      if (result.isPass) {
-        simRef.value?.markSuccess?.(storyContext.value.chatReply)
-        handlePass(data)
-      } else {
-        simRef.value?.markError?.()
-        handleFail(data, result)
+      const prior = [...chatPriorMessages.value]
+      if (prior.length) {
+        showFeedback.value = false
+        feedbackMessage.value = ''
       }
+      const chatResult = validateSimulation(lv, { message: data.message, chatPriorMessages: prior })
+      const combined = combineChatMessages(prior, data.message)
+
+      if (chatResult.isPass) {
+        const history = storyContext.value.chatHistory || []
+        const messages = getChatSuccessThread(lv, history, {
+          chatReply: storyContext.value.chatReply,
+          chatManagerReply: storyContext.value.chatManagerReply,
+        })
+        simRef.value?.markSuccess?.({ messages })
+        handlePass({ ...data, message: combined, chatPriorMessages: prior })
+        chatPriorMessages.value = []
+        return
+      }
+
+      if (shouldOfferChatFollowUp(lv, prior)) {
+        chatPriorMessages.value.push(data.message)
+        const combined = combineChatMessages(prior, data.message)
+        const history = storyContext.value.chatHistory || []
+        const thread = getChatFollowUpThread(lv, combined, history)
+        simRef.value?.markFollowUp?.({
+          messages: thread.messages,
+          placeholder: thread.placeholder,
+          hint: thread.hint,
+        })
+        showFeedback.value = true
+        feedbackMessage.value = getChatFollowUpNotice(lv, history)
+        failureHint.value = ''
+        return
+      }
+
+      simRef.value?.markError?.()
+      handleFail(data, chatResult)
       return
     }
 

@@ -1,5 +1,6 @@
 import { ref, computed, nextTick } from 'vue'
 import { levels } from '../utils/levelRegistry'
+import { levelOrder } from '../data/levels'
 import { getDockShortLabel } from '../data/projects'
 import { LOGIN_SUT_DOCK_ID, shouldShowLoginAppDock, isLoginModuleProject } from '../utils/loginSut'
 import {
@@ -26,6 +27,7 @@ export function useLevelDock({
   level,
   project,
   projectStore,
+  progressStore,
   router,
   buildSutRoute,
   projectDay,
@@ -59,13 +61,15 @@ export function useLevelDock({
     }
     const items = project.value.days.map((day) => {
       const srcLevel = levels.find((lv) => lv.id === day.levelId)
+      const status = progressStore.getStatus(day.levelId)
       return {
         levelId: day.levelId,
         simType: srcLevel.simType,
         shortLabel: getDockShortLabel(srcLevel.simType, day.levelId),
         dayLabel: day.label,
-        locked: day.levelId > level.value.id,
-        lockReason: lockedLabel(day.levelId, srcLevel.projectDay),
+        status,
+        locked: status === 'locked',
+        lockReason: lockReasonForLevel(day.levelId),
         hasArtifact: projectStore.hasArtifact(project.value.id, day.levelId),
       }
     })
@@ -154,8 +158,10 @@ export function useLevelDock({
     return items
   })
 
-  function lockedLabel(levelId, projectDay) {
-    return `完成本阶段第 ${projectDay} 关后解锁`
+  function lockReasonForLevel(levelId) {
+    const index = levelOrder.indexOf(levelId)
+    if (index <= 0) return ''
+    return `完成主线 #${levelOrder[index - 1]} 后解锁`
   }
 
   function scrollLevelMain(behavior = 'smooth') {
@@ -181,8 +187,13 @@ export function useLevelDock({
 
   function handleDockChange(id) {
     const item = dockItems.value.find((d) => d.levelId === id)
+    if (item?.locked) return
     if (item?.isSutEntry && item.sutDock) {
       router.push(buildSutRoute(level.value.id, item.sutDock))
+      return
+    }
+    if (level.value && id !== level.value.id && item?.status === 'available') {
+      router.push({ name: 'LevelDetail', params: { id: String(id) } })
       return
     }
     const wasArchive = level.value && activeDockLevelId.value !== level.value.id

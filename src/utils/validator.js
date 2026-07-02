@@ -4,7 +4,7 @@ import {
   jiraTierMessage,
   jiraTierStarCap,
 } from './jiraValidation'
-import { validateChatStructure } from './chatValidation'
+import { validateChatReply } from './chatValidation'
 import { validateTemplateSubmission } from './templateValidation'
 import { validateTerminalCommand } from './terminalValidation'
 import { validateSqlQuery } from './sqlValidation'
@@ -153,37 +153,8 @@ export function validateSimulation(level, data) {
       }
     }
 
-    case 'chat': {
-      const message = (data.message || '').trim()
-      const lower = message.toLowerCase()
-      const keywords = level.chatKeywords || []
-      const matched = keywords.filter((keyword) => lower.includes(keyword.toLowerCase()))
-      const minLen = level.chatMinLength ?? 8
-      const minKw = level.chatMinKeywords ?? 1
-
-      if (message.length < minLen) {
-        return {
-          isPass: false,
-          message: level.chatFailHint || '回复太短或太笼统。说明你会先查什么，并请对方配合排查。',
-        }
-      }
-
-      if (matched.length < minKw) {
-        return {
-          isPass: false,
-          message:
-            level.chatFailHint ||
-            '回复偏被动。试着写：①你会先核对测试环境的配置/地址 ②请李工配合查日志或抓包。',
-        }
-      }
-
-      const structure = validateChatStructure(level, message)
-      if (!structure.ok) {
-        return { isPass: false, message: structure.message }
-      }
-
-      return { isPass: true, message: '回复专业得体！' }
-    }
+    case 'chat':
+      return validateChatReply(level, data)
 
     case 'clickcard': {
       const isPass = data.selected === level.correctClick

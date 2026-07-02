@@ -1,4 +1,5 @@
 import { levels } from '../data/levels'
+import { shouldShowChatComposePreview } from './chatValidation'
 
 /**
  * 按 simType 将关卡配置映射为模拟器组件 props。
@@ -49,15 +50,14 @@ export function buildSimProps({
         chatHistory: ctx.chatHistory,
         composeHint: lv.chatHint,
         placeholder: lv.chatPlaceholder,
-        chatPreviewConfig:
-          lv.chatStructure || lv.chatKeywords?.length
-            ? {
-                chatStructure: lv.chatStructure,
-                chatKeywords: lv.chatKeywords,
-                chatMinLength: lv.chatMinLength,
-                chatMinKeywords: lv.chatMinKeywords,
-              }
-            : null,
+        chatPreviewConfig: shouldShowChatComposePreview(lv)
+          ? {
+              chatStructure: lv.chatStructure,
+              chatKeywords: lv.chatKeywords,
+              chatMinLength: lv.chatMinLength,
+              chatMinKeywords: lv.chatMinKeywords,
+            }
+          : null,
       }
     case 'config':
       return {
