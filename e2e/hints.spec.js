@@ -9,7 +9,7 @@ test('level hint reveals text and can rotate when pool has multiple entries', as
 
   const hintBtn = page.locator('.level-detail__hint-btn')
   await expect(hintBtn).toBeVisible()
-  await expect(hintBtn).toContainText('提示（影响星级）')
+  await expect(hintBtn).toContainText('查看提示（会少一颗星）')
 
   await hintBtn.click()
   await expect(page.locator('.level-detail__hint-box')).toBeVisible()
