@@ -55,7 +55,7 @@ export function validateSimulation(level, data) {
         isPass,
         message: isPass
           ? '勾选正确！'
-          : '勾选不正确。请重新审视哪些是功能性/风险项，哪些是可忽略的干扰项。',
+          : '有些选项不该选。想想哪些是功能或风险相关，哪些只是干扰。',
       }
     }
 
@@ -76,7 +76,7 @@ export function validateSimulation(level, data) {
           isPass,
           message: isPass
             ? '勾选正确！'
-            : '勾选不正确。请重新审视哪些是接口层必须验证的项，哪些是可忽略的干扰项。',
+            : '有些选项不该选。想想哪些是接口必须验证的，哪些只是干扰。',
         }
       }
       const values = data.values || {}
@@ -149,7 +149,7 @@ export function validateSimulation(level, data) {
         isPass,
         message: isPass
           ? '配置修改正确！'
-          : '测试连接失败。占位符地址通常无法连通沙箱，请向运维确认测试环境真实地址。',
+          : '连接失败。文档里的示例地址往往连不上，请改成测试环境的真实地址。',
       }
     }
 
@@ -176,7 +176,7 @@ export function validateSimulation(level, data) {
         isPass,
         message: isPass
           ? '定位正确！'
-          : '选错了。对照 status、Host/URL 环境与业务链路（支付→回调→落库）重新分析。',
+          : '选错了。看看状态码、域名/地址是否对，再顺着支付→回调→落库想一遍。',
       }
     }
 
@@ -250,7 +250,7 @@ export function validateSimulation(level, data) {
     }
 
     default:
-      return { isPass: false, message: '未知模拟类型。' }
+      return { isPass: false, message: '这道题类型暂不支持，请刷新页面或反馈问题。' }
   }
 }
 

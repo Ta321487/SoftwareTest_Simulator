@@ -32,7 +32,7 @@ export function validateRedisCommand(command, level) {
   const exp = parseExpected(level.correctCommand || '')
   const user = parseRedisCommand(command)
   if (!exp || !user) {
-    return { isPass: false, message: '支持 GET / TTL / KEYS 命令，请对照任务说明。' }
+    return { isPass: false, message: '支持 GET、TTL、KEYS 三种命令，请按题目要求输入。' }
   }
 
   if (user.cmd !== exp.cmd) {

@@ -13,7 +13,7 @@ export function validateSqlQuery(query, level) {
   }
 
   if (!norm.startsWith('select')) {
-    return { isPass: false, message: '测试查库只用 SELECT 只读查询，不要 UPDATE/DELETE。' }
+    return { isPass: false, message: '这里只能查数据（SELECT），不要改或删数据。' }
   }
 
   const table = (level.sqlTable || '').toLowerCase()

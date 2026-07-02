@@ -1,13 +1,22 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.26.6'
+export const APP_VERSION = '1.26.7'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
+    title: '全站描述文案更易读',
+    items: [
+      '校验提示、引导、职级与成就等说明改为更自然的表述',
+      '更新日志去掉开发术语，改为玩家能看懂的功能描述',
+      '番外页关数改为按章节动态统计，不再写死',
+    ],
+  },
+  {
+    version: '1.26.6',
     title: '修复手机端接口设计题底部被遮挡',
     items: [
-      'Checklist / API 勾选关提交按钮 sticky 避开底栏 Tab',
+      '手机端接口勾选题：提交按钮固定在底部，不再被 Tab 栏挡住',
       '勾选列表底部留白，最后一项可完整滚出',
     ],
   },
@@ -15,7 +24,7 @@ export const WHATS_NEW_ENTRIES = [
     version: '1.26.5',
     title: '计算题不再透答案',
     items: [
-      '去掉 placeholder 与示例里的标准答案数字',
+      '计算题不再在输入框或示例里显示标准答案',
       '公式说明与校验提示收简，整数或小数均可提交',
     ],
   },
@@ -23,23 +32,23 @@ export const WHATS_NEW_ENTRIES = [
     version: '1.26.3',
     title: '聊天关更贴近真实协作',
     items: [
-      '弱答可追问一轮，分两句发也能过',
-      'NPC 逐条打字、协作关开发/组长错峰回复',
-      '协作 / HR / 升级类聊天校验放宽，去掉默认发送前预览',
+      '聊天题答得不够具体时，对方会追问；分两条消息补充也可以',
+      '协作关里同事和组长会分开回复，更像真实群聊',
+      '协作、面试、升级类聊天校验放宽，默认不再显示发送前预览',
     ],
   },
   {
     version: '1.26.2',
     title: '番外与职级文案去模板化',
     items: [
-      '55 处 tagline 改为场景口语，去掉「完整链 / 三板斧 / →」式目录腔',
-      '覆盖番外三章、41 条 arc、职级副标题与手札能力域',
+      '番外和职级介绍改得更口语，读起来不像目录',
+      '覆盖番外三章、各条选修线、职级副标题与手札能力域',
     ],
   },
   {
     version: '1.26.1',
-    title: '修复 Prettier 格式以通过 CI',
-    items: ['统一 README 与番外关卡数据文件的代码风格'],
+    title: '修复部分文案格式问题',
+    items: ['统一 README 与番外关卡数据文件的排版'],
   },
   {
     version: '1.26.0',
@@ -81,7 +90,7 @@ export const WHATS_NEW_ENTRIES = [
     title: '修复手机 Safari 上 Day 条无法滑动与点击卡死',
     items: [
       'Day 横滑条改由浏览器原生 overflow 滚动，移除 JS pointer 捕获',
-      'Day chip 由 button 改为 div，避免 iOS 拦截横滑手势',
+      '修复 iPhone 上 Day 条滑不动、点不动的问题',
       '点击未解锁 Day 不再导致底栏无响应',
     ],
   },
@@ -110,16 +119,16 @@ export const WHATS_NEW_ENTRIES = [
     version: '1.22.0',
     title: '螺旋复现加深 + UAT 验收选修',
     items: [
-      '主线新增 3 关：退款状态机、小事故复盘、灰度指标拍板（#49–#51）',
-      'Review 用例、满月总结等关增加 spiral 提示，与 #35、#10 联动',
-      '番外新增 UAT 验收选修 3 关（#151–#153），Go/No-Go 后解锁',
+      '主线新增 3 关：退款状态、事故复盘、灰度决策',
+      '部分关卡会提示「和哪关同类」，方便复习',
+      '番外新增 UAT 验收选修 3 关，发布评审后解锁',
     ],
   },
   {
     version: '1.19.1',
     title: '通关解锁「测试能力」成长线',
     items: [
-      '通关 debrief 展示「我会…」能力句，螺旋复现关会提示与哪关同类',
+      '通关总结展示「我会…」能力句，同类关卡会提示关联复习',
       '手札新增「我的能力」Tab，按分类查看已掌握能力与来源关卡',
       '档案页显示能力进度，可跳转手札复习',
     ],
@@ -128,7 +137,7 @@ export const WHATS_NEW_ENTRIES = [
     version: '1.18.2',
     title: '主线 48 关职场沉浸补全',
     items: [
-      '全部主线关卡接入 inbox / envStatus，登录 Day 6–7 与 Lead 线不再「裸关」',
+      '主线关卡补齐消息和环境状态，沉浸感更完整',
       '加练、面试、笔试、值班等稀疏关补 PRD 与导师/面试官消息',
       '跨关动态衔接：HR→技术面、grep→tail -f、状态机→接口断言等',
     ],
@@ -144,8 +153,8 @@ export const WHATS_NEW_ENTRIES = [
   },
   {
     version: '1.18.0',
-    title: '清理死代码与 lint 警告',
-    items: ['删除未引用的 CareerMap 与旧 Tab 样式', 'ESLint 未使用变量清零，工程更易维护'],
+    title: '清理旧界面，导航更统一',
+    items: ['清理旧界面，导航更统一'],
   },
   {
     version: '1.17.4',
@@ -171,7 +180,7 @@ export const WHATS_NEW_ENTRIES = [
     items: [
       '进度自动备份到 IndexedDB，localStorage 丢失时可恢复',
       '存储失败时会提示导出存档，通关 5 关后提醒备份',
-      '「待加强」新增按题型特训与番外推荐',
+      '档案页新增按题型加练与番外推荐',
       '提交失败时显示手札与番外学习建议',
     ],
   },

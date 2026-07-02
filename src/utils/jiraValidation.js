@@ -249,7 +249,7 @@ export function getJiraTierPreview(levelOrId, values) {
   } else if (!quality.isPass) {
     tips.push(quality.message)
   } else if (tier === 'good') {
-    tips.push('再充实标题与步骤（建议 3 步以上）可冲「优秀」拿 ★★★。')
+    tips.push('标题和步骤再写详细些（建议 3 步以上），可以拿满星。')
   }
 
   return {
@@ -261,9 +261,9 @@ export function getJiraTierPreview(levelOrId, values) {
 }
 
 export function jiraTierMessage(tier) {
-  if (tier === 'excellent') return 'Bug 单提交成功！质量优秀，开发可直接接手。'
-  if (tier === 'good') return 'Bug 单提交成功！已达合格标准。'
-  return 'Bug 单已收录（草稿档）。能过关，但建议补全现象与步骤后再冲星。'
+  if (tier === 'excellent') return '工单提交成功！质量优秀，开发可以直接处理。'
+  if (tier === 'good') return '工单提交成功！已达合格标准。'
+  return '工单已提交（草稿质量）。能过关，但补全现象和步骤可以拿更高星级。'
 }
 
 export function jiraTierStarCap(tier) {

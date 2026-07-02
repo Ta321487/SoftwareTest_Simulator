@@ -243,7 +243,7 @@ export function applyConsequences(levelId, { progressStore, projectStore }) {
       from: 'SRE',
       avatar: '📡',
       time: '15:20',
-      text: '灰度监控漏看支付成功率的话，P0 复盘写再漂亮也是事后诸葛亮。措施要 actionable。',
+      text: '灰度监控漏看支付成功率的话，P0 复盘写再漂亮也是事后诸葛亮。改进措施要具体、能执行。',
       read: false,
     })
   }
@@ -364,9 +364,9 @@ export function getPassDebriefNote(levelId, progressStore, projectStore = null) 
 
   if (levelId === 3) {
     if (loginSut.reproducedBug) {
-      return '🔍 你先在 App 里复现了 -1 秒再写单——步骤和实际会好写很多。💼 工单已进 backlog；「合格」以上可少一轮来回。'
+      return '先在 App 里复现问题，写工单会容易很多。工单已进入待办，信息越完整，开发来回越少。'
     }
-    return '💼 工单已进 backlog。写「合格」以上可少一轮来回；草稿档也能过，但后面关卡的同事可能会催你补细节。'
+    return '工单已进入待办。信息写全可以减少来回；草稿质量也能过关，但后面同事可能会催你补细节。'
   }
   if (levelId === 4 && loginSut.verifiedFix) {
     return '✅ App 上已确认倒计时恢复正常，回归勾选更有依据。💼 2 小时手测要聚焦「修了什么、哪里最容易连带出问题」。'
@@ -390,7 +390,7 @@ export function getPassDebriefNote(levelId, progressStore, projectStore = null) 
     return '💼 王工在群里点了赞，但提醒：下次 Bug 单把预期/实际写得更可复现，开发少问一轮。'
   }
   if (levelId === 5 && m4 > 0) {
-    return '🧯 灰度有惊无险。组长说：回归范围漏项不扣进度，但线上值班时会放大——值得冲星重玩第 4 关。'
+    return '灰度有惊无险。组长说：回归范围漏项不扣进度，但线上值班时会放大——值得重玩第 4 关冲三星。'
   }
   if (levelId === 5 && m4 === 0) {
     return '✨ 登录项目收官漂亮。Day 1–4 的档案会在后续剧本里继续派上用场。'

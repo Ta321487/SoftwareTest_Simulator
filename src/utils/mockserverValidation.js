@@ -33,5 +33,5 @@ export function validateMockServer(level, data) {
     }
   }
 
-  return { isPass: true, message: 'Mock 规则配置正确！' }
+  return { isPass: true, message: '模拟接口配置正确！' }
 }

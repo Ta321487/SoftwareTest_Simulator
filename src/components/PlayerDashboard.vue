@@ -223,14 +223,14 @@ function handleSaveShareImage() {
     </div>
 
     <div v-if="!compact && weakDrillCards.length" class="player-dashboard__drill">
-      <h3 class="player-dashboard__weak-title">按题型特训</h3>
-      <p class="player-dashboard__drill-desc">根据你的薄弱记录，优先巩固这些题型：</p>
+      <h3 class="player-dashboard__weak-title">按题型加练</h3>
+      <p class="player-dashboard__drill-desc">根据你的练习记录，这些题型可以再巩固：</p>
       <ul class="player-dashboard__drill-list">
         <li v-for="card in weakDrillCards" :key="card.simType" class="player-dashboard__drill-item">
           <span class="player-dashboard__drill-type">{{ card.simLabel }}</span>
-          <span class="player-dashboard__drill-meta">{{ card.weakCount }} 关待加强</span>
+          <span class="player-dashboard__drill-meta">{{ card.weakCount }} 关建议复习</span>
           <router-link :to="`/level/${card.retryLevelId}`" class="player-dashboard__drill-btn">
-            冲星 #{{ card.retryLevelId }}
+            重玩 #{{ card.retryLevelId }}
           </router-link>
           <router-link
             v-if="card.sideQuest"
@@ -244,7 +244,7 @@ function handleSaveShareImage() {
     </div>
 
     <div v-if="!compact && lowStarLevels.length" class="player-dashboard__weak">
-      <h3 class="player-dashboard__weak-title">可冲星重玩</h3>
+      <h3 class="player-dashboard__weak-title">可重玩冲三星</h3>
       <ul class="player-dashboard__weak-list">
         <li v-for="item in lowStarLevels" :key="item.levelId" class="player-dashboard__weak-item">
           <router-link :to="`/level/${item.levelId}`" class="player-dashboard__weak-link">
@@ -256,7 +256,7 @@ function handleSaveShareImage() {
     </div>
 
     <div v-if="!compact && weakAreas.length" class="player-dashboard__weak">
-      <h3 class="player-dashboard__weak-title">待加强</h3>
+      <h3 class="player-dashboard__weak-title">建议复习</h3>
       <ul class="player-dashboard__weak-list">
         <li v-for="item in weakAreas" :key="item.levelId" class="player-dashboard__weak-item">
           <router-link :to="`/level/${item.levelId}`" class="player-dashboard__weak-link">

@@ -43,7 +43,7 @@ describe('storage', () => {
     const result = setItem('big', { data: 'x'.repeat(9999) })
     expect(result.ok).toBe(false)
     expect(result.reason).toBe('quota')
-    expect(storageWarning.value).toMatch(/导出存档/)
+    expect(storageWarning.value).toMatch(/导出备份/)
     spy.mockRestore()
   })
 })

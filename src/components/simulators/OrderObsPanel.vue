@@ -25,10 +25,10 @@ const traceNodes = [
 ]
 
 const metrics = [
-  { id: 'a', label: '订单创建接口错误率', value: '2.8%', tone: 'error', hint: '必须盯' },
-  { id: 'b', label: '服务器 CPU 负载', value: '78%', tone: 'warn', hint: '必须盯' },
-  { id: 'c', label: '订单支付转化率', value: '↓ 12%', tone: 'warn', hint: '必须盯' },
-  { id: 'd', label: '列表页按钮圆角', value: '8px', tone: 'neutral', hint: '非监控项' },
+  { id: 'a', label: '订单创建接口错误率', value: '2.8%', tone: 'error', hint: '重点监控' },
+  { id: 'b', label: '服务器 CPU 负载', value: '78%', tone: 'warn', hint: '重点监控' },
+  { id: 'c', label: '订单支付转化率', value: '↓ 12%', tone: 'warn', hint: '重点监控' },
+  { id: 'd', label: '列表页按钮圆角', value: '8px', tone: 'neutral', hint: '不是监控重点' },
 ]
 
 const incidentSteps = [

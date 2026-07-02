@@ -12,7 +12,7 @@ export const handbookDomains = [
     id: 'api',
     name: '接口测试',
     icon: '🔌',
-    tagline: '不只会点 Send，还得会对断言',
+    tagline: '不只会发请求，还要会写断言',
   },
   {
     id: 'oncall',
@@ -24,7 +24,7 @@ export const handbookDomains = [
     id: 'release',
     name: '发布回归',
     icon: '🚀',
-    tagline: '发版前那几小时，冒烟回归签字',
+    tagline: '发版前几小时，做冒烟、回归，再决定是否签字',
   },
 ]
 

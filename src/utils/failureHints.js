@@ -10,7 +10,7 @@ function diffChecklist(selected, correct, items) {
     parts.push(`漏选：${missed.map(label).join('；')}`)
   }
   if (extra.length) {
-    parts.push(`多选：${extra.map(label).join('；')}（多为干扰项）`)
+    parts.push(`多选了：${extra.map(label).join('；')}（这些通常不是重点）`)
   }
   return parts.join('。')
 }
@@ -193,7 +193,7 @@ function simTypeFallbackHint(level) {
       return '优先选功能性、边界、异常、安全相关项；UI 审美类通常是干扰项。'
     case 'apiclient':
       if (level.checklistItems?.length) {
-        return '优先选 HTTP 层验证项：状态码、响应体、响应头、异常场景；UI 细节是干扰项。'
+        return '接口题优先看状态码、返回内容、响应头和异常场景，UI 细节通常不用选。'
       }
       return level.templateFields?.[0]?.validationHint || level.fillHint || ''
     default:

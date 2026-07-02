@@ -178,11 +178,11 @@ function validateGrep(userCmd, expectedCmd) {
     if (expected.flags.context != null) {
       return {
         isPass: false,
-        message: `请使用 grep -C ${expected.flags.context} 输出匹配行的上下文。`,
+        message: `用 grep -C ${expected.flags.context}，每条匹配结果前后各显示 ${expected.flags.context} 行。`,
       }
     }
     if (expected.flags.invert) {
-      return { isPass: false, message: '请使用 grep -v 排除干扰行（如 INFO）。' }
+      return { isPass: false, message: '用 grep -v 把 INFO 这类无关日志过滤掉。' }
     }
     if (expected.flags.ignoreCase) {
       return { isPass: false, message: '请使用 grep -i 进行大小写不敏感搜索。' }
@@ -208,7 +208,7 @@ function validateGrep(userCmd, expectedCmd) {
     }
   }
   if (expected.pipeSegments.length !== user.pipeSegments.length) {
-    return { isPass: false, message: '命令管道不完整，请检查 | 后面的部分。' }
+    return { isPass: false, message: '命令不完整，检查 | 后面的部分是否漏了。' }
   }
   for (let i = 0; i < expected.pipeSegments.length; i++) {
     if (expected.pipeSegments[i] !== user.pipeSegments[i]) {

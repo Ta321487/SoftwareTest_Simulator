@@ -21,7 +21,7 @@ const props = defineProps({
   },
   placeholder: {
     type: String,
-    default: '输入回复，@同事 推动排查…',
+    default: '输入回复，可以 @同事 请对方配合…',
   },
   chatPreviewConfig: {
     type: Object,
@@ -267,7 +267,7 @@ onBeforeUnmount(clearRevealTimers)
         :class="composePreview.tier ? `chat-box__preview--${composePreview.tier}` : ''"
       >
         <p class="chat-box__preview-title">
-          发送前预览 · {{ composePreview.tierLabel }}
+          发送前检查 · {{ composePreview.tierLabel }}
           <span v-if="chatPreviewConfig?.chatKeywords?.length" class="chat-box__preview-kw">
             关键词 {{ composePreview.keywordProgress }}
           </span>
@@ -275,7 +275,7 @@ onBeforeUnmount(clearRevealTimers)
         <ul v-if="composePreview.tips.length" class="chat-box__preview-tips">
           <li v-for="(tip, idx) in composePreview.tips" :key="idx">{{ tip }}</li>
         </ul>
-        <p v-else class="chat-box__preview-ok">结构完整，可以发送。</p>
+        <p v-else class="chat-box__preview-ok">信息够了，可以发送。</p>
       </div>
       <p v-if="composeHintText && !isRevealing" class="chat-box__hint">{{ composeHintText }}</p>
       <button

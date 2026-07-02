@@ -28,7 +28,7 @@ export function setItem(key, value) {
       (err instanceof DOMException && err.name === 'QuotaExceededError') || err?.code === 22
     const reason = isQuota ? 'quota' : 'unknown'
     const message = isQuota
-      ? '浏览器存储空间已满，进度可能未保存。请立即导出存档。'
+      ? '浏览器空间已满，进度可能没保存。请马上导出备份。'
       : '进度保存失败，请导出存档备份。'
     showStorageWarning(message)
     return { ok: false, reason, message }

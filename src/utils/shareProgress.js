@@ -23,7 +23,7 @@ export function buildShareText({
   if (practiceLine) {
     lines.push(`最近在练：${practiceLine}`)
   }
-  lines.push('来挑战软件测试职场模拟 👇', PLAY_URL)
+  lines.push('一起来玩测试职场模拟 👇', PLAY_URL)
   return lines.join('\n')
 }
 

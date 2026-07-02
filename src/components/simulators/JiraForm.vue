@@ -226,14 +226,14 @@ const showTierPreview = computed(
             :class="`jira-form__quality-preview--${tierPreview.tier}`"
           >
             <p class="jira-form__quality-title">
-              提交前预览 · {{ JIRA_TIER_LABELS[tierPreview.tier] }}
+              提交前检查 · {{ JIRA_TIER_LABELS[tierPreview.tier] }}
               <span class="jira-form__quality-stars">最高 ★{{ tierPreview.starCap }}</span>
             </p>
             <ul v-if="tierPreview.tips.length" class="jira-form__quality-tips">
               <li v-for="(tip, idx) in tierPreview.tips" :key="idx">{{ tip }}</li>
             </ul>
             <p v-else class="jira-form__quality-ok">
-              质量达标，提交后可拿 {{ JIRA_TIER_LABELS[tierPreview.tier] }} 档星级。
+              按这个质量提交，大约能拿 {{ tierPreview.starCap }} 星。
             </p>
           </div>
 

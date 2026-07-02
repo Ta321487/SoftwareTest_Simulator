@@ -159,7 +159,7 @@ onUnmounted(() => document.body.classList.remove('debrief-open'))
           <p v-if="consequenceNote" class="debrief-panel__consequence">{{ consequenceNote }}</p>
           <p v-if="jiraTier" class="debrief-panel__jira-tier">
             工单质量：<strong>{{ JIRA_TIER_LABELS[jiraTier] || jiraTier }}</strong>
-            <span v-if="jiraTier === 'draft'"> · 可冲星重玩</span>
+            <span v-if="jiraTier === 'draft'"> · 可重玩冲三星</span>
             <span v-else-if="jiraTier === 'excellent'"> · 已达三星上限</span>
           </p>
         </div>

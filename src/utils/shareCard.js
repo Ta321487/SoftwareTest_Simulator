@@ -70,7 +70,7 @@ export function drawShareCard(canvas, payload) {
 
   ctx.fillStyle = COLORS.muted
   ctx.font = `400 24px ${font}`
-  ctx.fillText('用「闯关」练软件测试 · 攒 XP 升职级', 80, 148)
+  ctx.fillText('用「闯关」练软件测试 · 积累经验、提升职级', 80, 148)
 
   roundRect(ctx, 80, 175, W - 160, 130, 14)
   ctx.fillStyle = COLORS.card

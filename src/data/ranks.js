@@ -4,12 +4,12 @@ export const ranks = [
   { minXp: 65, title: '刷题党', icon: '✏️', tagline: '用例写得顺，Bug 单开始像样了' },
   { minXp: 100, title: '面试候场', icon: '🪑', tagline: '简历过了，等叫号进终面' },
   { minXp: 175, title: '笔试通关者', icon: '📝', tagline: '部门卷写完了，Offer 在望' },
-  { minXp: 290, title: 'Junior 测试', icon: '🔰', tagline: '工牌到手，正式跟项目' },
-  { minXp: 425, title: 'Mid 测试', icon: '⚡', tagline: '能独立扛模块，线上也会救火' },
-  { minXp: 510, title: 'Senior 测试', icon: '🏅', tagline: '链路、灰度、复盘都见过世面' },
-  { minXp: 605, title: '测试老兵', icon: '👨‍💻', tagline: '第一季全通，这行你算入门了' },
-  { minXp: 720, title: '测试 Lead', icon: '🎯', tagline: '分任务、盯进度，发不发你来说' },
-  { minXp: 850, title: '质量 Owner', icon: '🛡️', tagline: '番外练完一圈，质量话你拍板' },
+  { minXp: 290, title: '初级测试', icon: '🔰', tagline: '工牌到手，正式跟项目' },
+  { minXp: 425, title: '中级测试', icon: '⚡', tagline: '能独立扛模块，线上也会救火' },
+  { minXp: 510, title: '高级测试', icon: '🏅', tagline: '链路、灰度、复盘都见过世面' },
+  { minXp: 605, title: '测试老兵', icon: '👨‍💻', tagline: '主线第一季通关，测试这条路算正式入门了' },
+  { minXp: 720, title: '测试组长', icon: '🎯', tagline: '开始带人、盯进度，发布节奏也要参与决策' },
+  { minXp: 850, title: '质量负责人', icon: '🛡️', tagline: '番外练完一圈，质量话你拍板' },
 ]
 
 export function getRankForXp(xp) {

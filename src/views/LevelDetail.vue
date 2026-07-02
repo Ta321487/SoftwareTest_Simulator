@@ -180,12 +180,12 @@ const hintButtonLabel = computed(() => {
     return hintPoolSize.value > 1 ? '换一条思路' : '再看思路'
   }
   if (levelStatus.value === 'completed') {
-    return sessionHintUsed.value && hintPoolSize.value > 1 ? '换一条冲星提示' : '冲星提示'
+    return sessionHintUsed.value && hintPoolSize.value > 1 ? '换一条提示（冲三星）' : '提示（冲三星）'
   }
   if (sessionHintUsed.value) {
     return hintPoolSize.value > 1 ? '换一条提示' : '再看提示'
   }
-  return '提示（影响星级）'
+  return '查看提示（会少一颗星）'
 })
 
 const simGuide = computed(() => (level.value ? getSimGuide(level.value.simType) : null))
@@ -573,7 +573,7 @@ onUnmounted(() => {
         <p>{{ level.content }}</p>
       </div>
       <div v-if="sutEntriesOnLevel.length" class="task-panel__sut-links">
-        <span class="task-panel__sut-label">可选上机实操（不影响通关）：</span>
+        <span class="task-panel__sut-label">可选 App 实操（不影响通关）：</span>
         <button
           v-for="entry in sutEntriesOnLevel"
           :key="entry.key"
@@ -606,7 +606,7 @@ onUnmounted(() => {
         <span class="task-panel-fold__text">{{ level.content }}</span>
         <span v-if="xpPreview" class="task-panel-fold__xp">
           +{{ xpPreview.base }} XP
-          <template v-if="xpPreview.canImprove"> · 冲星最多 +{{ xpPreview.maxTotal }}</template>
+          <template v-if="xpPreview.canImprove"> · 重玩最多 +{{ xpPreview.maxTotal }}</template>
         </span>
       </summary>
       <section class="task-panel task-panel--compact">
@@ -622,7 +622,7 @@ onUnmounted(() => {
           {{ deliverable }}
         </p>
         <div v-if="sutEntriesOnLevel.length" class="task-panel__sut-links">
-          <span class="task-panel__sut-label">可选上机实操（不影响通关）：</span>
+          <span class="task-panel__sut-label">可选 App 实操（不影响通关）：</span>
           <button
             v-for="entry in sutEntriesOnLevel"
             :key="entry.key"
@@ -651,7 +651,7 @@ onUnmounted(() => {
     >
       <p v-if="submitFlash" class="workbench__submit-flash">{{ submitFlash }}</p>
       <p v-if="showMobileSimHint" class="workbench__mobile-hint workbench__mobile-hint--heavy">
-        💡 终端 / 接口 / 抓包关建议横屏或电脑浏览器；手机可先读任务，大屏实操更顺手。
+        💡 这类关卡建议在电脑或横屏完成，手机可以先读题。
       </p>
       <div class="sim-workspace__header">
         <span class="sim-workspace__tag">{{ simGuide.label }}</span>
@@ -659,7 +659,7 @@ onUnmounted(() => {
           v-if="levelStatus === 'completed'"
           class="level-detail__badge level-detail__badge--completed"
         >
-          {{ existingStars ? `★${existingStars} · 冲星重玩` : '已通关' }}
+          {{ existingStars ? `★${existingStars} · 重玩冲三星` : '已通关' }}
         </span>
         <button
           v-if="hasLevelHint"

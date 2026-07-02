@@ -23,6 +23,14 @@ const selectedArcByChapter = ref({})
 const arcToast = ref('')
 let arcToastTimer = null
 
+const chapterSubtitle = computed(() => {
+  const parts = chaptersWithArcs.value.map((c) => {
+    const short = c.name.replace(/^第[一二三四]章 · /, '')
+    return c.recommended ? `${short}（${c.total} 关，推荐）` : `${short}（${c.total} 关）`
+  })
+  return `${parts.join(' · ')} · 每日一题，不影响主线进度。`
+})
+
 const dailyStatus = computed(() => progressStore.getDailyStatus())
 
 const dailyXp = computed(() => getTodayDailyChallenge().xpReward ?? 0)
@@ -200,10 +208,7 @@ onUnmounted(() => {
           <span class="side-hub__icon">🎬</span>
           番外 & 特训
         </h2>
-        <p class="side-hub__subtitle">
-          思维选修（36 关）· 排查工具链（34 关推荐）· 业务场景选修（78 关）·
-          每日特训，均不影响职级晋升。
-        </p>
+        <p class="side-hub__subtitle">{{ chapterSubtitle }}</p>
       </div>
       <span class="side-hub__progress">{{ sideProgress.done }}/{{ sideProgress.total }} 番外</span>
     </header>
@@ -236,7 +241,7 @@ onUnmounted(() => {
         :disabled="dailyStatus === 'locked'"
         @click="goLevel(DAILY_LEVEL_ID)"
       >
-        {{ dailyStatus === 'completed' ? '明日刷新' : dailyStatus === 'locked' ? '🔒' : '开始 →' }}
+        {{ dailyStatus === 'completed' ? '明日刷新' : dailyStatus === 'locked' ? '🔒 未解锁' : '开始' }}
       </button>
     </article>
 

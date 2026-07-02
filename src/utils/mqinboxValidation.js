@@ -23,5 +23,5 @@ export function validateMqInbox(level, data) {
     }
   }
 
-  return { isPass: false, message: '题目配置不完整。' }
+  return { isPass: false, message: '这道题加载异常，请刷新后重试。' }
 }

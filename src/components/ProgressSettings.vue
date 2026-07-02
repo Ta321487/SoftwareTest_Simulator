@@ -8,7 +8,6 @@ import {
   applyBackup,
   downloadBackup,
   readBackupFile,
-  BACKUP_VERSION,
 } from '../utils/progressBackup'
 import { markExported } from '../utils/bootstrapRestore'
 import { trackBackupExport, trackBackupImport } from '../utils/analytics'
@@ -47,7 +46,7 @@ async function onFileChange(event) {
   importMsg.value = ''
   try {
     const data = await readBackupFile(file)
-    if (!window.confirm('导入将覆盖当前进度、项目档案与沉浸状态。确定继续？')) {
+    if (!window.confirm('导入会覆盖当前所有进度和项目记录，确定继续吗？')) {
       return
     }
     const result = applyBackup(data, progressStore, projectStore, themeStore)
@@ -74,10 +73,7 @@ function triggerImport() {
   <section class="save-panel" :class="{ 'save-panel--embedded': embedded }">
     <h2 class="save-panel__title">存档管理</h2>
     <p class="save-panel__desc">
-      进度保存在浏览器本地。换设备或清缓存前请先导出；支持 JSON 存档导入恢复。 当前存档格式 v{{
-        BACKUP_VERSION
-      }}
-      · 含上机分步进度。
+      进度保存在浏览器本地。换设备或清缓存前请先导出；支持 JSON 存档导入恢复。存档包含关卡进度和 App 实操记录。
     </p>
     <div class="save-panel__actions">
       <button type="button" class="level-map__btn level-map__btn--primary" @click="exportSave">

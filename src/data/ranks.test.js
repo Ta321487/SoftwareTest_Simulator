@@ -21,7 +21,7 @@ describe('getRankProgress', () => {
 describe('getNextRank', () => {
   it('returns next tier after current', () => {
     expect(getNextRank(10)?.title).toBe('刷题党')
-    expect(getRankForXp(850).title).toBe('质量 Owner')
+    expect(getRankForXp(850).title).toBe('质量负责人')
     expect(getNextRank(850)).toBeNull()
   })
 })

@@ -803,7 +803,7 @@ watch(allEntries, () => {
           <header class="handbook__domain-head">
             <h2 class="handbook__domain-title">✨ 我的测试能力</h2>
             <p class="handbook__domain-tagline">
-              通关主线后解锁「我会…」式能力句——同一能力会在不同关卡螺旋复现。
+              通关主线后解锁「我会…」能力描述，同一能力会在不同关卡反复练习。
             </p>
             <p class="handbook__domain-stats">
               已掌握 {{ skillProgress.done }}/{{ skillProgress.total }} 项（{{

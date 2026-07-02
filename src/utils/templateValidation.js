@@ -91,11 +91,11 @@ function getPreviewFieldHint(field, text, level, defaultMinLength) {
   }
   const rejectKeywords = field.fieldRejectKeywords || []
   if (rejectKeywords.length && includesReject(text, rejectKeywords)) {
-    return `「${name}」判断可能有误，请重新对照场景分析。`
+    return `「${name}」和场景不太一致，再想想系统应该怎么反应。`
   }
   const keywords = getFieldKeywords(field, level)
   if (keywords.length && !includesAccept(text, keywords)) {
-    return `「${name}」描述不够完整，请补充关键判断点。`
+    return `「${name}」还缺关键信息，比如系统允许还是拒绝、用户看到什么。`
   }
   return ''
 }

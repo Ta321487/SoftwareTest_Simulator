@@ -52,7 +52,7 @@ export const achievements = [
     id: 'veteran',
     icon: '🏅',
     title: '测试老兵',
-    desc: '完成第一季全部关卡（进阶线解锁前）',
+    desc: '完成主线第一季全部关卡',
     check: (s) => isSeason1Complete(s.completedLevelIds),
   },
   {
@@ -80,21 +80,21 @@ export const achievements = [
     id: 'side_master',
     icon: '🏆',
     title: '番外全通',
-    desc: `完成全部 ${sideLevels.length} 个番外关`,
+    desc: '完成全部番外关卡',
     check: (s) => sideCompletedCount(s.completedLevelIds) >= sideLevels.length,
   },
   {
     id: 'daily_streak',
     icon: '📅',
-    title: '每日打卡',
-    desc: '每日特训连续完成 3 天',
+    title: '连续完成',
+    desc: '每日一题连续完成 3 天',
     check: (s) => (s.dailyStreak || 0) >= 3,
   },
   {
     id: 'clean_login',
     icon: '✨',
     title: '滴水不漏',
-    desc: '登录项目 Day 1–4 零失误通关',
+    desc: '登录项目前 4 关一次通关',
     check: (s) =>
       [1, 2, 3, 4, 5].every((id) => s.completedLevelIds.includes(id)) &&
       [1, 2, 3, 4].every((id) => !(s.levelMistakes[id] > 0)),

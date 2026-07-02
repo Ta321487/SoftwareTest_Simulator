@@ -239,21 +239,21 @@ export function validateChatStructure(level, message) {
       return {
         ok: false,
         message: isPassiveCollabReply(message)
-          ? '别只让开发查。写清你会先核对什么，再请对方配合（如一起看日志）。'
-          : '回复缺少具体动作。写清你会先查/核对什么（如回调地址、配置、日志）。',
+          ? '请先说你会查什么，再请同事配合（例如一起看日志）。'
+          : '还没写清楚具体动作。说明你会先查或核对什么（如回调地址、配置、日志）。',
       }
     }
     if (!hasRequest) {
       return {
         ok: false,
-        message: '回复缺少协作请求。请明确请对方配合做什么（如一起看日志、确认分支）。',
+        message: '还没说清楚需要同事配合什么，例如一起看日志或确认分支。',
       }
     }
   }
 
   if (level.chatStructure === 'escalation') {
     if (!hasEscalationRisk(message)) {
-      return { ok: false, message: '对 PM 的升级需说清：什么卡住了、对上线有什么影响。' }
+      return { ok: false, message: '向 PM 说明时，要写清卡在哪里、对上线有什么影响。' }
     }
     if (!hasEscalationRequest(message)) {
       return { ok: false, message: '请提出明确的协调请求（如优先修复、加资源、调整排期）。' }
@@ -265,7 +265,7 @@ export function validateChatStructure(level, message) {
       return {
         ok: false,
         message: hasHrBackground(message)
-          ? '背景听到了。结合用户或质量角度，说说为什么想做测试、你能带来什么。'
+          ? '背景了解了。结合用户或质量，说说为什么想做测试、你能带来什么。'
           : '结合「为用户发现风险」「保证质量」等说说为什么选测试、你能带来什么。',
       }
     }
@@ -351,13 +351,13 @@ export function isMeaninglessReply(text) {
 
 function getMeaninglessComposeHint(text, structure) {
   const t = String(text || '').trim()
-  if (/^[.。…·]{2,}$/.test(t.replace(/\s/g, ''))) return '别发省略号，用完整句子说清楚。'
+  if (/^[.。…·]{2,}$/.test(t.replace(/\s/g, ''))) return '请用完整句子说明，不要只发省略号。'
   if (/^(哈+|啊|哦|嗯|额|呃)/.test(t)) {
-    if (structure === 'hr') return '别只回语气词，说说背景或为什么想做测试。'
-    if (structure === 'escalation') return '别只回语气词，说清阻塞点和需要的协调。'
-    return '别只回语气词，写清你会先做什么、需要谁配合。'
+    if (structure === 'hr') return '不要只回语气词，说说背景或为什么想做测试。'
+    if (structure === 'escalation') return '不要只回语气词，说清阻塞点和需要的协调。'
+    return '不要只回语气词，写清你会先做什么、需要谁配合。'
   }
-  return '用完整句子回答，别只发标点或符号。'
+  return '请用完整句子回答，不要只发标点或符号。'
 }
 
 /** 从关卡配置提取话题上下文，供动态追问 */
@@ -850,7 +850,7 @@ export function validateChatReply(level, data = {}) {
       isPass: false,
       message:
         level.chatMeaninglessHint ||
-        '对方没看懂你的回复。别只发省略号或标点，用完整句子说明你会先做什么。',
+        '对方没看懂你的回复。请用完整句子说明你会先做什么，不要只发省略号或标点。',
       analysis,
     }
   }
@@ -868,7 +868,7 @@ export function validateChatReply(level, data = {}) {
   if (analysis.weaknesses.includes('passiveReply')) {
     return {
       isPass: false,
-      message: '别只让开发查。写清你会先核对什么，再请对方配合（如一起看日志）。',
+      message: '请先说你会查什么，再请同事配合（例如一起看日志）。',
       analysis,
     }
   }
@@ -876,7 +876,7 @@ export function validateChatReply(level, data = {}) {
   if (analysis.weaknesses.includes('keywordStuffing')) {
     return {
       isPass: false,
-      message: '别只堆关键词。用完整句子说：你会先做什么、需要谁配合。',
+      message: '不要只列几个词。用完整句子说明你会做什么、需要谁配合。',
       analysis,
     }
   }
@@ -894,7 +894,7 @@ export function validateChatReply(level, data = {}) {
       isPass: false,
       message:
         level.chatFailHint ||
-        '回复偏被动。试着写：①你会先核对测试环境的配置/地址 ②请李工配合查日志或抓包。',
+        '回复还可以更具体。可以分成两句：先写你会核对什么，再写需要同事配合什么。',
       analysis,
     }
   }
@@ -909,7 +909,7 @@ export function validateChatReply(level, data = {}) {
       message:
         level.chatStructure === 'escalation'
           ? '请提出明确的协调请求（如优先修复、加资源、调整排期）。'
-          : '回复缺少协作请求。请明确请对方配合做什么（如一起看日志、确认分支）。',
+          : '还没说清楚需要同事配合什么，例如一起看日志或确认分支。',
       analysis,
     }
   }
@@ -917,7 +917,7 @@ export function validateChatReply(level, data = {}) {
   if (analysis.weaknesses.includes('missingRisk')) {
     return {
       isPass: false,
-      message: '对 PM 的升级需说清：什么卡住了、对上线有什么影响。',
+      message: '向 PM 说明时，要写清卡在哪里、对上线有什么影响。',
       analysis,
     }
   }
@@ -930,14 +930,14 @@ export function validateChatReply(level, data = {}) {
     }
   }
 
-  return { isPass: true, message: '回复专业得体！', analysis }
+  return { isPass: true, message: '回复清楚，可以发送。', analysis }
 }
 
 const CHAT_TIER_LABELS = {
   empty: '待输入',
-  weak: '偏笼统',
+  weak: '还可以更具体',
   ok: '基本合格',
-  good: '协作到位',
+  good: '表达清楚',
 }
 
 /** 结构化 chat 走弱答追问，不展示「发送前预览」；仅 chatPreview: true 时强制开启 */
@@ -982,7 +982,7 @@ export function getChatComposePreview(level, message) {
 
   if (matched.length < minKw) {
     if (level.chatStructure === 'hr') {
-      tips.push(`相关表述还偏少（${matched.length}/${minKw}）。可提：质量、用户、细致、培训等。`)
+      tips.push(`相关表述还偏少（${matched.length}/${minKw}）。可提到质量、用户、细致、培训等。`)
     } else {
       tips.push(
         `协作关键词不足（${matched.length}/${minKw}）。可提：测试环境、回调、配置、日志等。`

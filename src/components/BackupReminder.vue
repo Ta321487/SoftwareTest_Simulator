@@ -27,8 +27,7 @@ function goExport() {
 <template>
   <div v-if="visible" class="backup-reminder" role="status">
     <p class="backup-reminder__text">
-      你已通关
-      {{ progressStore.completedLevelIds.length }} 关，建议导出存档以防换设备或清缓存丢进度。
+      已通关 {{ progressStore.completedLevelIds.length }} 关，建议导出备份，换设备或清缓存时不丢进度。
     </p>
     <div class="backup-reminder__actions">
       <button type="button" class="level-map__btn level-map__btn--ghost" @click="goExport">

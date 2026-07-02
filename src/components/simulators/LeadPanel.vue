@@ -236,7 +236,7 @@ function confirmLoadReport() {
         :disabled="loadDone"
         @click="confirmLoadReport"
       >
-        {{ loadDone ? '✓ 已确认发布建议' : '确认 No-Go 建议' }}
+        {{ loadDone ? '✓ 已确认发布建议' : '确认不建议发布' }}
       </button>
     </div>
   </div>
