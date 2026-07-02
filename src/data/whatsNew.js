@@ -1,10 +1,35 @@
 /** 与 package.json version 同步 */
-export const APP_VERSION = '1.26.2'
+export const APP_VERSION = '1.26.6'
 
 /** 新版本条目放数组头部 */
 export const WHATS_NEW_ENTRIES = [
   {
     version: APP_VERSION,
+    title: '修复手机端接口设计题底部被遮挡',
+    items: [
+      'Checklist / API 勾选关提交按钮 sticky 避开底栏 Tab',
+      '勾选列表底部留白，最后一项可完整滚出',
+    ],
+  },
+  {
+    version: '1.26.5',
+    title: '计算题不再透答案',
+    items: [
+      '去掉 placeholder 与示例里的标准答案数字',
+      '公式说明与校验提示收简，整数或小数均可提交',
+    ],
+  },
+  {
+    version: '1.26.3',
+    title: '聊天关更贴近真实协作',
+    items: [
+      '弱答可追问一轮，分两句发也能过',
+      'NPC 逐条打字、协作关开发/组长错峰回复',
+      '协作 / HR / 升级类聊天校验放宽，去掉默认发送前预览',
+    ],
+  },
+  {
+    version: '1.26.2',
     title: '番外与职级文案去模板化',
     items: [
       '55 处 tagline 改为场景口语，去掉「完整链 / 三板斧 / →」式目录腔',
