@@ -255,13 +255,17 @@ body.debrief-open {
   }
 
   /* 手机底栏留白（Tab 栏 + 关卡 Day 横条）+ 软键盘 */
+  .workbench--level {
+    --level-mobile-dock-offset: calc(120px + env(safe-area-inset-bottom, 0px));
+  }
+
   .home-map .workbench__main,
   .handbook .workbench__main {
     padding-bottom: calc(72px + env(safe-area-inset-bottom) + var(--keyboard-inset));
   }
 
   .workbench--level .workbench__main {
-    padding-bottom: calc(120px + env(safe-area-inset-bottom) + var(--keyboard-inset));
+    padding-bottom: calc(var(--level-mobile-dock-offset) + var(--keyboard-inset));
   }
 
   /* 首页内容 */
@@ -532,6 +536,10 @@ body.debrief-open {
     padding-bottom: 8px;
   }
 
+  .workbench--level .workbench__sim-area {
+    padding-bottom: 16px;
+  }
+
   .workbench__sim-area .sim-card {
     overflow: visible;
   }
@@ -650,7 +658,7 @@ body.debrief-open {
   }
 
   .checklist__main {
-    padding-bottom: 8px;
+    padding-bottom: calc(var(--level-mobile-dock-offset, 88px) + 12px);
   }
 
   .checklist__prd-fold:not([open]) .checklist__prd-body {
@@ -663,10 +671,12 @@ body.debrief-open {
     color: var(--text-muted);
   }
 
-  .checklist__main .sim-btn--primary {
+  /* 关卡页主操作钮：sticky 避开底部 Tab / Day 横条 */
+  .workbench--level .checklist__main > .sim-btn--primary,
+  .workbench--level .api-client > .sim-btn--primary:last-child {
     position: sticky;
-    bottom: calc(88px + env(safe-area-inset-bottom));
-    z-index: 15;
+    bottom: var(--level-mobile-dock-offset, calc(88px + env(safe-area-inset-bottom, 0px)));
+    z-index: 110;
     margin-top: 16px;
     width: 100%;
     box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
