@@ -63,24 +63,15 @@ defineExpose({ reset })
 
     <div class="calculator__formula calculator__formula--hint">
       <p v-if="calculatorFormula === 'density'" class="calculator__formula-text">
-        公式：缺陷密度 = Bug 数 ÷ 用例数 × 100%
+        缺陷密度 = Bug 数 ÷ 用例数 × 100%
       </p>
-      <p v-else class="calculator__formula-text">
-        公式：总用例量 ÷ 每小时执行数 ÷ 日有效工时 = 所需天数
-      </p>
-      <p class="calculator__formula-note">
-        请自行计算，下方填写结果（保留两位小数，如 3.33 或 4.00）
-      </p>
+      <p v-else class="calculator__formula-text">所需天数 = 总用例 ÷ 每小时条数 ÷ 日有效工时</p>
+      <p class="calculator__formula-note">请填写计算结果，单位可省略。</p>
     </div>
 
     <div class="sim-field calculator__answer">
-      <label class="sim-field__label">你的计算结果</label>
-      <input
-        v-model="userResult"
-        type="text"
-        class="sim-field__input"
-        :placeholder="calculatorFormula === 'density' ? '例如：4.00' : '例如：3.33'"
-      />
+      <label class="sim-field__label">计算结果</label>
+      <input v-model="userResult" type="text" class="sim-field__input" placeholder="数字" />
     </div>
 
     <button type="button" class="sim-btn sim-btn--primary" @click="handleSubmit">✓ 提交结果</button>

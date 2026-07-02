@@ -185,7 +185,7 @@ export function validateSimulation(level, data) {
       const userAnswer = normalizeCalcAnswer(data.userResult)
 
       if (!userAnswer) {
-        return { isPass: false, message: '请先填写你的计算结果（数字，建议保留两位小数）。' }
+        return { isPass: false, message: '请填写计算结果。' }
       }
 
       const expected = expectedCalculatorResult(level, fields)
@@ -199,7 +199,7 @@ export function validateSimulation(level, data) {
         isPass,
         message: isPass
           ? `计算正确！结果为 ${expected}${unit.trim()}`
-          : `结果不对（你填的是 ${userAnswer}）。请按公式重算，保留两位小数后再提交。`,
+          : `结果不正确（你填写的是 ${userAnswer}），请按公式重新计算。`,
       }
     }
 
